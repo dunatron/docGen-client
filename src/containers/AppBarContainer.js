@@ -23,7 +23,10 @@ const styles = {
   },
 }
 
-const routes = [{ title: "Home", url: "/" }, { title: "About", url: "/about" }]
+const routes = [
+  { title: "Home", url: "/" },
+  { title: "Documents", url: "/documents" },
+]
 
 class AppBarContainer extends React.Component {
   state = {

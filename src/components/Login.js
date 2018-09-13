@@ -1,10 +1,12 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import { AUTH_TOKEN } from "../constants"
 import { Mutation } from "react-apollo"
 import gql from "graphql-tag"
 import { withRouter } from "react-router"
 import { withStyles } from "@material-ui/core/styles"
 import { compose } from "react-apollo/index"
+import TextField from "@material-ui/core/TextField"
+import Button from "@material-ui/core/Button"
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
@@ -23,12 +25,24 @@ const LOGIN_MUTATION = gql`
 `
 
 const styles = theme => ({
-  close: {
-    width: theme.spacing.unit * 4,
-    height: theme.spacing.unit * 4,
+  container: {
+    marginRight: "auto",
+    marginLeft: "auto",
+    maxWidth: "320px",
+    padding: `${theme.spacing.unit * 3}px`,
   },
-  menuItem: {
+  title: {
+    textAlign: "center",
+    fontSize: "22px",
     color: theme.palette.primary.main,
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  actions: {
+    display: "flex",
+    flexDirection: "column",
   },
 })
 class Login extends Component {
@@ -41,53 +55,86 @@ class Login extends Component {
 
   render() {
     const { login, email, password, name } = this.state
+    const { classes } = this.props
     return (
-      <div>
-        <h4 className="mv3">{login ? "Login" : "Sign Up"}</h4>
-        <div className="flex flex-column">
-          {!login && (
-            <input
-              value={name}
-              onChange={e => this.setState({ name: e.target.value })}
-              type="text"
-              placeholder="Your name"
-            />
+      <div className={classes.container}>
+        <h1 className={classes.title}>{login ? "Login" : "Sign Up"}</h1>
+        <Mutation
+          mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
+          variables={{ email, password, name }}
+          onCompleted={data => this._confirm(data)}>
+          {(mutation, { loading, error, data }) => (
+            <Fragment>
+              {console.log("HERE IS AN ERROR ", error)}
+              {console.log("HERE IS AN Data ", data)}
+              {console.log("HERE IS AN Loading ", loading)}
+              {console.log("HERE IS AN mutation ", mutation)}
+              {error ? "Something went wrong please try again" : null}
+              {loading ? "LOADING" : null}
+              {!loading && (
+                <form
+                  className={classes.form}
+                  noValidate
+                  autoComplete="off"
+                  onSubmit={mutation}>
+                  {!login && (
+                    <TextField
+                      id="name"
+                      label="Name"
+                      className={classes.textField}
+                      value={this.state.name}
+                      onChange={e => this.setState({ name: e.target.value })}
+                      margin="normal"
+                    />
+                  )}
+                  <TextField
+                    id="email"
+                    label="Email"
+                    className={classes.textField}
+                    value={email}
+                    onChange={e => this.setState({ email: e.target.value })}
+                    margin="normal"
+                  />
+                  <TextField
+                    id="password"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    className={classes.textField}
+                    value={password}
+                    onChange={e => this.setState({ password: e.target.value })}
+                    margin="normal"
+                  />
+                  <div className={classes.actions}>
+                    <Button
+                      variant="contained"
+                      onClick={mutation}
+                      color="primary"
+                      className={classes.button}>
+                      {login ? "login" : "create account"}
+                    </Button>
+
+                    <Button
+                      // variant="contained"
+                      color="secondary"
+                      onClick={() => this.setState({ login: !login })}
+                      className={classes.button}>
+                      {login
+                        ? "need to create an account?"
+                        : "already have an account?"}
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </Fragment>
           )}
-          <input
-            value={email}
-            onChange={e => this.setState({ email: e.target.value })}
-            type="text"
-            placeholder="Your email address"
-          />
-          <input
-            value={password}
-            onChange={e => this.setState({ password: e.target.value })}
-            type="password"
-            placeholder="Choose a safe password"
-          />
-        </div>
-        <div className="flex mt3">
-          <Mutation
-            mutation={login ? LOGIN_MUTATION : SIGNUP_MUTATION}
-            variables={{ email, password, name }}
-            onCompleted={data => this._confirm(data)}>
-            {mutation => (
-              <div className="pointer mr2 button" onClick={mutation}>
-                {login ? "login" : "create account"}
-              </div>
-            )}
-          </Mutation>
-          <div
-            className="pointer button"
-            onClick={() => this.setState({ login: !login })}>
-            {login ? "need to create an account?" : "already have an account?"}
-          </div>
-        </div>
+        </Mutation>
       </div>
     )
   }
 
   _confirm = async data => {
+    console.log("Our data ")
     const { token } = this.state.login ? data.login : data.signup
     this._saveUserData(token)
     this.props.history.push(`/`)

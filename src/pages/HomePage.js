@@ -4,14 +4,17 @@ import { withApollo, compose } from "react-apollo/index"
 // page layout
 import FullPage from "../layouts/FullPage"
 // containers
-import SampleListContainer from "../containers/SampleListContainer"
+import DocumentsListContainer from "../containers/DocumentsListContainer"
+// components
+import CreateDocument from "../components/CreateDocument"
 
 class HomePage extends Component {
   render() {
     return (
       <FullPage
         children={[
-          <SampleListContainer
+          <CreateDocument />,
+          <DocumentsListContainer
             location={this.props.location}
             match={this.props.match}
           />,

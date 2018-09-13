@@ -1,73 +1,77 @@
 import React from "react"
+import PropTypes from "prop-types"
+import { withStyles } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
 import Snackbar from "@material-ui/core/Snackbar"
+import IconButton from "@material-ui/core/IconButton"
+import CloseIcon from "@material-ui/icons/Close"
+
+const styles = theme => ({
+  close: {
+    width: theme.spacing.unit * 4,
+    height: theme.spacing.unit * 4,
+  },
+})
 
 class SnackBar extends React.Component {
   state = {
-    open: true,
+    open: false,
   }
 
-  handleClick = state => () => {
-    this.setState({ open: true, ...state })
+  handleClick = () => {
+    this.setState({ open: true })
   }
 
-  handleClose = () => {
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+
     this.setState({ open: false })
   }
 
   render() {
-    const {
-      position: { vertical = "bottom", horizontal = "left" },
-      message,
-    } = this.props
-    const { open } = this.state
+    const { classes } = this.props
     return (
       <div>
-        {/* <Button
-          onClick={this.handleClick({ vertical: "top", horizontal: "center" })}>
-          Top-Center
-        </Button>
-        <Button
-          onClick={this.handleClick({ vertical: "top", horizontal: "right" })}>
-          Top-Right
-        </Button>
-        <Button
-          onClick={this.handleClick({
-            vertical: "bottom",
-            horizontal: "right",
-          })}>
-          Bottom-Right
-        </Button>
-        <Button
-          onClick={this.handleClick({
-            vertical: "bottom",
-            horizontal: "center",
-          })}>
-          Bottom-Center
-        </Button>
-        <Button
-          onClick={this.handleClick({
+        <Button onClick={this.handleClick}>Open simple snackbar</Button>
+        <Snackbar
+          anchorOrigin={{
             vertical: "bottom",
             horizontal: "left",
-          })}>
-          Bottom-Left
-        </Button>
-        <Button
-          onClick={this.handleClick({ vertical: "top", horizontal: "left" })}>
-          Top-Left
-        </Button> */}
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={open}
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
           onClose={this.handleClose}
           ContentProps={{
             "aria-describedby": "message-id",
           }}
-          message={<span id="message-id">{message}</span>}
+          message={<span id="message-id">Note archived</span>}
+          action={[
+            <Button
+              key="undo"
+              color="secondary"
+              size="small"
+              onClick={this.handleClose}>
+              UNDO
+            </Button>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.close}
+              onClick={this.handleClose}>
+              <CloseIcon />
+            </IconButton>,
+          ]}
         />
       </div>
     )
   }
 }
 
-export default SnackBar
+SnackBar.propTypes = {
+  classes: PropTypes.object.isRequired,
+}
+
+export default withStyles(styles)(SnackBar)
