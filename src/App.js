@@ -19,6 +19,7 @@ class App extends Component {
     const authToken = localStorage.getItem(AUTH_TOKEN)
 
     // This will actually need to check if it is valid or not
+    // It was. I just created a user that had empty pass and email =/
     if (!authToken) {
       return (
         <div>
