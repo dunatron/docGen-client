@@ -18,6 +18,10 @@ import customTheme from "./theme"
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider"
 import { createMuiTheme } from "@material-ui/core/styles"
 
+// Redux
+import store from "./state/store"
+import { Provider as Redux } from "react-redux"
+
 const muiTheme = createMuiTheme(customTheme)
 
 const httpLink = createHttpLink({
@@ -59,13 +63,15 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <BrowserRouter>
-    <ApolloProvider client={client}>
-      <MuiThemeProvider theme={muiTheme}>
-        <App />
-      </MuiThemeProvider>
-    </ApolloProvider>
-  </BrowserRouter>,
+  <Redux store={store}>
+    <BrowserRouter>
+      <ApolloProvider client={client}>
+        <MuiThemeProvider theme={muiTheme}>
+          <App />
+        </MuiThemeProvider>
+      </ApolloProvider>
+    </BrowserRouter>
+  </Redux>,
   document.getElementById("root")
 )
 registerServiceWorker()

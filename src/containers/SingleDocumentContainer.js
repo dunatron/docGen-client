@@ -3,7 +3,7 @@ import { withRouter } from "react-router"
 import { graphql, compose, withApollo } from "react-apollo"
 import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
 import { Query } from "react-apollo"
-import DocumentPreview from "../components/DocumentPreview"
+import DocumentGenerator from "./DocumentGenerator"
 
 class SingleDocumentContainer extends Component {
   _getQueryVariables = () => {
@@ -29,10 +29,9 @@ class SingleDocumentContainer extends Component {
           console.log("Data for a single Docuemnt => ", data)
 
           const { singleDocument } = data
-          const unstableDocument = singleDocument[0]
           return (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {unstableDocument.name}
+              <DocumentGenerator document={singleDocument} />
             </div>
           )
         }}
