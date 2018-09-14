@@ -16,7 +16,8 @@ export const SINGLE_DOCUMENT_QUERY = gql`
       }
       sections {
         id
-        name
+        type
+        rawContent
       }
     }
   }

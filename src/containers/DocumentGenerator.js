@@ -8,6 +8,7 @@ import KeyHandler, { KEYPRESS } from "react-key-handler"
 import { updatePagePercentage } from "../actions/docGenActions"
 
 // Components
+import CreateSection from "../components/CreateSection"
 import DocumentCanvas from "../components/DocumentGenerator/DocumentCanvas"
 import PagePercentage from "../components/DocumentGenerator/PagePercentage"
 
@@ -197,12 +198,14 @@ class DocumentGenerator extends Component {
               width: `${calculatedPageWidth}px`,
             }}>
             <h1 style={{ fontSize: `${h1FontSiz}px` }}>{document.name}</h1>
+            <CreateSection documentId={document.id} />
             {document.sections &&
               document.sections.map((section, sectionId) => {
                 return (
                   <div>
                     <div>Section Id: {section.id}</div>
-                    <div>Section Name: {section.name}</div>
+                    <div>Section Name: {section.type}</div>
+                    <div>RawContent: {JSON.stringify(section.rawContent)}</div>
                   </div>
                 )
               })}

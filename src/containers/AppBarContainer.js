@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import { compose } from "react-apollo/index"
+// Components
+import BackButton from "../components/BackButton"
 // Menus
 import LongMenu from "../components/LongMenu"
 import AccountMenu from "../components/AccountMenu"
@@ -45,12 +47,14 @@ class AppBarContainer extends React.Component {
 
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)
-    const { classes } = this.props
+    const { classes, history, match } = this.props
+    const { pathname } = history.location
 
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
+            {pathname && pathname !== "/" && <BackButton />}
             <div>[DOC GEN]</div>
             <LongMenu items={routes} />
             <AccountMenu />
