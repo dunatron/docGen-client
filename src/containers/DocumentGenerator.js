@@ -10,6 +10,8 @@ import { updatePagePercentage } from "../actions/docGenActions"
 // Components
 import CreateSection from "../components/CreateSection"
 import DocumentCanvas from "../components/DocumentGenerator/DocumentCanvas"
+import FontPicker from "../components/DocumentGenerator/FontPicker"
+import ShortCodePicker from "../components/DocumentGenerator/ShortCodePicker"
 import PagePercentage from "../components/DocumentGenerator/PagePercentage"
 
 const styles = {
@@ -28,9 +30,84 @@ const styles = {
 /**
  * When document is loaded it is searched for these short codes and updated accordingly
  */
+// const SHORT_CODES = [
+//   { name: "agreement date", value: "24/03/1991" },
+//   { name: "agreement Name", value: "Heaths Awesome Agreement" },
+//   {
+//     agreements
+//   }
+// ]
+
 const SHORT_CODES = [
-  { name: "agreement date", value: "24/03/1991" },
-  { name: "agreement Name", value: "Heaths Awesome Agreement" },
+  {
+    "organisation-title": "Nomos One",
+  },
+  {
+    agreements: [
+      {
+        id: "1",
+        name: "The first Agreement short code name",
+        amount: "$89",
+        date: "24/03/1991",
+        events: [
+          {
+            id: "dfss",
+            name: "First event for the first agreements",
+            type: "Depreciation",
+            amount: 68.7,
+            date: "31/08/1991",
+            subEvents: [
+              {
+                type: "Depreciation",
+                amount: 68.7,
+                date: "31/08/1991",
+              },
+              {
+                type: "Depreciation",
+                amount: 90.7,
+                date: "31/09/1991",
+              },
+              {
+                type: "Depreciation",
+                amount: 100.7,
+                date: "31/10/1991",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "2",
+        name: "Trons First Agreement",
+        amount: "$89",
+        date: "24/03/1991",
+        events: [
+          {
+            id: "dfss",
+            name: "First event for the first agreements",
+            type: "Depreciation",
+            amount: 68.7,
+            date: "31/08/1991",
+          },
+        ],
+      },
+      {
+        id: "3",
+        name: "The first Agreement short code name",
+        amount: "$89",
+        date: "24/03/1991",
+        events: [
+          {
+            id: "dfss",
+            name: "First event for the first agreements",
+            type: "Depreciation",
+            amount: 68.7,
+            date: "31/08/1991",
+          },
+        ],
+      },
+    ],
+  },
 ]
 
 /**
@@ -81,6 +158,10 @@ class DocumentGenerator extends Component {
         {
           type: "h1",
           content: "I am a default header. could even be loaded from template",
+        },
+        {
+          type: "h1",
+          content: "I am the second default",
         },
       ],
     }
@@ -176,6 +257,8 @@ class DocumentGenerator extends Component {
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}>
         <div>
+          <FontPicker />
+          <ShortCodePicker shortCodes={SHORT_CODES} />
           <PagePercentage
             percentage={pageAttributes.percentage}
             onChange={v => {
@@ -183,14 +266,14 @@ class DocumentGenerator extends Component {
               this.props.updatePagePercentage(v)
             }}
           />
-          {/* <DocumentCanvas
+          <DocumentCanvas
             documentComponents={this.state.documentComponents}
             pageAttributes={pageAttributes}
             pageDimensions={{
               height: calculatedPageHeight,
               width: calculatedPageWidth,
             }}
-          /> */}
+          />
           <div
             style={{
               border: "1px solid purple",
@@ -235,13 +318,14 @@ class DocumentGenerator extends Component {
     const { document } = this.props
     return (
       <Fragment>
-        <div>The doc gen container. Press "enter" to start</div>
+        {/* <div>The doc gen container. Press "enter" to start</div>
         <KeyHandler
           keyEventName={KEYPRESS}
           keyValue="Enter"
           onKeyHandle={v => this.startDocument(v)}
-        />
-        {started && this.renderDocumentGenerator(document)}
+        /> */}
+        {this.renderDocumentGenerator(document)}
+        {/* {started && this.renderDocumentGenerator(document)} */}
       </Fragment>
     )
   }
