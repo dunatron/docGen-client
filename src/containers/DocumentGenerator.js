@@ -204,6 +204,15 @@ class DocumentGenerator extends Component {
       //   name: "Agreement NAme Test",
       // },
       agreements: [{ name: "Agreement One" }, { name: "agreement 2" }],
+      company: "Nomos One",
+      companyDetails: {
+        name: "Spark?",
+        streetAddress: "123 Spark Avenue",
+        postalAddress: "Spark Lane",
+        telephone: "08000 SPARK",
+        contactPerson: "Mrs Spark",
+        country: "New Zealand",
+      },
     }
 
     SHORT_CODES
@@ -308,7 +317,7 @@ class DocumentGenerator extends Component {
           {/* <Component dangerouslySetInnerHTML={<div>DANGEROUS</div>} /> */}
           <div dangerouslySetInnerHTML={__html} />
           <FontPicker />
-          <ExportDocx document={document} />
+          <ExportDocx document={__html} />
           <ShortCodePicker shortCodes={SHORT_CODES} />
           <PagePercentage
             percentage={pageAttributes.percentage}

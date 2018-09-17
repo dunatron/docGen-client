@@ -150,11 +150,7 @@ class ExportDocx extends Component {
         <button type="button" onClick={() => this.generate(document)}>
           Click to generate document
         </button>
-        <button
-          type="button"
-          onClick={() =>
-            create(<h1>DOCX browser Word document generation</h1>)
-          }>
+        <button type="button" onClick={() => create(document)}>
           Click to CREATE document
         </button>
       </Fragment>

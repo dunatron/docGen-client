@@ -28,6 +28,7 @@ const styles = {
 const routes = [
   { title: "Home", url: "/" },
   { title: "Documents", url: "/documents" },
+  { title: "Data Piper", url: "/datapiper" },
 ]
 
 class AppBarContainer extends React.Component {
