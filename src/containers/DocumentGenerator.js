@@ -14,6 +14,11 @@ import FontPicker from "../components/DocumentGenerator/FontPicker"
 import ShortCodePicker from "../components/DocumentGenerator/ShortCodePicker"
 import PagePercentage from "../components/DocumentGenerator/PagePercentage"
 
+// Exporters
+import ExportDocx from "../components/DocumentGenerator/exports/ExportDocx"
+
+const Mustache = require("mustache")
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -37,6 +42,15 @@ const styles = {
 //     agreements
 //   }
 // ]
+
+var view = {
+  title: "Joe",
+  calc: function() {
+    return 2 + 4
+  },
+}
+
+var output = Mustache.render("{{title}} spends {{calc}}", view)
 
 const SHORT_CODES = [
   {
@@ -110,6 +124,10 @@ const SHORT_CODES = [
   },
 ]
 
+const DATA_CODES = {
+  agreements: [{ name: "First agreement Name" }],
+}
+
 /**
  * Choices:
  * Online collab via pusher: https://pusher.com/tutorials/collaborative-text-editor-javascript/
@@ -178,6 +196,24 @@ class DocumentGenerator extends Component {
     })
   }
 
+  compileTemplate = (template, data) => {
+    // lazy template compiling
+
+    const test = {
+      // agreements: {
+      //   name: "Agreement NAme Test",
+      // },
+      agreements: [{ name: "Agreement One" }, { name: "agreement 2" }],
+    }
+
+    SHORT_CODES
+    const theTemplate = Mustache.render(template, test)
+    // const theTemplate = Mustache.render(template, data)
+    console.log("The Template ", theTemplate)
+    // return { __html: "First &middot; Second" }
+    return { __html: theTemplate }
+  }
+
   renderPage = screenDPI => {
     switch (screenDPI) {
       case 72:
@@ -233,6 +269,10 @@ class DocumentGenerator extends Component {
     // }
   }
 
+  createMarkup = () => {
+    return { __html: "First &middot; Second" }
+  }
+
   renderDocumentGenerator = document => {
     const { screenDPI } = this.state
     const { docGen } = this.props
@@ -252,12 +292,23 @@ class DocumentGenerator extends Component {
     console.log("DOc generator STATE ", this.state)
 
     console.log("pageDimensions ", pageDimensions)
+
+    const { template, data, Component } = this.props
+
+    if (!template) return false
+
+    const __html = this.compileTemplate(template, data)
+
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}>
         <div>
+          {/* <Component dangerouslySetInnerHTML={{ __html }} /> */}
+          {/* <Component dangerouslySetInnerHTML={<div>DANGEROUS</div>} /> */}
+          <div dangerouslySetInnerHTML={__html} />
           <FontPicker />
+          <ExportDocx document={document} />
           <ShortCodePicker shortCodes={SHORT_CODES} />
           <PagePercentage
             percentage={pageAttributes.percentage}
@@ -266,6 +317,7 @@ class DocumentGenerator extends Component {
               this.props.updatePagePercentage(v)
             }}
           />
+
           <DocumentCanvas
             documentComponents={this.state.documentComponents}
             pageAttributes={pageAttributes}

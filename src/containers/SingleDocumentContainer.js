@@ -31,7 +31,14 @@ class SingleDocumentContainer extends Component {
           const { singleDocument } = data
           return (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
-              <DocumentGenerator document={singleDocument} />
+              <DocumentGenerator
+                document={singleDocument}
+                //template="Welcome {{title}} Agreement Name: {{agreements.name}}"
+                template="{{#agreements}}
+                <b>{{name}}</b>
+              {{/agreements}}"
+                //data={{ title: "Mr. Gregory" }}
+              />
             </div>
           )
         }}
