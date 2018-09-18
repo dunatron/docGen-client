@@ -58,6 +58,7 @@ class AppBarContainer extends React.Component {
             {pathname && pathname !== "/" && <BackButton />}
             <div>[DOC GEN]</div>
             <LongMenu items={routes} />
+
             <AccountMenu />
           </Toolbar>
         </AppBar>

@@ -7,6 +7,7 @@ import { withRouter } from "react-router"
 const styles = theme => ({
   button: {
     borderRadius: 0,
+    margin: theme.spacing.unit * 2,
   },
 })
 
@@ -16,8 +17,8 @@ class BackButton extends Component {
     return (
       <Button
         className={classes.button}
-        variant="raised"
-        color="primary"
+        variant="outlined"
+        color="secondary"
         type="submit"
         onClick={() => this.handleBackButton()}>
         Back

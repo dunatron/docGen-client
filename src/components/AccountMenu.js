@@ -46,7 +46,7 @@ class AccountMenu extends React.Component {
     console.log(this.props)
 
     return (
-      <div>
+      <div style={{ marginLeft: "auto" }}>
         <IconButton
           color="secondary"
           aria-label="More"
