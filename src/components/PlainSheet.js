@@ -21,7 +21,7 @@ class PlainSheet extends Component {
     return (
       <Fragment>
         {children && (
-          <Paper className={classes.root}>
+          <Paper square={true} className={classes.root}>
             {children.map((component, idx) => {
               return component
             })}

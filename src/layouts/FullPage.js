@@ -25,7 +25,7 @@ class FullPage extends Component {
     return (
       <Fragment>
         {children && (
-          <Paper className={classes.root}>
+          <Paper className={classes.root} square={true}>
             {/* {pathname && pathname !== "/" && <BackButton />} */}
             {children.map((component, idx) => {
               return component

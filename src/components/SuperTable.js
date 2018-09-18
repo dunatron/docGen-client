@@ -434,7 +434,7 @@ class SuperTable extends React.Component {
         : data
 
     return (
-      <Paper className={classes.root}>
+      <Paper square={true} className={classes.root}>
         <EnhancedTableToolbar
           title={title}
           numSelected={selected.length}

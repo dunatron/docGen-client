@@ -19,7 +19,7 @@ const TypographySheet = ({ classes, config, ...props }) => {
 
   return (
     <div>
-      <Paper className={classes.root} elevation={1}>
+      <Paper square={true} className={classes.root} elevation={20}>
         {config &&
           config.map((conf, confIdx) => {
             console.log("A conf => ", conf)

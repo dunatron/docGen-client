@@ -305,6 +305,9 @@ const theme = {
     tooltip: 3000,
   },
   overrides: {
+    MuiPaper: {
+      borderRadius: 0,
+    },
     MuiButton: {
       // Name of the component ⚛️ / style sheet
       root: {
