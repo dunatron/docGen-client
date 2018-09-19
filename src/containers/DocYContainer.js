@@ -139,6 +139,13 @@ class DocYContainer extends Component {
   _renderSuperConfig = conf => {
     return (
       <div>
+        {Object.keys(conf).map((configKey, keyIdx) => {
+          return (
+            <div onClick={() => this.props.removeDataConf(configKey)}>
+              Remove => {configKey}
+            </div>
+          )
+        })}
         <div>{listObjectValues(conf)}</div>
       </div>
     )
@@ -258,7 +265,7 @@ const reduxWrapper = connect(
     addLoadedDocument: document => dispatch(addLoadedDocument(document)),
     removeLoadedDocument: docIdx => dispatch(removeLoadedDocument(docIdx)),
     addDataConf: conf => dispatch(addDataConf(conf)),
-    removeDataConf: confIdx => dispatch(removeDataConf(confIdx)),
+    removeDataConf: confKey => dispatch(removeDataConf(confKey)),
   })
 )
 
