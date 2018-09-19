@@ -19,13 +19,16 @@ const styles = theme => ({
 
 class FullPage extends Component {
   render() {
-    const { children, classes, history } = this.props
+    const { children, classes, history, injectStyles } = this.props
     const { pathname } = history.location
 
     return (
       <Fragment>
         {children && (
-          <Paper className={classes.root} square={true}>
+          <Paper
+            style={{ ...injectStyles }}
+            className={classes.root}
+            square={true}>
             {/* {pathname && pathname !== "/" && <BackButton />} */}
             {children.map((component, idx) => {
               return component

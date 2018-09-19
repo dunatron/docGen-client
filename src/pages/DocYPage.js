@@ -2,15 +2,15 @@ import React, { Component } from "react"
 import { withRouter } from "react-router"
 import { withApollo, compose } from "react-apollo/index"
 
-import DocumentDataPiper from "../containers/DocumentDataPiper"
+import DocYContainer from "../containers/DocYContainer"
 
-class DataPiper extends Component {
+class DocYPage extends Component {
   render() {
-    return <DocumentDataPiper />
+    return <DocYContainer />
   }
 }
 
 export default compose(
   withRouter,
   withApollo
-)(DataPiper)
+)(DocYPage)

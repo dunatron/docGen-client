@@ -11,7 +11,7 @@ import AppBarContainer from "./containers/AppBarContainer"
 // Pages
 import HomePage from "./pages/HomePage"
 import DocumentPage from "./pages/SingleDocument"
-import DataPiperPage from "./pages/DataPiper"
+import DocYPage from "./pages/DocYPage"
 import DocGenPage from "./pages/DocGenPage"
 import Version5Page from "./pages/Version5Page"
 // Rouge containers
@@ -42,7 +42,7 @@ class App extends Component {
             <Route exact path="/docgen" component={DocGenPage} />
 
             <Route exact path="/v5" component={Version5Page} />
-            <Route exact path="/docy" component={DataPiperPage} />
+            <Route exact path="/docy" component={DocYPage} />
             <Route path="/document/:id" component={DocumentPage} />
             <Route exact path="/documents" component={DocumentsListContainer} />
             <Route exact path="/create" component={CreateDocument} />

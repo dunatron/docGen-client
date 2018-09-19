@@ -8,8 +8,13 @@ class Version5Page extends Component {
   render() {
     return (
       <FullPage
+        injectStyles={{ overflow: "hidden", width: "100vw", height: "100vh" }}
         children={[
-          <iframe src="http://localhost:3001/" width="100%" height="100%" />,
+          <iframe
+            src="http://192.168.29.128:3002/"
+            width="100%"
+            height="100%"
+          />,
         ]}
       />
     )

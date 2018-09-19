@@ -2,10 +2,7 @@ import React, { Component, Fragment } from "react"
 import { withRouter } from "react-router"
 import { graphql, compose, withApollo } from "react-apollo"
 // Redux
-import {
-  addLoadedDocument,
-  removeLoadedDocument,
-} from "../actions/dataPiperActions"
+import { addLoadedDocument, removeLoadedDocument } from "../actions/docYActions"
 import { addDataConf, removeDataConf } from "../actions/dataConnectorActions"
 import { connect } from "react-redux"
 // page layout
@@ -15,9 +12,9 @@ import PlainSheet from "../components/PlainSheet"
 import TypographySheet from "../components/TypographySheet"
 import DnDFileReader from "../components/DnDFileReader"
 // module specific components
-import DownloadExample from "../components/DataPiper/DownloadExample"
-import DataConnector from "../components/DataPiper/DataConnector"
-import LoadedDocumentDetails from "../components/DataPiper/LoadedDocumentDetails"
+import DownloadExample from "../components/DocY/DownloadExample"
+import DataConnector from "../components/DocY/DataConnector"
+import LoadedDocumentDetails from "../components/DocY/LoadedDocumentDetails"
 // Utils
 import { listObjectValues } from "../utils/renderNestedObject"
 import { saveAs } from "file-saver"
@@ -40,7 +37,7 @@ const styles = theme => ({
   },
 })
 
-const dataPiperInfoConf = [
+const docyInfoConf = [
   {
     type: "h1",
     gutterBottom: true,
@@ -108,7 +105,7 @@ const _fetchDocumentData = () => {
   }
 }
 
-class DocumentDataPiper extends Component {
+class DocYContainer extends Component {
   _processWordDocument = async (file, docData) => {
     const { size, name, lastModified, type } = file
     let rawData
@@ -183,7 +180,7 @@ class DocumentDataPiper extends Component {
     const {
       classes,
       theme,
-      dataPiper: { loadedDocuments },
+      docY: { loadedDocuments },
       dataConnector: { dataConfigs },
     } = this.props
 
@@ -224,7 +221,7 @@ class DocumentDataPiper extends Component {
             dataConfigs ? this._renderDataConfigs(dataConfigs) : null,
           ]}
           children={[
-            <TypographySheet config={dataPiperInfoConf} />,
+            <TypographySheet config={docyInfoConf} />,
             <PlainSheet
               children={[
                 <DataConnector />,
@@ -284,8 +281,7 @@ class DocumentDataPiper extends Component {
 
 const reduxWrapper = connect(
   state => ({
-    dataConnector: state.dataConnector,
-    dataPiper: state.dataPiper,
+    docY: state.docY,
     dataConnector: state.dataConnector,
   }),
   dispatch => ({
@@ -301,4 +297,4 @@ export default compose(
   withStyles(styles, { withTheme: true }),
   reduxWrapper,
   withApollo
-)(DocumentDataPiper)
+)(DocYContainer)
