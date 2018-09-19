@@ -54,6 +54,7 @@ const MultiSelect = ({
         multiple={true}
         value={values}
         onChange={e => handleChange(e.target.value)}
+        // onChange={handleChange}
         inputProps={{
           name: selectID,
           id: selectID,

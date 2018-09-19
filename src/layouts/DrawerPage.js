@@ -179,6 +179,8 @@ class DrawerPage extends React.Component {
 
             {drawItems &&
               drawItems.map((listItem, listIdx) => {
+                console.log("DRAW ITEM ", typeof listItem)
+                console.log("Component? ", listItem)
                 return listItem
               })}
             {/* <List>{mailFolderListItems}</List>
