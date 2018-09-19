@@ -218,7 +218,7 @@ class DocumentDataPiper extends Component {
     return (
       <div>
         <DrawerPage
-          title="DATA PIPER 😎 "
+          title="docY 😎 "
           drawTitle="🔥 DATA 🔥"
           drawItems={[
             dataConfigs ? this._renderDataConfigs(dataConfigs) : null,

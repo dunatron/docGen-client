@@ -4,23 +4,29 @@ import { withApollo, compose } from "react-apollo/index"
 // page layout
 import FullPage from "../layouts/FullPage"
 // containers
-import DocumentsListContainer from "../containers/DocumentsListContainer"
+import PanelRouteContainer from "../containers/PanelRouterContainer"
 // components
-import CreateDocument from "../components/CreateDocument"
+
+const HomePageInfo = () => {
+  return (
+    <div>
+      {/* <h1>[THE SOLUTION]</h1>
+      <p>
+        Ok. We have this thing called v4, this thing called v5, this thing
+        called docY, this other thing called DocGen.
+      </p>
+      <p>[LETS MAKE THIS THE HUB]</p>
+      <p>
+        A Very Simple idea of using routes for code splitting. They would then
+        simply contain the respective clients?
+      </p> */}
+    </div>
+  )
+}
 
 class HomePage extends Component {
   render() {
-    return (
-      <FullPage
-        children={[
-          <CreateDocument />,
-          <DocumentsListContainer
-            location={this.props.location}
-            match={this.props.match}
-          />,
-        ]}
-      />
-    )
+    return <FullPage children={[HomePageInfo(), <PanelRouteContainer />]} />
   }
 }
 

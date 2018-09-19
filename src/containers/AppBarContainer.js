@@ -28,7 +28,8 @@ const styles = {
 const routes = [
   { title: "Home", url: "/" },
   { title: "Documents", url: "/documents" },
-  { title: "Data Piper", url: "/datapiper" },
+  { title: "docY", url: "/docy" },
+  { title: "DocGen", url: "/docgen" },
 ]
 
 class AppBarContainer extends React.Component {
@@ -56,7 +57,7 @@ class AppBarContainer extends React.Component {
         <AppBar position="static">
           <Toolbar>
             {pathname && pathname !== "/" && <BackButton />}
-            <div>[DOC GEN]</div>
+            <div>[NOMOS HUB]</div>
             <LongMenu items={routes} />
 
             <AccountMenu />

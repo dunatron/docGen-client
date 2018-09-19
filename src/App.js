@@ -12,6 +12,8 @@ import AppBarContainer from "./containers/AppBarContainer"
 import HomePage from "./pages/HomePage"
 import DocumentPage from "./pages/SingleDocument"
 import DataPiperPage from "./pages/DataPiper"
+import DocGenPage from "./pages/DocGenPage"
+import Version5Page from "./pages/Version5Page"
 // Rouge containers
 import DocumentsListContainer from "./containers/DocumentsListContainer"
 
@@ -37,8 +39,10 @@ class App extends Component {
           <Switch>
             {/* <Route exact path="/" render={() => <Redirect to="/new/1" />} /> */}
             <Route exact path="/" component={HomePage} />
-            <Route exact path="/" component={DocumentPage} />
-            <Route exact path="/datapiper" component={DataPiperPage} />
+            <Route exact path="/docgen" component={DocGenPage} />
+
+            <Route exact path="/v5" component={Version5Page} />
+            <Route exact path="/docy" component={DataPiperPage} />
             <Route path="/document/:id" component={DocumentPage} />
             <Route exact path="/documents" component={DocumentsListContainer} />
             <Route exact path="/create" component={CreateDocument} />
