@@ -7,6 +7,8 @@ import { addDataConf, removeDataConf } from "../actions/dataConnectorActions"
 import { connect } from "react-redux"
 // page layout
 import DrawerPage from "../layouts/DrawerPage"
+// Configs
+import { docYInfoConf } from "../configs/docYInfoConf"
 // Components
 import PlainSheet from "../components/PlainSheet"
 import TypographySheet from "../components/TypographySheet"
@@ -36,48 +38,6 @@ const styles = theme => ({
     height: theme.spacing.unit * 30 * 1.618,
   },
 })
-
-const docyInfoConf = [
-  {
-    type: "h1",
-    gutterBottom: true,
-    variant: "title",
-    value: "This is DocY",
-  },
-  {
-    type: "h2",
-    variant: "subheading",
-    color: "secondary",
-    value: "Instructions: ",
-  },
-  {
-    type: "p",
-    variant: "body1",
-    value: "To the Left is all the data you can use when in your word template",
-  },
-  {
-    type: "p",
-    // paragraph: true,
-    gutterBottom: true,
-    variant: "body1",
-    value:
-      "These attributes can be used inside of your word templates as long as they are surrounded by {} e.g {leaseName}",
-  },
-  {
-    type: "p",
-    variant: "body1",
-    value:
-      "Loops: we can use some conditional logic in our templates. For example if our data had an array of events we could do the following in our word document",
-  },
-  {
-    type: "p",
-    variant: "body2",
-    value: `{#events}
-    {name}
-    {date}
-  {/events}`,
-  },
-]
 
 const _fetchDocumentData = () => {
   return {
@@ -176,12 +136,20 @@ class DocYContainer extends Component {
     )
   }
 
+  _renderSuperConfig = conf => {
+    return (
+      <div>
+        <div>{listObjectValues(conf)}</div>
+      </div>
+    )
+  }
+
   render() {
     const {
       classes,
       theme,
       docY: { loadedDocuments },
-      dataConnector: { dataConfigs },
+      dataConnector: { dataConf },
     } = this.props
 
     const DragNDropHeight = theme.spacing.unit * 30 * 1.618
@@ -202,26 +170,28 @@ class DocYContainer extends Component {
     // BigStep 1. dataConfigs if we have them we can map over them or use reducer. The aim is to gather all the props.
     // Ok now bear with. I think we should extract the name/id for the config and be used to prePend so it knows about the conf.
     // conf1.name, conf2.name. Now i know this stuff exists in confData so we will have a function for this.
-    const replaceableData = dataConfigs.reduce((accumulator, currentValue) => {
-      console.log("reduce current Val ", currentValue)
-      accumulator + currentValue.id
-      return accumulator + { name: "This work? ", value: "Propbs not" }
-      // return currentValue.id
-      // return {
-      //   currentValue
-      // }
-    }, {})
-    console.log("THIS REPLACED ", replaceableData)
+    // const replaceableData = dataConfigs.reduce((accumulator, currentValue) => {
+    //   console.log("reduce current Val ", currentValue)
+    //   accumulator + currentValue.id
+    //   return accumulator + { name: "This work? ", value: "Propbs not" }
+    //   // return currentValue.id
+    //   // return {
+    //   //   currentValue
+    //   // }
+    // }, {})
+
     return (
       <div>
         <DrawerPage
           title="docY 😎 "
           drawTitle="🔥 DATA 🔥"
           drawItems={[
-            dataConfigs ? this._renderDataConfigs(dataConfigs) : null,
+            // dataConfigs ? this._renderDataConfigs(dataConfigs) : null,
+            // dataConfigs ? this._renderDataConfigs(configsAsData) : null,
+            dataConf ? this._renderSuperConfig(dataConf) : null,
           ]}
           children={[
-            <TypographySheet config={docyInfoConf} />,
+            <TypographySheet config={docYInfoConf} />,
             <PlainSheet
               children={[
                 <DataConnector />,
@@ -263,7 +233,7 @@ class DocYContainer extends Component {
                           key={docIdx}
                           document={doc}
                           processDocument={() =>
-                            this._processWordDocument(doc, documentData)
+                            this._processWordDocument(doc, dataConf)
                           }
                           remove={() => this.props.removeLoadedDocument(docIdx)}
                         />
