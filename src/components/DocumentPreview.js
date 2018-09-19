@@ -8,6 +8,7 @@ import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
+import { withTheme } from "@material-ui/core"
 
 const styles = {
   card: {
@@ -30,8 +31,9 @@ const styles = {
   },
 }
 
-const DocumentPreview = ({ document, classes, history, match }) => {
+const DocumentPreview = ({ document, classes, theme, history, match }) => {
   const bull = <span className={classes.bullet}>•</span>
+  console.log("DO WE HAVE THEME? ", theme)
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -75,7 +77,7 @@ DocumentPreview.propTypes = {
 // export default withStyles(styles)(DocumentPreview)
 
 export default compose(
-  withStyles(styles),
+  withStyles(styles, { withTheme: true }),
   withRouter,
   withApollo
 )(DocumentPreview)

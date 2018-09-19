@@ -63,7 +63,6 @@ class DnDFileReader extends Component {
 
   render = () => {
     let { error, alertText } = this.state
-    console.log("workbookSrc ", this.state.fileSrc)
     let components = []
     let barStyle = {
       width: this.state.uploadPercent + "%",
@@ -115,9 +114,10 @@ class DnDFileReader extends Component {
   }
 
   renderUploadForm = (components, barStyle) => {
-    const { classes } = this.props
+    const { classes, injectStyles } = this.props
+    console.log("Injected styles looks like ", injectStyles)
     components.push(
-      <div>
+      <div style={{ ...injectStyles }}>
         <div
           key={"uploadForm"}
           onClick={this.onZoneClick}

@@ -306,7 +306,9 @@ const theme = {
   },
   overrides: {
     MuiPaper: {
-      borderRadius: 0,
+      root: {
+        borderRadius: 0,
+      },
     },
     MuiButton: {
       // Name of the component ⚛️ / style sheet

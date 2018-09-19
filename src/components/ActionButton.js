@@ -12,25 +12,28 @@ const styles = theme => ({
   },
 })
 
+/**
+ * API: https://material-ui.com/api/button/
+ */
 const ActionButton = ({
   classes,
   variant = "outlined",
   color = "secondary",
   text,
   onClick,
+  injectStyles,
   ...props
 }) => {
   return (
-    <div>
-      <Button
-        variant={variant}
-        color={color}
-        className={classes.button}
-        onClick={onClick}
-        {...props}>
-        {text}
-      </Button>
-    </div>
+    <Button
+      variant={variant}
+      color={color}
+      className={classes.button}
+      onClick={onClick}
+      style={{ ...injectStyles }}
+      {...props}>
+      {text}
+    </Button>
   )
 }
 
