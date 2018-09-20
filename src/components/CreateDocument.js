@@ -33,7 +33,6 @@ class CreateDocument extends Component {
   }
 
   _setOrganisation = val => {
-    console.log("Tryng to set org ", val)
     this.setState({
       orgId: val,
     })
@@ -61,13 +60,8 @@ class CreateDocument extends Component {
 
         <Query query={ALL_ORGANISATIONS_QUERY}>
           {({ loading, error, data, subscribeToMore }) => {
-            {
-              console.log("THE DATA ", data)
-            }
             if (loading) return <div>Fetching</div>
             if (error) return <div>Error</div>
-
-            console.log("ORGANISATIONS => ", data)
 
             const { allOrganisations } = data
 
@@ -104,9 +98,8 @@ class CreateDocument extends Component {
               query: DOCUMENT_FEED_QUERY,
               variables: { first, skip, orderBy },
             })
-            console.log("Documents Before ", data)
             data.documentFeed.unshift(postDocument)
-            console.log("Documents After ", data)
+
             store.writeQuery({
               query: DOCUMENT_FEED_QUERY,
               data,

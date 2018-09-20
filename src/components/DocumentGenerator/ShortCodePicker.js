@@ -95,7 +95,6 @@ class ShortCodePicker extends Component {
 
         <ul>
           {shortCodes.map(shortCode => {
-            console.log("a short code object ", shortCode)
             return (
               <div>
                 {/* {_renderShortCode(shortCode)} */}

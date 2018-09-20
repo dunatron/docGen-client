@@ -30,6 +30,7 @@ const routes = [
   { title: "Documents", url: "/documents" },
   { title: "docY", url: "/docy" },
   { title: "DocGen", url: "/docgen" },
+  { title: "Create Data Config", url: "/create/dataconf" },
 ]
 
 class AppBarContainer extends React.Component {

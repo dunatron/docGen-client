@@ -38,4 +38,9 @@ export const docYInfoConf = [
     {date}
   {/events}`,
   },
+  {
+    type: "p",
+    variant: "body2",
+    value: `We are using these configs. configs have and id, name, and confData. confData will contain all the keys and values to use in the docx templates`,
+  },
 ]

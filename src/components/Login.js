@@ -65,10 +65,6 @@ class Login extends Component {
           onCompleted={data => this._confirm(data)}>
           {(mutation, { loading, error, data }) => (
             <Fragment>
-              {console.log("HERE IS AN ERROR ", error)}
-              {console.log("HERE IS AN Data ", data)}
-              {console.log("HERE IS AN Loading ", loading)}
-              {console.log("HERE IS AN mutation ", mutation)}
               {error ? "Something went wrong please try again" : null}
               {loading ? "LOADING" : null}
               {!loading && (

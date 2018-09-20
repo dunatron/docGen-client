@@ -115,7 +115,6 @@ class DnDFileReader extends Component {
 
   renderUploadForm = (components, barStyle) => {
     const { classes, injectStyles } = this.props
-    console.log("Injected styles looks like ", injectStyles)
     components.push(
       <div style={{ ...injectStyles }}>
         <div

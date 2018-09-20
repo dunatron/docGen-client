@@ -1,9 +1,20 @@
 import React from "react"
-import { addDataConf, removeDataConf } from "../../actions/dataConnectorActions"
+import {
+  addDataConf,
+  removeDataConf,
+  addAvailableConf,
+  removeAvailableConf,
+} from "../../actions/dataConnectorActions"
 import { connect } from "react-redux"
 import { compose } from "react-apollo"
 
-const DataConnector = ({ dataConnector, addDataConf, removeDataConf }) => {
+const DataConnector = ({
+  dataConnector: { availableConfigs },
+  addDataConf,
+  removeDataConf,
+  addAvailableConf,
+  removeAvailableConf,
+}) => {
   const config1 = {
     id: "conf1",
     name: "Config 1",
@@ -53,6 +64,13 @@ const DataConnector = ({ dataConnector, addDataConf, removeDataConf }) => {
       <div onClick={() => addDataConf(leaseInstrumentConf)}>
         ADD CONFIG Lease Instrument
       </div>
+      {availableConfigs.map((conf, confIdx) => {
+        return (
+          <div key={confIdx} onClick={() => addDataConf(conf)}>
+            ADD CONFIG {conf.name}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -64,6 +82,8 @@ const reduxWrapper = connect(
   dispatch => ({
     addDataConf: conf => dispatch(addDataConf(conf)),
     removeDataConf: confIdx => dispatch(removeDataConf(confIdx)),
+    // addAvailableConf
+    // removeAvailableConf
   })
 )
 

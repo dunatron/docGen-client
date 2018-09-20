@@ -14,6 +14,7 @@ import DocumentPage from "./pages/SingleDocument"
 import DocYPage from "./pages/DocYPage"
 import DocGenPage from "./pages/DocGenPage"
 import Version5Page from "./pages/Version5Page"
+import CreateDataConfigPage from "./pages/CreateDataConfigPage"
 // Rouge containers
 import DocumentsListContainer from "./containers/DocumentsListContainer"
 
@@ -43,6 +44,7 @@ class App extends Component {
 
             <Route exact path="/v5" component={Version5Page} />
             <Route exact path="/docy" component={DocYPage} />
+            <Route exact path="/create/dataconf" component={CreateDataConfigPage} />
             <Route path="/document/:id" component={DocumentPage} />
             <Route exact path="/documents" component={DocumentsListContainer} />
             <Route exact path="/create" component={CreateDocument} />

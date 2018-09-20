@@ -27,9 +27,6 @@ class H1Comp extends Component {
   }
 
   onFocus = () => {
-    console.log(
-      "On Focus we will set the docGen actionBar to have the relevant containers state"
-    )
     // There is a challenge here. We want to set the redux store state and update the state in here.
     // I think we can do this with some sort of ref perhaps?
     // nO NOT REALL. I STILL HAVE THE PROBLEM of wanting to update the state.

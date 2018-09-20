@@ -65,9 +65,7 @@ const create = html => {
   const packer = new Packer()
 
   packer.toBlob(doc).then(blob => {
-    console.log(blob)
     saveAs(blob, "example.docx")
-    console.log("Document created successfully")
   })
 
   //   return new Promise((resolve, reject) => {
@@ -134,15 +132,12 @@ class ExportDocx extends Component {
     const packer = new Packer()
 
     packer.toBlob(doc).then(blob => {
-      console.log(blob)
       saveAs(blob, "example.docx")
-      console.log("Document created successfully")
     })
   }
 
   render() {
     const { document } = this.props
-    console.log("Our document being parsed for exporting ", document)
     return (
       <Fragment>
         <h1>DOCX browser Word document generation</h1>
