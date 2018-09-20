@@ -22,6 +22,9 @@ import { listObjectValues } from "../utils/renderNestedObject"
 import { saveAs } from "file-saver"
 // Styles
 import withStyles from "@material-ui/core/styles/withStyles"
+// Queries
+import { ORG_DATA_CONFIGS } from "../queries/getOrgDataConfigs"
+import { Query } from "react-apollo"
 
 var JSZip = require("jszip")
 var Docxtemplater = require("docxtemplater")
@@ -151,6 +154,43 @@ class DocYContainer extends Component {
     )
   }
 
+  _getQueryVariables = () => {
+    return {
+      orgId: "cjm1qmjnyailj0b05ns7uh04b",
+    }
+  }
+
+  _organisationDataConfigs = () => {
+    return (
+      <Query query={ORG_DATA_CONFIGS} variables={this._getQueryVariables()}>
+        {({ loading, error, data, subscribeToMore }) => {
+          {
+            console.log("THE DATA ", data)
+          }
+          if (loading) return <div>Fetching</div>
+          if (error) return <div>Error</div>
+
+          const { orgDataConfigs } = data
+
+          return (
+            <div style={{ display: "block" }}>
+              {orgDataConfigs.map((dataConf, dataConfIdx) => {
+                return (
+                  <div>
+                    <div>{dataConf.name}</div>
+                    <div>
+                      URL: we will call endpoints When clicked and load the data
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        }}
+      </Query>
+    )
+  }
+
   render() {
     const {
       classes,
@@ -203,6 +243,7 @@ class DocYContainer extends Component {
               children={[
                 <DataConnector />,
                 <DownloadExample />,
+                this._organisationDataConfigs(),
                 <div
                   style={{
                     display: "flex",

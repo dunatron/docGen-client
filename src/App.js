@@ -1,10 +1,16 @@
 import React, { Component } from "react"
-import { AUTH_TOKEN } from "./constants"
+import { AUTH_TOKEN, ORGANISATION_ID } from "./constants"
 import { Switch, Route, Redirect } from "react-router-dom"
+import { graphql, compose, withApollo } from "react-apollo"
+import { connect } from "react-redux"
 import "./App.css"
-import Login from "./components/Login"
+
 import CreateDocument from "./components/CreateDocument"
 import Search from "./components/Search"
+
+// components always loaded
+import Login from "./components/Login"
+import SetOrganisation from "./components/SetOrganisation"
 
 // Menu
 import AppBarContainer from "./containers/AppBarContainer"
@@ -15,12 +21,16 @@ import DocYPage from "./pages/DocYPage"
 import DocGenPage from "./pages/DocGenPage"
 import Version5Page from "./pages/Version5Page"
 import CreateDataConfigPage from "./pages/CreateDataConfigPage"
+import OrganisationDataConfigsPage from "./pages/OrganisationDataConfigsPage"
 // Rouge containers
 import DocumentsListContainer from "./containers/DocumentsListContainer"
 
 class App extends Component {
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)
+    const orgId = localStorage.getItem(ORGANISATION_ID)
+    // const { user } = this.props
+    // const { currOrgId } = user
 
     // This will actually need to check if it is valid or not
     // It was. I just created a user that had empty pass and email =/
@@ -32,6 +42,23 @@ class App extends Component {
       )
     }
 
+    // localStorage works best.
+    if (!orgId) {
+      return (
+        <div>
+          <SetOrganisation />
+        </div>
+      )
+    }
+
+    // if (!currOrgId) {
+    //   return (
+    //     <div>
+    //       <SetOrganisation />
+    //     </div>
+    //   )
+    // }
+
     return (
       <div className="center w85">
         {/* <Header /> */}
@@ -41,10 +68,20 @@ class App extends Component {
             {/* <Route exact path="/" render={() => <Redirect to="/new/1" />} /> */}
             <Route exact path="/" component={HomePage} />
             <Route exact path="/docgen" component={DocGenPage} />
+            {/* { Below we could use orgId in between /organisation/:id/dataconfigs could store orgId in redux store. When user logs in they choose an org to work for that they are asscoiated with } */}
+            <Route
+              exact
+              path="/organisation/dataconfigs"
+              component={OrganisationDataConfigsPage}
+            />
 
             <Route exact path="/v5" component={Version5Page} />
             <Route exact path="/docy" component={DocYPage} />
-            <Route exact path="/create/dataconf" component={CreateDataConfigPage} />
+            <Route
+              exact
+              path="/create/dataconf"
+              component={CreateDataConfigPage}
+            />
             <Route path="/document/:id" component={DocumentPage} />
             <Route exact path="/documents" component={DocumentsListContainer} />
             <Route exact path="/create" component={CreateDocument} />
@@ -57,4 +94,16 @@ class App extends Component {
   }
 }
 
+const reduxWrapper = connect(
+  state => ({
+    user: state.user,
+  }),
+  dispatch => ({})
+)
+
 export default App
+
+// This breaks the routing
+// export default reduxWrapper(App)
+
+// export default compose(reduxWrapper)(App)

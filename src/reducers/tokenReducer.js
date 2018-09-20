@@ -1,3 +1,5 @@
+import { ORGANISATION_ID } from "../constants"
+
 const defaultState = {
   token: localStorage.getItem("jwt"),
   validToken: false,
@@ -41,6 +43,7 @@ export default (state = defaultState, action) => {
       localStorage.removeItem("jwt")
       localStorage.removeItem("userName")
       localStorage.removeItem("firstName")
+      localStorage.removeItem(ORGANISATION_ID)
       return {
         ...state,
         token: null,
