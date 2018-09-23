@@ -1,15 +1,16 @@
 import React, { Component, Fragment } from "react"
 import { ORGANISATION_ID } from "../constants"
-import { Query } from "react-apollo"
+import { graphql, compose, withApollo, Query } from "react-apollo"
 import gql from "graphql-tag"
 import { withRouter } from "react-router"
 import { withStyles } from "@material-ui/core/styles"
-import { compose } from "react-apollo/index"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 // Redux
 import { connect } from "react-redux"
 import { setUserOrg } from "../actions/userActions"
+// components
+import BasicPanel from "./BasicPanel"
 
 // Queries
 import { USER_ORGANISATIONS } from "../queries/getUserOrgs"
@@ -18,7 +19,6 @@ const styles = theme => ({
   container: {
     marginRight: "auto",
     marginLeft: "auto",
-    maxWidth: "320px",
     padding: `${theme.spacing.unit * 3}px`,
   },
   title: {
@@ -36,51 +36,49 @@ const styles = theme => ({
   },
 })
 class SetOrganisation extends Component {
-  state = {
-    login: true, // switch between Login and SignUp
-    email: "",
-    password: "",
-    name: "",
+  _resetApolloStore = () => {
+    const { client } = this.props
+    client.resetStore()
   }
 
   _setOrganisation = orgId => {
+    this._resetApolloStore()
     this.props.setUserOrg(orgId)
-    // localStorage.setItem(ORGANISATION_ID, orgId)
-    this.props.history.push(`/`)
+    this.props.history.goBack()
   }
 
   _renderOrganisations = () => {
+    // REDUX orgId Note: localStorage is just going to work better for this.
+    // const { user } = this.props
+    // const { currOrgId } = user
+    const currOrgId = localStorage.getItem(ORGANISATION_ID)
     return (
       <Query query={USER_ORGANISATIONS}>
         {({ loading, error, data }) => {
-          {
-            console.log("THE DATA ", data)
-          }
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
-
-          console.log("Data for a single Docuemnt => ", data)
-
           const { getUser } = data
           const { organisations } = getUser
 
           return (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
-              <h1>SET AN ORG PLEASE</h1>
+              {organisations.length === 0 && (
+                <div>
+                  You have no Organisations. Please contact Nomos and we will
+                  sort this for you
+                </div>
+              )}
               {organisations.map((org, orgIdx) => {
+                const { id, name } = org
                 return (
-                  <div onClick={() => this._setOrganisation(org.id)}>
-                    <h1>AN ORGANISATION</h1>
-                    <h2>ID: {org.id}</h2>
-                    <h2>Name: {org.name}</h2>
-                  </div>
+                  <BasicPanel
+                    title={name}
+                    btnTitle="Set Organisation"
+                    active={currOrgId === org.id}
+                    handleClick={() => this._setOrganisation(id)}
+                  />
                 )
               })}
-              {/* <SelectOption
-                options={templateOptions}
-                value={selectedTemplate}
-                handleChange={template => this.changeTemplate(template)}
-              /> */}
             </div>
           )
         }}
@@ -89,32 +87,16 @@ class SetOrganisation extends Component {
   }
 
   render() {
-    const { login, email, password, name } = this.state
     const { classes } = this.props
     return (
-      <div className={classes.container}>
-        <h1>This is where we will Set the Organisation</h1>
-        <p>
-          A user can belong to many organisations but can only cat for 1
-          organisation at a time
-        </p>
-        <p>
-          This component will always be loaded on entry. It will get the users
-          organisations.
-        </p>
-        <p>
-          If there is only 1 organisation, it will automatically set this as the
-          org and continue loading the rest of the app
-        </p>
-        {this._renderOrganisations()}
-      </div>
+      <div className={classes.container}>{this._renderOrganisations()}</div>
     )
   }
 }
 
 const reduxWrapper = connect(
   state => ({
-    user: state.docY,
+    user: state.user,
   }),
   dispatch => ({
     setUserOrg: orgId => dispatch(setUserOrg(orgId)),
@@ -123,6 +105,7 @@ const reduxWrapper = connect(
 
 export default withRouter(
   compose(
+    withApollo,
     reduxWrapper,
     withStyles(styles)
   )(SetOrganisation)

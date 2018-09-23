@@ -43,6 +43,7 @@ const DocumentPreview = ({ document, classes, theme, history, match }) => {
         <Typography variant="headline" component="h2">
           {document.name}
         </Typography>
+        <Typography>{document.createdFor.name}</Typography>
         <Typography className={classes.pos} color="textSecondary">
           <div>
             Author Details:{" "}

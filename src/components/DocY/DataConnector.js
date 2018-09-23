@@ -16,16 +16,16 @@ const DataConnector = ({
   removeAvailableConf,
 }) => {
   const config1 = {
-    id: "conf1",
-    name: "Config 1",
+    id: "asdfasdfasdf",
+    name: "hit em all up",
     confData: {
       name: "Agreement Name",
       createdAt: "12/03/1991",
     },
   }
   const config2 = {
-    id: "conf2",
-    name: "Config 2",
+    id: "asdfasdfasdfsadf",
+    name: "configTwo",
     confData: {
       events: [
         {
@@ -40,8 +40,8 @@ const DataConnector = ({
     },
   }
   const leaseInstrumentConf = {
-    id: "leaseInstrumentConf",
-    name: "Lease Instrument Config",
+    id: "asadsfadddddsf",
+    name: "leaseConf",
     confData: {
       titleReference: "This is the Title reference",
       premiseDescFirstSchedule:

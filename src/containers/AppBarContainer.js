@@ -11,6 +11,8 @@ import BackButton from "../components/BackButton"
 // Menus
 import LongMenu from "../components/LongMenu"
 import AccountMenu from "../components/AccountMenu"
+// Config
+import routesConf from "../configs/routesConf"
 
 const styles = {
   root: {
@@ -60,7 +62,7 @@ class AppBarContainer extends React.Component {
           <Toolbar>
             {pathname && pathname !== "/" && <BackButton />}
             <div>[NOMOS HUB]</div>
-            <LongMenu items={routes} />
+            <LongMenu items={routesConf.filter(route => route.main)} />
 
             <AccountMenu />
           </Toolbar>

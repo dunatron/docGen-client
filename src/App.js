@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { AUTH_TOKEN, ORGANISATION_ID } from "./constants"
 import { Switch, Route, Redirect } from "react-router-dom"
+import { withRouter } from "react-router"
 import { graphql, compose, withApollo } from "react-apollo"
 import { connect } from "react-redux"
 import "./App.css"
@@ -31,6 +32,8 @@ class App extends Component {
     const orgId = localStorage.getItem(ORGANISATION_ID)
     // const { user } = this.props
     // const { currOrgId } = user
+    const { history } = this.props
+    const { pathname } = history.location
 
     // This will actually need to check if it is valid or not
     // It was. I just created a user that had empty pass and email =/
@@ -43,12 +46,13 @@ class App extends Component {
     }
 
     // localStorage works best.
-    if (!orgId) {
-      return (
-        <div>
-          <SetOrganisation />
-        </div>
-      )
+    if (!orgId && pathname !== "/setorg") {
+      this.props.history.push("/setorg")
+      // return (
+      //   <div>
+      //     <SetOrganisation />
+      //   </div>
+      // )
     }
 
     // if (!currOrgId) {
@@ -66,6 +70,8 @@ class App extends Component {
         <div className="ph3 pv1 background-gray">
           <Switch>
             {/* <Route exact path="/" render={() => <Redirect to="/new/1" />} /> */}
+
+            <Route exact path="/setorg" component={SetOrganisation} />
             <Route exact path="/" component={HomePage} />
             <Route exact path="/docgen" component={DocGenPage} />
             {/* { Below we could use orgId in between /organisation/:id/dataconfigs could store orgId in redux store. When user logs in they choose an org to work for that they are asscoiated with } */}
@@ -84,7 +90,7 @@ class App extends Component {
             />
             <Route path="/document/:id" component={DocumentPage} />
             <Route exact path="/documents" component={DocumentsListContainer} />
-            <Route exact path="/create" component={CreateDocument} />
+            <Route exact path="/create/document" component={CreateDocument} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/search" component={Search} />
           </Switch>
@@ -101,7 +107,9 @@ const reduxWrapper = connect(
   dispatch => ({})
 )
 
-export default App
+// export default App
+
+export default withRouter(App)
 
 // This breaks the routing
 // export default reduxWrapper(App)

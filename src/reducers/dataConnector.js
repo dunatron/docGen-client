@@ -24,7 +24,18 @@ export default (state = defaultState, action) => {
     case "ADD_DATA_CONF":
       const newConfig = action.payload
       let dataConf = state.dataConf
-      dataConf[newConfig.id] = { ...newConfig.confData }
+
+      const camelCaseName = newConfig.name
+        .replace(/\s(.)/g, function($1) {
+          return $1.toUpperCase()
+        })
+        .replace(/\s/g, "")
+        .replace(/^(.)/, function($1) {
+          return $1.toLowerCase()
+        })
+
+      dataConf[camelCaseName] = { ...newConfig.confData }
+
       return {
         ...state,
         dataConf: dataConf,

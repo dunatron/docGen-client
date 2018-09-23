@@ -1,16 +1,11 @@
 import React, { Component, Fragment } from "react"
 import { withRouter } from "react-router"
-import { graphql, compose, withApollo } from "react-apollo"
-// Redux
-import { addLoadedDocument, removeLoadedDocument } from "../actions/docYActions"
+import { compose, withApollo } from "react-apollo"
 import {
-  addDataConf,
   removeDataConf,
   addAvailableConf,
 } from "../actions/dataConnectorActions"
 import { connect } from "react-redux"
-// page layout
-import DrawerPage from "../layouts/DrawerPage"
 // components
 import CreateDataConf from "../components/CreateDataConfig"
 
@@ -20,12 +15,8 @@ class CreateDataConfigContainer extends Component {
       dataConnector: { availableConfigs },
     } = this.props
 
-    console.log("AVAILABLE CONFIGS ", availableConfigs)
-
     return (
       <div>
-
-
         {Object.keys(availableConfigs).map((confKey, confKeyIdx) => {
           return <div>{confKey}</div>
         })}
@@ -33,7 +24,7 @@ class CreateDataConfigContainer extends Component {
         {availableConfigs.map((conf, confIdx) => {
           return (
             <div key={confIdx}>
-              <div>ConfID: {conf.id}</div>
+              <div>confName: {conf.name}</div>
               <div>confData: {JSON.stringify(conf.confData)}</div>
             </div>
           )

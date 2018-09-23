@@ -5,6 +5,9 @@ export const DOCUMENT_FEED_QUERY = gql`
     documentFeed {
       id
       name
+      createdFor {
+        name
+      }
       createdBy {
         id
         email

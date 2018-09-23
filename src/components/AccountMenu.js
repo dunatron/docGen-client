@@ -67,8 +67,8 @@ class AccountMenu extends React.Component {
             },
           }}>
           {authToken && (
-            <MenuItem onClick={() => this.handlePageChange("/create")}>
-              Create
+            <MenuItem onClick={() => this.handlePageChange("/create/document")}>
+              Create Document
             </MenuItem>
           )}
 

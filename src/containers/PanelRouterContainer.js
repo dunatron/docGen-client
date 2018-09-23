@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles"
 import { compose } from "react-apollo/index"
 // components
 import RoutePanel from "../components/RoutePanel"
+// Config
+import routesConf from "../configs/routesConf"
 
 const styles = theme => ({
   root: {
@@ -26,6 +28,7 @@ const styles = theme => ({
 })
 
 const routes = [
+  { title: "Set Organisation", url: "/setorg" },
   { title: "Nomos Version 4", url: "/v4" },
   { title: "Nomos Version 5", url: "/v5" },
   { title: "DocY", url: "/docy" },
@@ -55,7 +58,7 @@ class PanelRouterContainer extends React.Component {
 
     return (
       <div className={classes.root}>
-        {routes.map((route, routeIdx) => {
+        {routesConf.filter(route => route.panel).map((route, routeIdx) => {
           return this._renderPanel(route)
         })}
       </div>

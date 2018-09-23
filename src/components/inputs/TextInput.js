@@ -16,8 +16,8 @@ const TextInput = ({ id, label, classes, value, handleChange }) => {
       label={label}
       className={classes.searchField}
       value={value}
-      // onChange={e => handleChange(e.target.value)}
-      onChange={handleChange}
+      onChange={e => handleChange(e.target.value)}
+      // onChange={handleChange}
       margin="normal"
     />
   )
