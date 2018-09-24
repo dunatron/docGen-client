@@ -25,11 +25,21 @@ const _processDocYFile = response => {
   saveDocyFile(response.data, "testTheFile")
 }
 
+const templateData = {
+  clientName: "I am the client Name",
+}
+
 class ProcessDocx extends Component {
   processDocWithDocy = document => {
+    const { size, name, lastModified, type } = document
+    const fileName = name
+      .split(".")
+      .slice(0, -1)
+      .join(".")
+    console.log("HERE IS NAME ", name)
     let formData = new FormData()
     formData.append("file", document)
-    formData.append("bar", 123)
+    formData.append("templateData", JSON.stringify(templateData))
     const endpoint = "http://localhost:3000/docy"
 
     const fetchOptions = {
@@ -45,7 +55,7 @@ class ProcessDocx extends Component {
         throw new Error("Network response was not ok.")
       })
       .then(function(myBlob) {
-        saveDocyFile(myBlob, "testTheFile")
+        saveDocyFile(myBlob, fileName)
       })
       .catch(function(error) {
         console.log(
@@ -62,9 +72,9 @@ class ProcessDocx extends Component {
         <h2>This will call our docy Service</h2>
         <DnDFileReader
           injectStyles={{
-            position: "absolute",
+            position: "relative",
             backgroundColor: "#FFF",
-            minHeight: 800,
+            minHeight: 388,
             minWidth: 400,
           }}
           processWordDoc={document => this.processDocWithDocy(document)}
