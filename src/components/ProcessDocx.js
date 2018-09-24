@@ -3,6 +3,8 @@ import { withStyles } from "@material-ui/core/styles"
 import Paper from "@material-ui/core/Paper"
 import DnDFileReader from "./DnDFileReader"
 import qs from "qs"
+import { saveAs } from "file-saver"
+import { saveDocyFile } from "../utils/saveDocyFile"
 const axios = require("axios")
 
 const styles = theme => ({
@@ -18,57 +20,39 @@ const styles = theme => ({
   },
 })
 
+const _processDocYFile = response => {
+  console.log("The res ", response)
+  saveDocyFile(response.data, "testTheFile")
+}
+
 class ProcessDocx extends Component {
   processDocWithDocy = document => {
     let formData = new FormData()
     formData.append("file", document)
     formData.append("bar", 123)
-
     const endpoint = "http://localhost:3000/docy"
 
-    const data = { bar: 123, file: document }
-    const options = {
+    const fetchOptions = {
       method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-      // data: qs.stringify(data),
-      data: formData,
-      url: endpoint,
+      body: formData,
     }
-    axios(options)
+
+    fetch(endpoint, fetchOptions)
       .then(function(response) {
-        console.log(response)
+        if (response.ok) {
+          return response.blob()
+        }
+        throw new Error("Network response was not ok.")
+      })
+      .then(function(myBlob) {
+        saveDocyFile(myBlob, "testTheFile")
       })
       .catch(function(error) {
-        console.log(error)
+        console.log(
+          "There has been a problem with your fetch operation: ",
+          error.message
+        )
       })
-
-    // axios
-    //   .get("http://localhost:3000/", {
-    //     firstName: "Fred",
-    //     lastName: "Flintstone",
-    //   })
-    //   .then(function(response) {
-    //     console.log(response)
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error)
-    //     alert("error from the server")
-    //   })
-
-    // axios
-    //   .post(
-    //     "http://localhost:3000/docy",
-    //     {
-    //       file: document,
-    //     },
-    //     axiosConfig
-    //   )
-    // .then(function(response) {
-    //   console.log(response)
-    // })
-    // .catch(function(error) {
-    //   console.log(error)
-    // })
   }
 
   render() {
@@ -76,10 +60,6 @@ class ProcessDocx extends Component {
     return (
       <div>
         <h2>This will call our docy Service</h2>
-        {/* <form method="post" enctype="multipart/form-data">
-          <input type="file" name="files[]" multiple />
-          <input type="submit" value="Upload File" name="submit" />
-        </form> */}
         <DnDFileReader
           injectStyles={{
             position: "absolute",
