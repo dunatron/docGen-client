@@ -10,6 +10,7 @@ import DrawerPage from "../layouts/DrawerPage"
 // Configs
 import { docYInfoConf } from "../configs/docYInfoConf"
 // Components
+import ProcessDocx from "../components/ProcessDocx"
 import PlainSheet from "../components/PlainSheet"
 import TypographySheet from "../components/TypographySheet"
 import DnDFileReader from "../components/DnDFileReader"
@@ -238,6 +239,7 @@ class DocYContainer extends Component {
             dataConf ? this._renderSuperConfig(dataConf) : null,
           ]}
           children={[
+            <ProcessDocx />,
             <TypographySheet config={docYInfoConf} />,
             <PlainSheet
               children={[

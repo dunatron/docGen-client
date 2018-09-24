@@ -8,6 +8,7 @@
     "apollo-boost": "^0.1.15",
     "apollo-link-context": "^1.0.8",
     "apollo-link-ws": "^1.0.8",
+    "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.6",
     "docx": "^4.0.0",
