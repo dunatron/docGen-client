@@ -5,6 +5,14 @@ import DnDFileReader from "./DnDFileReader"
 import qs from "qs"
 import { saveAs } from "file-saver"
 import { saveDocyFile } from "../utils/saveDocyFile"
+import SelectOption from "./inputs/SelectOption"
+// Static docy template data
+import {
+  deedOfLeaseStandaloneData,
+  cowLetterData,
+  cowLicenseData,
+  leaseInstrumentRegisteredData,
+} from "../docyStaticTemplateData"
 const axios = require("axios")
 
 const styles = theme => ({
@@ -25,13 +33,27 @@ const _processDocYFile = response => {
   saveDocyFile(response.data, "testTheFile")
 }
 
-const templateData = {
-  clientName: "I am the client Name",
-}
+const staticDataOptions = [
+  { name: "Deed of Lease Stand Alone", value: deedOfLeaseStandaloneData },
+  { name: "Cow Letter Data", value: cowLetterData },
+  { name: "Cow License Data", value: cowLicenseData },
+  {
+    name: "Lease Instrument Registered Data",
+    value: leaseInstrumentRegisteredData,
+  },
+]
 
 class ProcessDocx extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      templateData: staticDataOptions[0].value,
+    }
+  }
+
   processDocWithDocy = document => {
     const { size, name, lastModified, type } = document
+    const { templateData } = this.state
     const fileName = name
       .split(".")
       .slice(0, -1)
@@ -65,11 +87,23 @@ class ProcessDocx extends Component {
       })
   }
 
+  changeStaticData = templateData => {
+    this.setState({
+      templateData: templateData,
+    })
+  }
+
   render() {
     const { classes, children } = this.props
+    const { templateData } = this.state
     return (
       <div>
         <h2>This will call our docy Service</h2>
+        <SelectOption
+          options={staticDataOptions}
+          value={templateData}
+          handleChange={templateData => this.changeStaticData(templateData)}
+        />
         <DnDFileReader
           injectStyles={{
             position: "relative",
