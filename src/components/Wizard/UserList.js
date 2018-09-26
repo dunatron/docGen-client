@@ -52,103 +52,16 @@ class UserList extends Component {
           return (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
               <Fragment>
-                <Droppable droppableId="userDragAndDrop" type="UserListCanvas">
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      style={{
-                        border: "1px solid rebeccapurple",
-                        backgroundColor: snapshot.isDraggingOver
-                          ? "blue"
-                          : "grey",
-                      }}
-                      {...provided.droppableProps}>
-                      <Draggable draggableId="test-user-draggable-1" index={0}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}>
-                            {/* <Button
-                              className={classes.button}
-                              variant="raised"
-                              color="primary"
-                              type="submit"
-                              onClick={e => alert("add drag n Drop")}>
-                              H1
-                            </Button> */}
-                            <div>You can try dragging me around</div>
-                          </div>
-                        )}
-                      </Draggable>
-
-                      {allUsers.map((user, userIdx) => {
-                        return (
-                          <Draggable
-                            draggableId={`draggable-user-${user.id}`}
-                            index={userIdx}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}>
-                                <UserCard
-                                  key={userIdx}
-                                  user={user}
-                                  handleRoleChange={e =>
-                                    this._changeUserRole(e, user)
-                                  }
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        )
-                      })}
-
-                      {/* {allUsers.map((user, userIdx) => {
-                        return (
-                          <UserCard
-                            key={userIdx}
-                            user={user}
-                            handleRoleChange={e =>
-                              this._changeUserRole(e, user)
-                            }
-                          />
-                        )
-                      })} */}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
+                {allUsers.map((user, userIdx) => {
+                  return (
+                    <UserCard
+                      key={userIdx}
+                      user={user}
+                      handleRoleChange={e => this._changeUserRole(e, user)}
+                    />
+                  )
+                })}
               </Fragment>
-              {/* {allUsers.map((user, userIdx) => {
-                return (
-                  <UserCard
-                    key={userIdx}
-                    user={user}
-                    handleRoleChange={e => this._changeUserRole(e, user)}
-                  />
-                )
-              })} */}
-              {/* {allUsers.map((user, userIdx) => {
-                return (
-                  <div key={userIdx}>
-                    <div>{user.id}</div>
-                    <div>{user.name}</div>
-                    <div>{user.email}</div>
-                    <div>{user.role}</div>
-                    <div>
-                      {user.organisations.map((org, orgIdx) => {
-                        return (
-                          <div>
-                            <div>{org.id}</div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              })} */}
             </div>
           )
         }}

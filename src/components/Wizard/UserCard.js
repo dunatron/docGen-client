@@ -58,7 +58,9 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
         {/* {Organisations here is going to be a drag and rop context =)} */}
         <Fragment>
           <Fragment>
-            <Droppable droppableId="userAssignedOrgs" type="UserOrgsListCanvas">
+            <Droppable
+              droppableId={`userAssignedOrgs-${id}`}
+              type="UserOrgsCanvas">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -70,28 +72,39 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
                   {organisations &&
                     organisations.map((org, orgIdx) => {
                       return (
-                        <Draggable
-                          draggableId={`draggable-org-${org.id}`}
-                          index={orgIdx}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}>
-                              <Chip
-                                key={orgIdx}
-                                icon={<FaceIcon />}
-                                label={org.name}
-                                onDelete={() =>
-                                  console.log("Remove organisation from user")
-                                }
-                                className={classes.chip}
-                                color="secondary"
-                                variant="outlined"
-                              />
-                            </div>
-                          )}
-                        </Draggable>
+                        // <Draggable
+                        //   draggableId={`draggable-org-${org.id}`}
+                        //   index={orgIdx}>
+                        //   {(provided, snapshot) => (
+                        //     <div
+                        //       ref={provided.innerRef}
+                        //       {...provided.draggableProps}
+                        //       {...provided.dragHandleProps}>
+                        //       <Chip
+                        //         key={orgIdx}
+                        //         icon={<FaceIcon />}
+                        //         label={org.name}
+                        //         onDelete={() =>
+                        //           console.log("Remove organisation from user")
+                        //         }
+                        //         className={classes.chip}
+                        //         color="secondary"
+                        //         variant="outlined"
+                        //       />
+                        //     </div>
+                        //   )}
+                        // </Draggable>
+                        <Chip
+                          key={orgIdx}
+                          icon={<FaceIcon />}
+                          label={org.name}
+                          onDelete={() =>
+                            console.log("Remove organisation from user")
+                          }
+                          className={classes.chip}
+                          color="secondary"
+                          variant="outlined"
+                        />
                       )
                     })}
                   {provided.placeholder}

@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import FullPage from "../layouts/FullPage"
 // components
 import UserList from "../components/Wizard/UserList"
+import OrgList from "../components/Wizard/OrgList"
 
 const setupInfo = () => {
   return (
@@ -46,6 +47,14 @@ class UserSetupPage extends Component {
     console.log("onDragStart start ")
   }
   render() {
+    const userOrgSetup = (
+      <div>
+        <h1>Hiii</h1>
+        <UserList />
+        <OrgList />
+      </div>
+    )
+
     return (
       <Fragment>
         <DragDropContext
@@ -55,7 +64,7 @@ class UserSetupPage extends Component {
             children={[
               <div>Big page of components to do a bunch of mutations on</div>,
               setupInfo(),
-              <UserList />,
+              userOrgSetup,
             ]}
           />
         </DragDropContext>
