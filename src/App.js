@@ -19,6 +19,7 @@ import AppBarContainer from "./containers/AppBarContainer"
 
 import HomePage from "./pages/HomePage"
 import AdminPage from "./pages/AdminPage"
+import WizardsPage from "./pages/WizardsPage"
 import DocumentPage from "./pages/SingleDocument"
 import DocYPage from "./pages/DocYPage"
 import DocGenPage from "./pages/DocGenPage"
@@ -27,6 +28,8 @@ import CreateDataConfigPage from "./pages/CreateDataConfigPage"
 import OrganisationDataConfigsPage from "./pages/OrganisationDataConfigsPage"
 // Admin Pages
 import OrganisationUsersPage from "./pages/OrganisationUsersPage"
+// Wizard Pages
+import UserSetupPage from "./pages/UserSetupPage"
 // Rouge containers
 import DocumentsListContainer from "./containers/DocumentsListContainer"
 
@@ -74,8 +77,11 @@ class App extends Component {
         <div className="ph3 pv1 background-gray">
           <Switch>
             {/* <Route exact path="/" render={() => <Redirect to="/new/1" />} /> */}
+
             <Route exact path="/" component={HomePage} />
             <Route exact path="/admin" component={AdminPage} />
+            <Route exact path="/wizard" component={WizardsPage} />
+
             <Route exact path="/setorg" component={SetOrganisation} />
 
             <Route exact path="/docgen" component={DocGenPage} />
@@ -104,6 +110,10 @@ class App extends Component {
               path="/admin/users"
               component={OrganisationUsersPage}
             />
+
+            {/* { ADMIN ROUTES} */}
+
+            <Route exact path="/wizard/usersetup" component={UserSetupPage} />
           </Switch>
         </div>
       </div>

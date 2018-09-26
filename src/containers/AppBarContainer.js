@@ -30,15 +30,6 @@ const styles = {
   },
 }
 
-const routes = [
-  { title: "Home", url: "/" },
-  { title: "Documents", url: "/documents" },
-  { title: "docY", url: "/docy" },
-  { title: "DocGen", url: "/docgen" },
-  { title: "Create Data Config", url: "/create/dataconf" },
-  { title: "Org Data Configs", url: "/organisation/dataconfigs" },
-]
-
 class AppBarContainer extends React.Component {
   state = {
     auth: true,

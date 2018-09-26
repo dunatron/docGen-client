@@ -78,6 +78,13 @@ const routes = [
     main: true,
     restricted: ["ADMIN"],
   },
+  {
+    title: "Wizards Panel",
+    url: "/wizard",
+    panel: true,
+    main: true,
+    restricted: ["WIZARD"],
+  },
 ]
 
 export default routes
