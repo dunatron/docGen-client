@@ -19,8 +19,28 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider"
 import { createMuiTheme } from "@material-ui/core/styles"
 
 // Redux
+import { saveState } from "./state/localStorage"
+import throttle from "lodash/throttle"
+import { PERSISTENT_STORE_KEYS_ARR } from "./constants"
 import store from "./state/store"
 import { Provider as Redux } from "react-redux"
+
+// Redux function which will help us subscribe our store state, using our saveState function
+store.subscribe(
+  throttle(() => {
+    const storeState = store.getState()
+    const persistentState = Object.keys(storeState)
+      .filter(key => PERSISTENT_STORE_KEYS_ARR.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = storeState[key]
+        return obj
+      }, {})
+    saveState({
+      // user: store.getState().user,
+      ...persistentState,
+    })
+  }, 1500)
+)
 
 const muiTheme = createMuiTheme(customTheme)
 

@@ -1,13 +1,14 @@
 import React, { Fragment } from "react"
 import PropTypes from "prop-types"
-import { AUTH_TOKEN } from "../constants"
+import { AUTH_TOKEN } from "../../constants"
 import { withRouter } from "react-router"
 import { withStyles } from "@material-ui/core/styles"
 import { compose } from "react-apollo/index"
 // components
-import RoutePanel from "../components/RoutePanel"
+import RoutePanel from "../RoutePanel"
 // Config
-import routesConf from "../configs/routesConf"
+import { adminRoutes } from "../../configs/adminRoutesConf"
+
 // Redux
 import { connect } from "react-redux"
 
@@ -29,7 +30,7 @@ const styles = theme => ({
   },
 })
 
-class PanelRouterContainer extends React.Component {
+class AdminRoutes extends React.Component {
   state = {
     auth: true,
     anchorEl: null,
@@ -64,7 +65,7 @@ class PanelRouterContainer extends React.Component {
 
     return (
       <div className={classes.root}>
-        {routesConf
+        {adminRoutes
           .filter(route => route.restricted.includes(role))
           // .filter(route => {
           //   console.log("Our route has? => ", route)
@@ -79,7 +80,7 @@ class PanelRouterContainer extends React.Component {
   }
 }
 
-PanelRouterContainer.propTypes = {
+AdminRoutes.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
@@ -91,4 +92,4 @@ export default compose(
   withRouter,
   withStyles(styles, { withTheme: true }),
   reduxWrapper
-)(PanelRouterContainer)
+)(AdminRoutes)

@@ -7,11 +7,19 @@ import { withStyles } from "@material-ui/core/styles"
 import { compose } from "react-apollo/index"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
+// Redux
+import { setUserDetails, setUserToken } from "../actions/userActions"
+import { connect } from "react-redux"
 
 const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
     signup(email: $email, password: $password, name: $name) {
       token
+      user {
+        name
+        email
+        role
+      }
     }
   }
 `
@@ -20,6 +28,11 @@ const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      user {
+        name
+        email
+        role
+      }
     }
   }
 `
@@ -131,17 +144,33 @@ class Login extends Component {
 
   _confirm = async data => {
     console.log("Our data ")
-    const { token } = this.state.login ? data.login : data.signup
-    this._saveUserData(token)
+    const { token, user } = this.state.login ? data.login : data.signup
+    console.log("New User Data ", user)
+    this._saveUserData(token, user)
     this.props.history.push(`/`)
   }
 
-  _saveUserData = token => {
-    localStorage.setItem(AUTH_TOKEN, token)
-    localStorage.setItem("jwt", token)
+  _saveUserData = (token, user) => {
+    //SET_USER_DETAILS
+    this.props.setUserDetails(user)
+    this.props.setUserToken(token)
+    // localStorage.setItem(AUTH_TOKEN, token)
+    // localStorage.setItem("jwt", token)
   }
 }
 
-// export default Login
+const reduxWrapper = connect(
+  state => ({
+    docY: state.docY,
+  }),
+  dispatch => ({
+    setUserToken: token => dispatch(setUserToken(token)),
+    setUserDetails: userObj => dispatch(setUserDetails(userObj)),
+  })
+)
 
-export default withRouter(compose(withStyles(styles))(Login))
+export default compose(
+  withRouter,
+  withStyles(styles, { withTheme: true }),
+  reduxWrapper
+)(Login)

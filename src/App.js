@@ -16,13 +16,17 @@ import SetOrganisation from "./components/SetOrganisation"
 // Menu
 import AppBarContainer from "./containers/AppBarContainer"
 // Pages
+
 import HomePage from "./pages/HomePage"
+import AdminPage from "./pages/AdminPage"
 import DocumentPage from "./pages/SingleDocument"
 import DocYPage from "./pages/DocYPage"
 import DocGenPage from "./pages/DocGenPage"
 import Version5Page from "./pages/Version5Page"
 import CreateDataConfigPage from "./pages/CreateDataConfigPage"
 import OrganisationDataConfigsPage from "./pages/OrganisationDataConfigsPage"
+// Admin Pages
+import OrganisationUsersPage from "./pages/OrganisationUsersPage"
 // Rouge containers
 import DocumentsListContainer from "./containers/DocumentsListContainer"
 
@@ -70,9 +74,10 @@ class App extends Component {
         <div className="ph3 pv1 background-gray">
           <Switch>
             {/* <Route exact path="/" render={() => <Redirect to="/new/1" />} /> */}
-
-            <Route exact path="/setorg" component={SetOrganisation} />
             <Route exact path="/" component={HomePage} />
+            <Route exact path="/admin" component={AdminPage} />
+            <Route exact path="/setorg" component={SetOrganisation} />
+
             <Route exact path="/docgen" component={DocGenPage} />
             {/* { Below we could use orgId in between /organisation/:id/dataconfigs could store orgId in redux store. When user logs in they choose an org to work for that they are asscoiated with } */}
             <Route
@@ -93,6 +98,12 @@ class App extends Component {
             <Route exact path="/create/document" component={CreateDocument} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/search" component={Search} />
+            {/* { ADMIN ROUTES} */}
+            <Route
+              exact
+              path="/admin/users"
+              component={OrganisationUsersPage}
+            />
           </Switch>
         </div>
       </div>

@@ -13,6 +13,9 @@ import LongMenu from "../components/LongMenu"
 import AccountMenu from "../components/AccountMenu"
 // Config
 import routesConf from "../configs/routesConf"
+// Redux
+import { logoutUser } from "../actions/userActions"
+import { connect } from "react-redux"
 
 const styles = {
   root: {
@@ -42,6 +45,11 @@ class AppBarContainer extends React.Component {
     anchorEl: null,
   }
 
+  logoutUser = () => {
+    this.props.logoutUser()
+    this.props.history.push(`/`)
+  }
+
   handlePageChange = url => {
     this.handleClose()
     this.props.history.push(url)
@@ -64,7 +72,7 @@ class AppBarContainer extends React.Component {
             <div>[NOMOS HUB]</div>
             <LongMenu items={routesConf.filter(route => route.main)} />
 
-            <AccountMenu />
+            <AccountMenu logoutUser={() => this.logoutUser()} />
           </Toolbar>
         </AppBar>
       </div>
@@ -78,4 +86,19 @@ AppBarContainer.propTypes = {
 
 // export default MenuAppBar
 
-export default withRouter(compose(withStyles(styles))(AppBarContainer))
+// export default withRouter(compose(withStyles(styles))(AppBarContainer))
+
+const reduxWrapper = connect(
+  state => ({
+    user: state.user,
+  }),
+  dispatch => ({
+    logoutUser: () => dispatch(logoutUser()),
+  })
+)
+
+export default compose(
+  withRouter,
+  withStyles(styles, { withTheme: true }),
+  reduxWrapper
+)(AppBarContainer)

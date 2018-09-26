@@ -77,8 +77,9 @@ class AccountMenu extends React.Component {
           {authToken ? (
             <MenuItem
               onClick={() => {
-                localStorage.removeItem(AUTH_TOKEN)
-                this.props.history.push(`/`)
+                this.props.logoutUser()
+                // localStorage.removeItem(AUTH_TOKEN)
+                // this.props.history.push(`/`)
               }}>
               Logout
             </MenuItem>
