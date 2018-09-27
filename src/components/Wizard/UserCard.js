@@ -1,7 +1,7 @@
 import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import { withStyles } from "@material-ui/core/styles"
-import { Droppable, Draggable } from "react-beautiful-dnd"
+import { Droppable } from "react-beautiful-dnd"
 import Card from "@material-ui/core/Card"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
@@ -30,7 +30,7 @@ const styles = {
   },
 }
 
-const UserCard = ({ user, classes, handleRoleChange }) => {
+const UserCard = ({ user, classes, handleRoleChange, removeOrg }) => {
   const { id, name, email, role, organisations } = user
 
   return (
@@ -45,7 +45,6 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
         <Typography className={classes.title} color="textSecondary">
           {email}
         </Typography>
-
         <Typography className={classes.pos} color="textSecondary">
           Role:
           {role}
@@ -56,77 +55,48 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
           </Typography>
         )}
         {/* {Organisations here is going to be a drag and rop context =)} */}
-        <Fragment>
-          <Fragment>
-            <Droppable
-              droppableId={`userAssignedOrgs-${id}`}
-              type="UserOrgsCanvas">
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  style={{
-                    border: "1px solid rebeccapurple",
-                    backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
-                  }}
-                  {...provided.droppableProps}>
-                  {organisations &&
-                    organisations.map((org, orgIdx) => {
-                      return (
-                        // <Draggable
-                        //   draggableId={`draggable-org-${org.id}`}
-                        //   index={orgIdx}>
-                        //   {(provided, snapshot) => (
-                        //     <div
-                        //       ref={provided.innerRef}
-                        //       {...provided.draggableProps}
-                        //       {...provided.dragHandleProps}>
-                        //       <Chip
-                        //         key={orgIdx}
-                        //         icon={<FaceIcon />}
-                        //         label={org.name}
-                        //         onDelete={() =>
-                        //           console.log("Remove organisation from user")
-                        //         }
-                        //         className={classes.chip}
-                        //         color="secondary"
-                        //         variant="outlined"
-                        //       />
-                        //     </div>
-                        //   )}
-                        // </Draggable>
-                        <Chip
-                          key={orgIdx}
-                          icon={<FaceIcon />}
-                          label={org.name}
-                          onDelete={() =>
-                            console.log("Remove organisation from user")
-                          }
-                          className={classes.chip}
-                          color="secondary"
-                          variant="outlined"
-                        />
-                      )
-                    })}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </Fragment>
-          {/* {organisations &&
-            organisations.map((org, orgIdx) => {
-              return (
-                <Chip
-                  key={orgIdx}
-                  icon={<FaceIcon />}
-                  label={org.name}
-                  onDelete={() => console.log("Remove organisation from user")}
-                  className={classes.chip}
-                  color="secondary"
-                  variant="outlined"
-                />
-              )
-            })} */}
-        </Fragment>
+        <Droppable droppableId={id} type="ORG">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={{
+                backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
+              }}
+              {...provided.droppableProps}>
+              <h2>I am a droppable!</h2>
+              {provided.placeholder}
+              {organisations &&
+                organisations.map((org, orgIdx) => {
+                  return (
+                    <Chip
+                      key={orgIdx}
+                      icon={<FaceIcon />}
+                      label={org.name}
+                      onDelete={() => removeOrg(org.id)}
+                      className={classes.chip}
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  )
+                })}
+            </div>
+          )}
+        </Droppable>
+
+        {/* {organisations &&
+          organisations.map((org, orgIdx) => {
+            return (
+              <Chip
+                key={orgIdx}
+                icon={<FaceIcon />}
+                label={org.name}
+                onDelete={() => console.log("Remove organisation from user")}
+                className={classes.chip}
+                color="secondary"
+                variant="outlined"
+              />
+            )
+          })} */}
       </CardContent>
       <CardActions>
         <FormGroup>

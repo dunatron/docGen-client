@@ -58,6 +58,9 @@ class UserList extends Component {
                       key={userIdx}
                       user={user}
                       handleRoleChange={e => this._changeUserRole(e, user)}
+                      removeOrg={orgId =>
+                        this.props.removeOrgFromUser(orgId, user.id)
+                      }
                     />
                   )
                 })}

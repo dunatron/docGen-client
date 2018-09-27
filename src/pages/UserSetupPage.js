@@ -1,46 +1,71 @@
 import React, { Component, Fragment } from "react"
 import { withRouter } from "react-router"
-import { withApollo, compose } from "react-apollo/index"
+import { graphql, withApollo, compose } from "react-apollo/index"
+import { withStyles } from "@material-ui/core/styles"
 // page layout
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import FullPage from "../layouts/FullPage"
 // components
 import UserList from "../components/Wizard/UserList"
 import OrgList from "../components/Wizard/OrgList"
+// Mutations
+import { ADD_ORG_TO_USER_MUTATION } from "../mutations/addOrgToUser"
+import { REMOVE_ORG_FROM_USER_MUTATION } from "../mutations/removeOrgFromUser"
+// Queries
+import { ALL_ORGANISATION_USERS } from "../queries/allOrganisationUsers"
 
-const setupInfo = () => {
-  return (
-    <div>
-      <div>I will be a list of all the users</div>
-      <p>Now this is where it is going to get cool 😎</p>
-      <p>
-        We will create drag and drop contexts which will contain for a start two
-        contexts
-      </p>
-      <ul>
-        <li>Users</li>
-        <li>Organisations</li>
-      </ul>
-      <p>
-        When You drag an Org onto a User it will take the org id that you
-        dragged and the user id it was dragged onto and ensure they have been
-        asscoiated
-      </p>
-    </div>
-  )
-}
+const styles = {}
 
 class UserSetupPage extends Component {
+  _addOrgToUser = async (orgId, userId) => {
+    // alert(`add org ${orgId} to user ${userId}`)
+    await this.props.addOrgToUser({
+      variables: {
+        orgId: orgId,
+        userId: userId,
+      },
+      refetchQueries: [
+        {
+          query: ALL_ORGANISATION_USERS,
+          // variables: {
+          //   ID: MethodID,
+          // },
+        },
+      ],
+    })
+  }
+
+  _removeOrgFromUser = async (orgId, userId) => {
+    // alert(`add org ${orgId} to user ${userId}`)
+    await this.props.removeOrgFromUser({
+      variables: {
+        orgId: orgId,
+        userId: userId,
+      },
+      refetchQueries: [
+        {
+          query: ALL_ORGANISATION_USERS,
+          // variables: {
+          //   ID: MethodID,
+          // },
+        },
+      ],
+    })
+  }
+
   onDragEnd = result => {
-    console.log("onDragEnd Finished ", result)
-    // if (result.type === "DocumentCanvas") {
-    //   console.log("attempting to add new theng to canvas")
-    //   let docComps = this.state.documentComponents
-    //   docComps.push({ type: "h1", content: "an h1 font component" })
-    //   this.setState({
-    //     documentComponents: docComps,
-    //   })
-    // }
+    if (result.type === "ORG") {
+      console.log("Add org to user through mutation ", result)
+      try {
+        const orgID = result.draggableId
+        const userId = result.destination.droppableId
+        this._addOrgToUser(orgID, userId)
+        console.log("The OrgId => ", orgID)
+        console.log("The UserId => ", userId)
+      } catch (e) {
+        // alert(`an error ${e}`)
+      }
+    }
   }
 
   onDragStart = () => {
@@ -49,8 +74,11 @@ class UserSetupPage extends Component {
   render() {
     const userOrgSetup = (
       <div>
-        <h1>Hiii</h1>
-        <UserList />
+        <UserList
+          removeOrgFromUser={(orgId, userId) =>
+            this._removeOrgFromUser(orgId, userId)
+          }
+        />
         <OrgList />
       </div>
     )
@@ -60,13 +88,7 @@ class UserSetupPage extends Component {
         <DragDropContext
           onDragEnd={this.onDragEnd}
           onDragStart={this.onDragStart}>
-          <FullPage
-            children={[
-              <div>Big page of components to do a bunch of mutations on</div>,
-              setupInfo(),
-              userOrgSetup,
-            ]}
-          />
+          <FullPage children={[userOrgSetup]} />
         </DragDropContext>
       </Fragment>
     )
@@ -75,7 +97,15 @@ class UserSetupPage extends Component {
 
 // export default HomePage
 
+// export default compose(
+
+//   withRouter,
+//   withApollo
+// )(UserSetupPage)
 export default compose(
+  graphql(ADD_ORG_TO_USER_MUTATION, { name: "addOrgToUser" }),
+  graphql(REMOVE_ORG_FROM_USER_MUTATION, { name: "removeOrgFromUser" }),
+  withStyles(styles),
   withRouter,
   withApollo
 )(UserSetupPage)

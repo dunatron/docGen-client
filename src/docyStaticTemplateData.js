@@ -1,6 +1,6 @@
 export const deedOfLeaseStandaloneData = {
-  address: "",
-  titleReference: "",
+  "agreement.address": "Here is the address",
+  titleReference: "Fill it in for Jonny ",
   landRegistry: "",
   legalDescription: "",
   premiseDescription: "",
@@ -18,6 +18,10 @@ export const deedOfLeaseStandaloneData = {
   equipment: [
     {
       name: "PickAxe",
+      description: "used to stop rebellions before they take place",
+    },
+    {
+      name: "Stalin",
       description: "used to stop rebellions before they take place",
     },
   ],
