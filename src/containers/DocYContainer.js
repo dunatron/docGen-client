@@ -11,286 +11,145 @@ import DrawerPage from "../layouts/DrawerPage"
 import { docYInfoConf } from "../configs/docYInfoConf"
 // Components
 import ProcessDocx from "../components/ProcessDocx"
-import PlainSheet from "../components/PlainSheet"
-import TypographySheet from "../components/TypographySheet"
 import DnDFileReader from "../components/DnDFileReader"
+import TypographySheet from "../components/TypographySheet"
+import SelectOption from "../components/inputs/SelectOption"
 // module specific components
-import DownloadExample from "../components/DocY/DownloadExample"
-import DataConnector from "../components/DocY/DataConnector"
-import LoadedDocumentDetails from "../components/DocY/LoadedDocumentDetails"
-// Utils
-import { listObjectValues } from "../utils/renderNestedObject"
 import { saveAs } from "file-saver"
 // Styles
 import withStyles from "@material-ui/core/styles/withStyles"
-// Queries
-import { ORG_DATA_CONFIGS } from "../queries/getOrgDataConfigs"
-import { Query } from "react-apollo"
+// static Data
+import { agreementKnownAs } from "../components/DocY/agreementknowAsData"
+//Utils
+import { saveDocyFile } from "../utils/saveDocyFile"
+import {
+  flattenDataDescriptions,
+  flattenDataValues,
+} from "../utils/flattenData"
 
-var JSZip = require("jszip")
-var Docxtemplater = require("docxtemplater")
-
-/**
- * READ THIS
- * https://github.com/Stuk/jszip/issues/403
- * https://stuk.github.io/jszip/documentation/examples/read-local-file-)api.html
- */
+const staticDataOptions = [
+  { name: "Agreement Know As", value: agreementKnownAs },
+]
 
 const styles = theme => ({
   dropWrapper: {
     width: theme.spacing.unit * 30,
     height: theme.spacing.unit * 30 * 1.618,
   },
+  dl: {
+    padding: 15,
+  },
+  dt: {
+    fontWeight: 900,
+  },
+  dd: {
+    marginBottom: 15,
+    fontSize: 13,
+    fontStyle: "italic",
+    marginInlineStart: "30px",
+  },
 })
 
-const _fetchDocumentData = () => {
-  return {
-    name: "John",
-    company: "Doe",
-    address1: "0652455478",
-    address2: "New Website",
-    city: "Dunedin",
-    country: "New Zealand",
-    sparkName: "Spark Company is Shit",
-    clientName: "Jonny Mirkin",
-    content: `Howdy, How are we all today? Some sort of document clause snippet`,
-    author: "Dunatron",
-    authorJobTitle: "Developer",
-    events: [
-      {
-        name: "The First Event",
-        date: "21/03/1966",
-      },
-      {
-        name: "The Second Event",
-        date: "24/03/1966",
-      },
-    ],
-  }
-}
-
 class DocYContainer extends Component {
-  _processWordDocument = async (file, docData) => {
-    const { size, name, lastModified, type } = file
-    let rawData
-    let reader = new FileReader()
-    reader.readAsBinaryString(file)
-    // Load and process the file as an arry buffer
-    reader.onload = () => {
-      let data = reader.result
-      rawData = data
+  constructor(props) {
+    super(props)
+    this.state = {
+      templateData: staticDataOptions[0].value,
+      dataDescriptions: flattenDataDescriptions(
+        staticDataOptions[0].value,
+        "agreement"
+      ),
+      dataValues: flattenDataValues(staticDataOptions[0].value, "agreement"),
+    }
+  }
+
+  changeStaticData = templateData => {
+    this.setState({
+      templateData: templateData,
+    })
+  }
+
+  renderDataDescriptions = dataDescriptions => {
+    const { classes } = this.props
+    return Object.entries(dataDescriptions).map(([key, value]) => {
+      console.log(`${key} ${value}`) // "a 5", "b 7", "c 9"
+      return (
+        <Fragment>
+          <dt className={classes.dt}>{`{${key}}`}</dt>
+          <dd className={classes.dd}>{value}</dd>
+        </Fragment>
+      )
+    })
+  }
+
+  processDocWithDocy = (document, templateData) => {
+    const { size, name, lastModified, type } = document
+    const fileName = name
+      .split(".")
+      .slice(0, -1)
+      .join(".")
+    console.log("HERE IS NAME ", name)
+    let formData = new FormData()
+    formData.append("file", document)
+    formData.append("templateData", JSON.stringify(templateData))
+    const endpoint = "http://localhost:3000/docy"
+
+    const fetchOptions = {
+      method: "POST",
+      body: formData,
     }
 
-    // when we have loaded it begin converting it to what docXtemplater needs
-    reader.onloadend = () => {
-      var zip = new JSZip(rawData)
-      var doc = new Docxtemplater()
-      doc.loadZip(zip)
-
-      // const documentData = this.props.documentData
-      const documentData = docData
-
-      doc.setData(documentData)
-
-      try {
-        // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
-        doc.render()
-      } catch (error) {
-        var e = {
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
-          properties: error.properties,
+    fetch(endpoint, fetchOptions)
+      .then(function(response) {
+        if (response.ok) {
+          return response.blob()
         }
-        console.log(JSON.stringify({ error: e }))
-        // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
-        throw error
-      }
-
-      const newDocument = doc.getZip().generate({
-        type: "blob",
-        mimeType:
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        throw new Error("Network response was not ok.")
       })
-
-      console.log("Original documengt Name => ", name)
-      saveAs(newDocument, name)
-    }
-  }
-
-  _renderDataConfigs = configs => {
-    // return `You have ${configs.length} configs set`
-
-    return (
-      <div>
-        <div>{configs.length} configs set</div>
-        <div>
-          {configs.map((conf, confIdx) => {
-            return (
-              <div>
-                <div onClick={() => this.props.removeDataConf(confIdx)}>
-                  Remove Config
-                </div>
-                {listObjectValues(conf.confData)}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    )
-  }
-
-  _renderSuperConfig = conf => {
-    return (
-      <div>
-        {Object.keys(conf).map((configKey, keyIdx) => {
-          return (
-            <div onClick={() => this.props.removeDataConf(configKey)}>
-              Remove => {configKey}
-            </div>
-          )
-        })}
-        <div>{listObjectValues(conf)}</div>
-      </div>
-    )
-  }
-
-  _getQueryVariables = () => {
-    return {
-      orgId: "cjm1qmjnyailj0b05ns7uh04b",
-    }
-  }
-
-  _organisationDataConfigs = () => {
-    return (
-      <Query query={ORG_DATA_CONFIGS} variables={this._getQueryVariables()}>
-        {({ loading, error, data, subscribeToMore }) => {
-          {
-            console.log("THE DATA ", data)
-          }
-          if (loading) return <div>Fetching</div>
-          if (error) return <div>Error</div>
-
-          const { orgDataConfigs } = data
-
-          return (
-            <div style={{ display: "block" }}>
-              {orgDataConfigs.map((dataConf, dataConfIdx) => {
-                return (
-                  <div>
-                    <div>{dataConf.name}</div>
-                    <div>
-                      URL: we will call endpoints When clicked and load the data
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )
-        }}
-      </Query>
-    )
+      .then(function(myBlob) {
+        saveDocyFile(myBlob, fileName)
+      })
+      .catch(function(error) {
+        console.log(
+          "There has been a problem with your fetch operation: ",
+          error.message
+        )
+      })
   }
 
   render() {
-    const {
-      classes,
-      theme,
-      docY: { loadedDocuments },
-      dataConnector: { dataConf },
-    } = this.props
-
-    const DragNDropHeight = theme.spacing.unit * 30 * 1.618
-    const DragNDropWidth = theme.spacing.unit * 30
-
-    console.log("Theme vars to use in container ", theme)
-    //1. we fetch an object of key value pairs
-    const documentData = _fetchDocumentData()
-    //2. we come up with some way to display these nicely that looks nice and allows the user to know how to construct their templates
-    // We know actually need to hold the file in the state so that we can do a button click to process
-    //3 . loadedDocument should be in the store and should be an array
-    //4. We should be able to have multiple instances of this LoadedDocumentDetails
-    /**
-     * BIG NOTE: Ok I think with the configs we should present them as. Well I dont actually know right now.
-     * dataConfigs is an array. each item is an object. With that object comes a key confData which is an object of the keyValues that can be used
-     */
-
-    // BigStep 1. dataConfigs if we have them we can map over them or use reducer. The aim is to gather all the props.
-    // Ok now bear with. I think we should extract the name/id for the config and be used to prePend so it knows about the conf.
-    // conf1.name, conf2.name. Now i know this stuff exists in confData so we will have a function for this.
-    // const replaceableData = dataConfigs.reduce((accumulator, currentValue) => {
-    //   console.log("reduce current Val ", currentValue)
-    //   accumulator + currentValue.id
-    //   return accumulator + { name: "This work? ", value: "Propbs not" }
-    //   // return currentValue.id
-    //   // return {
-    //   //   currentValue
-    //   // }
-    // }, {})
-
+    const { theme, classes } = this.props
+    const { templateData, dataDescriptions, dataValues } = this.state
+    console.log("FIND A FILED WITH A VALUE ", dataValues)
+    const renderDataDescriptions = renderDataDescriptions
     return (
       <div>
         <DrawerPage
           title="docY 😎 "
           drawTitle="🔥 DATA 🔥"
           drawItems={[
-            // dataConfigs ? this._renderDataConfigs(dataConfigs) : null,
-            // dataConfigs ? this._renderDataConfigs(configsAsData) : null,
-            dataConf ? this._renderSuperConfig(dataConf) : null,
+            <dl className={classes.dl}>
+              {this.renderDataDescriptions(dataDescriptions)}
+            </dl>,
           ]}
           children={[
-            <ProcessDocx />,
+            // <ProcessDocx />,
             <TypographySheet config={docYInfoConf} />,
-            <PlainSheet
-              children={[
-                <DataConnector />,
-                <DownloadExample />,
-                this._organisationDataConfigs(),
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    maxWidth: `calc(100vw - ${theme.spacing.unit * 7}px)`,
-                    overflow: "auto",
-                    minHeight: DragNDropHeight,
-                    minWidth: DragNDropWidth,
-                  }}>
-                  <div
-                    className={classes.dropWrapper}
-                    style={{
-                      position: "static",
-                      minWidth: DragNDropWidth,
-                      minHeight: DragNDropHeight,
-                      backgroundColor: "#FFF",
-                      zIndex: 1000,
-                    }}>
-                    <DnDFileReader
-                      injectStyles={{
-                        position: "absolute",
-                        backgroundColor: "#FFF",
-                        minHeight: DragNDropHeight,
-                        minWidth: DragNDropWidth,
-                      }}
-                      processWordDoc={document =>
-                        this.props.addLoadedDocument(document)
-                      }
-                    />
-                  </div>
-                  {loadedDocuments &&
-                    loadedDocuments.map((doc, docIdx) => {
-                      return (
-                        <LoadedDocumentDetails
-                          key={docIdx}
-                          document={doc}
-                          processDocument={() =>
-                            this._processWordDocument(doc, dataConf)
-                          }
-                          remove={() => this.props.removeLoadedDocument(docIdx)}
-                        />
-                      )
-                    })}
-                </div>,
-              ]}
+            <SelectOption
+              options={staticDataOptions}
+              value={templateData}
+              handleChange={templateData => this.changeStaticData(templateData)}
+            />,
+            <DnDFileReader
+              injectStyles={{
+                position: "relative",
+                backgroundColor: "#FFF",
+                minHeight: 388,
+                minWidth: 400,
+              }}
+              processWordDoc={document =>
+                this.processDocWithDocy(document, dataValues)
+              }
             />,
           ]}
         />

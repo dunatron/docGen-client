@@ -13,7 +13,31 @@ import {
   cowLicenseData,
   leaseInstrumentRegisteredData,
 } from "../docyStaticTemplateData"
+// Static Flat Data
+import { agreementKnownAs } from "./DocY/agreementknowAsData"
 const axios = require("axios")
+
+console.log("This should be the data we need to flatten => ", agreementKnownAs)
+
+const flattenDataDescriptions = (data, masterKey) => {
+  console.log("Coool ", data)
+  const test = Object.entries(data).reduce(
+    (descriptions, [key, value]) => ({
+      ...descriptions,
+      [`${masterKey}.${key}`]: `${value.name} - ${value.description} `,
+    }),
+    {}
+  )
+  console.log("A test ", test)
+  return "Hello World"
+}
+
+const MyFlatDataDescriptions = flattenDataDescriptions(
+  agreementKnownAs,
+  "agreement"
+)
+
+console.log("our flat Data => ", MyFlatDataDescriptions)
 
 const styles = theme => ({
   root: {
