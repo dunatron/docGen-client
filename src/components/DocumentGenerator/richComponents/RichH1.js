@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import TextField from "@material-ui/core/TextField"
+import FontSettings from "../FontSettings"
 
 const styles = theme => ({
   textField: {
@@ -19,6 +20,16 @@ const styles = theme => ({
  * When a component is onFocus, we make a call to the redux store. Na each component can have its own little bar to adjust this stuff
  *
  */
+
+function checkPageFocus() {
+  var info = document.getElementById("message")
+
+  if (document.hasFocus()) {
+    info.innerHTML = "The document has the focus."
+  } else {
+    info.innerHTML = "The document doesn't have the focus."
+  }
+}
 class RichH1 extends Component {
   _handleInitialAttributes = attributes => {
     return {
@@ -29,6 +40,8 @@ class RichH1 extends Component {
 
   constructor(props) {
     super(props)
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
     const { section } = this.props
     console.log("sections rawContent ", section.rawContent)
 
@@ -37,6 +50,39 @@ class RichH1 extends Component {
       attr: this._handleInitialAttributes(
         section.rawContent ? section.rawContent.attr : {}
       ),
+      focused: false,
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    alert("Component is dismopunting")
+    document.removeEventListener("mousedown", this.handleClickOutside)
+  }
+
+  /**
+   * Set the wrapper ref
+   */
+  setWrapperRef(node) {
+    console.log("the node to set => ", node)
+    this.wrapperRef = node
+  }
+
+  /**
+   * Alert if clicked on outside of element
+   */
+  handleClickOutside(event) {
+    const { focused } = this.state
+    if (focused) {
+      if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        alert("You clicked outside of me!")
+        this.setState({
+          focused: false,
+        })
+      }
     }
   }
 
@@ -59,24 +105,48 @@ class RichH1 extends Component {
     this.props.update(section)
   }
 
+  handleFocus = () => {
+    this.setState({
+      focused: true,
+    })
+  }
+
+  // handleBlur = () => {
+  //   const { content, attr } = this.state
+  //   const { id } = this.props
+  //   this._saveSection(id, content, attr)
+  //   this.setState({
+  //     focused: false,
+  //   })
+  // }
+
   render() {
     const {
       classes,
       section: { type, rawContent, id },
       pageAttributes,
     } = this.props
-    const { content, attr } = this.state
+    const { content, attr, focused } = this.state
 
     console.log("Section Attributes ", attr)
 
     return (
-      <div>
+      <div
+        ref={this.setWrapperRef}
+        onFocus={() => this.handleFocus()}
+        // onBlur={() => this.handleBlur()}
+      >
         <h1>I am A rich H1 components</h1>
+        {focused && <FontSettings attr={attr} />}
+        {/* <FontSettings attr={attr} /> */}
+
         <div style={{ fontSize: `${attr.fontSize}px` }}>Content: {content}</div>
         {/* <div style={{ fontSize: "40px" }}>Content: {content}</div> */}
         <TextField
           // label="None"
-          onBlur={() => this._saveSection(id, content, attr)}
+          // onBlur={() => this._saveSection(id, content, attr)}
+          // onBlur={() => this.handleBlur()}
+          // onFocus={() => this.handleFocus()}
           id="margin-none"
           defaultValue="NEW SECTION"
           className={classes.textField}
