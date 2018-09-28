@@ -3,21 +3,20 @@ import classNames from "classnames"
 import { withStyles } from "@material-ui/core/styles"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { connect } from "react-redux"
-import { withApollo, compose } from "react-apollo"
-import KeyHandler, { KEYPRESS } from "react-key-handler"
+import { graphql, withApollo, compose } from "react-apollo"
 import { updatePagePercentage } from "../actions/docGenActions"
 
 // Components
-import CreateSection from "../components/CreateSection"
 import DocumentCanvas from "../components/DocumentGenerator/DocumentCanvas"
 import FontPicker from "../components/DocumentGenerator/FontPicker"
 import ShortCodePicker from "../components/DocumentGenerator/ShortCodePicker"
 import PagePercentage from "../components/DocumentGenerator/PagePercentage"
 
-// Exporters
-import ExportDocx from "../components/DocumentGenerator/exports/ExportDocx"
+// Queries
+import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
 
-const Mustache = require("mustache")
+// Mutations
+import { POST_SECTION_MUTATION } from "../mutations/postSection"
 
 const styles = {
   root: {
@@ -32,126 +31,6 @@ const styles = {
   },
 }
 
-/**
- * When document is loaded it is searched for these short codes and updated accordingly
- */
-// const SHORT_CODES = [
-//   { name: "agreement date", value: "24/03/1991" },
-//   { name: "agreement Name", value: "Heaths Awesome Agreement" },
-//   {
-//     agreements
-//   }
-// ]
-
-var view = {
-  title: "Joe",
-  calc: function() {
-    return 2 + 4
-  },
-}
-
-var output = Mustache.render("{{title}} spends {{calc}}", view)
-
-const SHORT_CODES = [
-  {
-    "organisation-title": "Nomos One",
-  },
-  {
-    agreements: [
-      {
-        id: "1",
-        name: "The first Agreement short code name",
-        amount: "$89",
-        date: "24/03/1991",
-        events: [
-          {
-            id: "dfss",
-            name: "First event for the first agreements",
-            type: "Depreciation",
-            amount: 68.7,
-            date: "31/08/1991",
-            subEvents: [
-              {
-                type: "Depreciation",
-                amount: 68.7,
-                date: "31/08/1991",
-              },
-              {
-                type: "Depreciation",
-                amount: 90.7,
-                date: "31/09/1991",
-              },
-              {
-                type: "Depreciation",
-                amount: 100.7,
-                date: "31/10/1991",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "2",
-        name: "Trons First Agreement",
-        amount: "$89",
-        date: "24/03/1991",
-        events: [
-          {
-            id: "dfss",
-            name: "First event for the first agreements",
-            type: "Depreciation",
-            amount: 68.7,
-            date: "31/08/1991",
-          },
-        ],
-      },
-      {
-        id: "3",
-        name: "The first Agreement short code name",
-        amount: "$89",
-        date: "24/03/1991",
-        events: [
-          {
-            id: "dfss",
-            name: "First event for the first agreements",
-            type: "Depreciation",
-            amount: 68.7,
-            date: "31/08/1991",
-          },
-        ],
-      },
-    ],
-  },
-]
-
-const DATA_CODES = {
-  agreements: [{ name: "First agreement Name" }],
-}
-
-/**
- * Choices:
- * Online collab via pusher: https://pusher.com/tutorials/collaborative-text-editor-javascript/
- * pixel perfect render: https://www.sitepoint.com/creating-an-html5-based-document-editor/
- * html wysywig but good: https://code.tutsplus.com/tutorials/create-a-wysiwyg-editor-with-the-contenteditable-attribute--cms-25657
- * I still think markdown is the choice here. So build rich components which can be edited . color size position etc
- */
-
-/**
- *
- * use this for markdown or make own versio
- * https://github.com/JedWatson/react-md-editor
- * https://github.com/OpusCapita/react-markdown
- * For this drag and drop to work for this mini application ->
- * - DragDropContext or perhaps Droppable can be used on the fontPicker and page Picker. Can reorder whatever. Nice touch but...
- * - the main point is to drag these elements onto other drag and drop contexts, in particular the one that wil be our canvas.
- * as it will decide what to do with these. I.e It will initialise new components base on type in the canvas
- *  - The idea of a fontMutator for every component
- *
- * More: The idea that markdown is a kind of raw language to write in. Soooo we have our own components encapsulating these which transform the text.
- * We can then use the attributes on these components to build.
- * I think. We pass the component inFocus, or lastInFocus href or some ref to redux and also update the redux store with the state our component was in.
- * the store then updates the state of the component using the href?
- */
 const getDroppableClasses = isDraggingOver =>
   classNames(styles.droppable, {
     [styles.isDraggingOver]: isDraggingOver,
@@ -169,58 +48,8 @@ class DocumentGenerator extends Component {
     super(props)
 
     this.state = {
-      started: false,
       screenDPI: 96,
-      documentComponents: [
-        { type: "p", content: "Hi I am the contents of a paragraph component" },
-        {
-          type: "h1",
-          content: "I am a default header. could even be loaded from template",
-        },
-        {
-          type: "h1",
-          content: "I am the second default",
-        },
-      ],
     }
-  }
-
-  startDocument = v => {
-    // this.state({
-    //   started: true,
-    // })
-    console.log("pressed props", v)
-    console.log("Key val pressed ", v.key)
-    this.setState({
-      started: true,
-    })
-  }
-
-  compileTemplate = (template, data) => {
-    // lazy template compiling
-
-    const test = {
-      // agreements: {
-      //   name: "Agreement NAme Test",
-      // },
-      agreements: [{ name: "Agreement One" }, { name: "agreement 2" }],
-      company: "Nomos One",
-      companyDetails: {
-        name: "Spark?",
-        streetAddress: "123 Spark Avenue",
-        postalAddress: "Spark Lane",
-        telephone: "08000 SPARK",
-        contactPerson: "Mrs Spark",
-        country: "New Zealand",
-      },
-    }
-
-    SHORT_CODES
-    const theTemplate = Mustache.render(template, test)
-    // const theTemplate = Mustache.render(template, data)
-    console.log("The Template ", theTemplate)
-    // return { __html: "First &middot; Second" }
-    return { __html: theTemplate }
   }
 
   renderPage = screenDPI => {
@@ -256,19 +85,19 @@ class DocumentGenerator extends Component {
 
   onDragEnd = result => {
     console.log("onDragEnd Finished ", result)
-    if (result.type === "DocumentCanvas") {
-      console.log("attempting to add new theng to canvas")
-      let docComps = this.state.documentComponents
-      docComps.push({ type: "h1", content: "an h1 font component" })
-      this.setState({
-        documentComponents: docComps,
-      })
+    const { document } = this.props
+    const { type, source, reason, destination, draggableId } = result
+    // Creating  new section
+    if (type === "DocumentCanvas" && source.droppableId === "fontDroppable") {
+      this._createSection(document.id, draggableId)
     }
-    // const { destination, draggableId } = result
-    // if (!destination) {
-    //   return
-    // }
-    // this.props.onMove(draggableId, destination.index)
+    // Reorder the canvas
+    if (
+      type === "DocumentCanvas" &&
+      source.droppableId === "documentDroppable"
+    ) {
+      alert("Re Order the sections?")
+    }
   }
 
   onDragStart = () => {
@@ -278,8 +107,25 @@ class DocumentGenerator extends Component {
     // }
   }
 
-  createMarkup = () => {
-    return { __html: "First &middot; Second" }
+  _createSection = async (documentId, sectionType) => {
+    this.props.postSection({
+      variables: {
+        type: sectionType,
+        docId: documentId,
+      },
+      update: (store, { data: { postSection } }) => {
+        const data = store.readQuery({
+          query: SINGLE_DOCUMENT_QUERY,
+          variables: { id: documentId },
+        })
+        data.singleDocument.sections.unshift(postSection)
+        store.writeQuery({
+          query: SINGLE_DOCUMENT_QUERY,
+          data,
+          variables: { id: documentId },
+        })
+      },
+    })
   }
 
   renderDocumentGenerator = document => {
@@ -297,75 +143,29 @@ class DocumentGenerator extends Component {
     const h1FontSiz = 36 * (pageAttributes.percentage / 100)
     const pFontStyle = 13 * (pageAttributes.percentage / 100)
 
-    console.log("calculatedPageHeight ", calculatedPageHeight)
-    console.log("DOc generator STATE ", this.state)
-
-    console.log("pageDimensions ", pageDimensions)
-
     const { template, data, Component } = this.props
 
     if (!template) return false
-
-    const __html = this.compileTemplate(template, data)
 
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}>
         <div>
-          {/* <Component dangerouslySetInnerHTML={{ __html }} /> */}
-          {/* <Component dangerouslySetInnerHTML={<div>DANGEROUS</div>} /> */}
-          <div dangerouslySetInnerHTML={__html} />
           <FontPicker />
-          <ExportDocx document={__html} />
-          <ShortCodePicker shortCodes={SHORT_CODES} />
+          {/* <ShortCodePicker shortCodes={SHORT_CODES} /> */}
           <PagePercentage
             percentage={pageAttributes.percentage}
-            onChange={v => {
-              console.log("Trying to change percentage ", v)
-              this.props.updatePagePercentage(v)
-            }}
+            onChange={v => this.props.updatePagePercentage(v)}
           />
-
           <DocumentCanvas
-            documentComponents={this.state.documentComponents}
+            sections={document.sections}
             pageAttributes={pageAttributes}
             pageDimensions={{
               height: calculatedPageHeight,
               width: calculatedPageWidth,
             }}
           />
-          <div
-            style={{
-              border: "1px solid purple",
-              height: `${calculatedPageHeight}px`,
-              width: `${calculatedPageWidth}px`,
-            }}>
-            <h1 style={{ fontSize: `${h1FontSiz}px` }}>{document.name}</h1>
-            <CreateSection documentId={document.id} />
-            {document.sections &&
-              document.sections.map((section, sectionId) => {
-                return (
-                  <div>
-                    <div>Section Id: {section.id}</div>
-                    <div>Section Name: {section.type}</div>
-                    <div>RawContent: {JSON.stringify(section.rawContent)}</div>
-                  </div>
-                )
-              })}
-            {this.state.documentComponents.map(docComponent => {
-              return (
-                <div>
-                  <h1 style={{ fontSize: `${h1FontSiz}px` }}>
-                    DOCUMENT NAME: TYPE: {docComponent.type}
-                  </h1>
-                  <p style={{ fontSize: `${pFontStyle}px` }}>
-                    contents: {docComponent.content}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
         </div>
       </DragDropContext>
     )
@@ -375,20 +175,8 @@ class DocumentGenerator extends Component {
    * Key Press Docs: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
    */
   render() {
-    const { started, keyPressConf } = this.state
     const { document } = this.props
-    return (
-      <Fragment>
-        {/* <div>The doc gen container. Press "enter" to start</div>
-        <KeyHandler
-          keyEventName={KEYPRESS}
-          keyValue="Enter"
-          onKeyHandle={v => this.startDocument(v)}
-        /> */}
-        {this.renderDocumentGenerator(document)}
-        {/* {started && this.renderDocumentGenerator(document)} */}
-      </Fragment>
-    )
+    return <Fragment>{this.renderDocumentGenerator(document)}</Fragment>
   }
 }
 
@@ -403,6 +191,7 @@ const reduxWrapper = connect(
 )
 
 export default compose(
+  graphql(POST_SECTION_MUTATION, { name: "postSection" }),
   withStyles(styles),
   withApollo,
   reduxWrapper

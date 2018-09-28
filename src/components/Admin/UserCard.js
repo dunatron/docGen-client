@@ -51,7 +51,7 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
       </CardContent>
       <CardActions>
         <FormGroup>
-          <FormControlLabel
+          {/* <FormControlLabel
             control={
               <Switch
                 checked={role === "ADMIN"}
@@ -60,7 +60,19 @@ const UserCard = ({ user, classes, handleRoleChange }) => {
               />
             }
             label={role}
-          />
+          /> */}
+          {role !== "WIZARD" && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={role === "ADMIN"}
+                  onChange={handleRoleChange}
+                  aria-label="RoleSwitch"
+                />
+              }
+              label={role}
+            />
+          )}
         </FormGroup>
       </CardActions>
     </Card>

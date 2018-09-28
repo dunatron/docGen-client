@@ -9,7 +9,7 @@ const FontPicker = props => {
   const { classes } = props
   return (
     <Fragment>
-      <Droppable droppableId="fontDragAndDrop">
+      <Droppable droppableId="fontDroppable" type="DocumentCanvas">
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -17,7 +17,7 @@ const FontPicker = props => {
               backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
             }}
             {...provided.droppableProps}>
-            <Draggable draggableId="dragable-font-0" index={0}>
+            <Draggable draggableId="h1" index={0}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -34,7 +34,7 @@ const FontPicker = props => {
                 </div>
               )}
             </Draggable>
-            <Draggable draggableId="dragable-font-1" index={1}>
+            <Draggable draggableId="p" index={1}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}

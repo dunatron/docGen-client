@@ -3,29 +3,10 @@ import gql from "graphql-tag"
 import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
 import { withRouter } from "react-router"
 import { Mutation, withApollo, compose } from "react-apollo/index"
+import { POST_SECTION_MUTATION } from "../mutations/postSection"
 
 // Components
 import TextInput from "./inputs/TextInput"
-
-const POST_SECTION_MUTATION = gql`
-  mutation PostMutation($type: String!, $docId: ID) {
-    postSection(type: $type, belongsTo: $docId) {
-      id
-      type
-      rawContent
-      createdAt
-      belongsTo {
-        name
-        id
-      }
-      createdBy {
-        email
-        name
-        id
-      }
-    }
-  }
-`
 
 class CreateSection extends Component {
   state = {

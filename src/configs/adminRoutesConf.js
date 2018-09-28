@@ -4,6 +4,6 @@ export const adminRoutes = [
     url: "/admin/users",
     panel: true,
     main: true,
-    restricted: ["ADMIN"],
+    restricted: ["ADMIN", "WIZARD"],
   },
 ]
