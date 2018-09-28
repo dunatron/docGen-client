@@ -14,7 +14,7 @@ class FontSettings extends Component {
         <TextField
           color="secondary"
           id="filled-name"
-          label="Name"
+          label="Font Size"
           className={classes.textField}
           value={attr.fontSize}
           onChange={() => console.log("Handle the change please")}
