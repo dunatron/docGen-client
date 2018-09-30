@@ -12,12 +12,13 @@ class FontSettings extends Component {
         <p>I am some font settings</p>
         <p>FontSize is: {attr.fontSize}</p>
         <TextField
+          type="number"
           color="secondary"
           id="filled-name"
           label="Font Size"
           className={classes.textField}
           value={attr.fontSize}
-          onChange={() => console.log("Handle the change please")}
+          onChange={e => this.props.changeAttr("fontSize", e.target.value)}
           margin="normal"
           variant="filled"
         />

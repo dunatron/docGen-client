@@ -2,12 +2,38 @@ import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import TextField from "@material-ui/core/TextField"
 import FontSettings from "../FontSettings"
+import ColorSettings from "../ColorSettings"
+import { Editor } from "slate-react"
+import { Value } from "slate"
+// https://codeburst.io/lets-build-a-customizable-rich-text-editor-with-slate-and-react-beefd5d441f2
+// https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
 
 const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200,
+  },
+})
+
+const initialValue = Value.fromJSON({
+  document: {
+    nodes: [
+      {
+        object: "block",
+        type: "paragraph",
+        nodes: [
+          {
+            object: "text",
+            leaves: [
+              {
+                text: "A line of text in a paragraph.",
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 })
 
@@ -42,15 +68,18 @@ class RichH1 extends Component {
     super(props)
     this.setWrapperRef = this.setWrapperRef.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this)
-    const { section } = this.props
-    console.log("sections rawContent ", section.rawContent)
+    const {
+      section: { rawContent },
+    } = this.props
+    const { documentValue } = rawContent ? rawContent : initialValue
 
     this.state = {
-      content: section.rawContent ? section.rawContent.value : "",
-      attr: this._handleInitialAttributes(
-        section.rawContent ? section.rawContent.attr : {}
-      ),
+      content: rawContent ? rawContent.value : "",
+      attr: this._handleInitialAttributes(rawContent ? rawContent.attr : {}),
       focused: false,
+      documentValue: documentValue
+        ? Value.fromJSON(documentValue)
+        : initialValue,
     }
   }
 
@@ -59,7 +88,7 @@ class RichH1 extends Component {
   }
 
   componentWillUnmount() {
-    alert("Component is dismopunting")
+    // alert("Component is dismopunting")
     document.removeEventListener("mousedown", this.handleClickOutside)
   }
 
@@ -73,12 +102,20 @@ class RichH1 extends Component {
 
   /**
    * Alert if clicked on outside of element
+   * Note: ToDo: lift this functionality up to render section.
+   * this would work by the map func. Each would call the handleClick Outside, and parse up the info it needs.
+   * This is simply to implement the DRY approach.
    */
   handleClickOutside(event) {
     const { focused } = this.state
+    const {
+      section: { id },
+    } = this.props
+    const { content, attr, documentValue } = this.state
     if (focused) {
       if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-        alert("You clicked outside of me!")
+        // alert("You clicked outside of me!")
+        this._saveSection(id, content, attr, documentValue)
         this.setState({
           focused: false,
         })
@@ -92,12 +129,16 @@ class RichH1 extends Component {
     })
   }
 
-  _saveSection = async (id, content, attr) => {
+  _saveSection = async (id, content, attr, documentValue) => {
     console.log("content?  ", content)
     // const jsonContent = JSON.stringify(content)
-    const jsonContent = { value: content, attr: attr }
-    console.log("jsonContent is => ", jsonContent)
-    alert("Time to save the section")
+    const jsonContent = {
+      value: content,
+      attr: attr,
+      documentValue: documentValue,
+    }
+    // console.log("jsonContent is => ", jsonContent)
+    // alert("Time to save the section")
     const section = {
       id: id,
       rawContent: jsonContent,
@@ -120,27 +161,69 @@ class RichH1 extends Component {
   //   })
   // }
 
+  handleAttributeChange = (name, value) => {
+    const attributes = this.state.attr
+    attributes[name] = value
+
+    this.setState({
+      attr: attributes,
+    })
+  }
+
+  editorChange = ({ value }) => {
+    console.log("Editor new Value => ", value)
+    this.setState({ documentValue: value })
+  }
+
   render() {
     const {
       classes,
       section: { type, rawContent, id },
       pageAttributes,
     } = this.props
-    const { content, attr, focused } = this.state
+    const { content, attr, focused, documentValue } = this.state
 
     console.log("Section Attributes ", attr)
 
     return (
       <div
+        style={focused ? { border: "3px solid green" } : {}}
         ref={this.setWrapperRef}
         onFocus={() => this.handleFocus()}
         // onBlur={() => this.handleBlur()}
       >
-        <h1>I am A rich H1 components</h1>
-        {focused && <FontSettings attr={attr} />}
+        <span>h1</span>
+        {focused && (
+          <Fragment>
+            <FontSettings
+              attr={attr}
+              changeAttr={(name, val) => this.handleAttributeChange(name, val)}
+            />
+            <ColorSettings
+              changeColor={color => this.handleAttributeChange("color", color)}
+            />
+            <Editor value={documentValue} onChange={this.editorChange} />
+            {/* <Editor
+              autoCorrect={Boolean}
+              autoFocus={Boolean}
+              className={String}
+              onChange={Function}
+              placeholder={String || Element}
+              plugins={Array}
+              readOnly={Boolean}
+              role={String}
+              spellCheck={Boolean}
+              value={Value}
+              style={Object}
+              tabIndex={Number}
+            /> */}
+          </Fragment>
+        )}
         {/* <FontSettings attr={attr} /> */}
 
-        <div style={{ fontSize: `${attr.fontSize}px` }}>Content: {content}</div>
+        <div style={{ fontSize: `${attr.fontSize}px`, color: `${attr.color}` }}>
+          Content: {content}
+        </div>
         {/* <div style={{ fontSize: "40px" }}>Content: {content}</div> */}
         <TextField
           // label="None"
