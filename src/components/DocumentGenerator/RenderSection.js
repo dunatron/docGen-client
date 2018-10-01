@@ -51,7 +51,6 @@ class RenderSection extends Component {
 
   render() {
     const { section, pageAttributes } = this.props
-    console.log("The section ", section)
     const richComponentToRender = this.renderSectionByType(
       section,
       pageAttributes

@@ -25,6 +25,7 @@ const FontPicker = props => {
             {sections.map((section, sectionIdx) => {
               return (
                 <RenderSection
+                  key={sectionIdx}
                   section={section}
                   pageAttributes={pageAttributes}
                 />

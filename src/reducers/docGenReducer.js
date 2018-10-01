@@ -16,7 +16,6 @@ const defaultState = {
  * Also it is missing step. You should, pass in DPI. dpi then should determine 1 of many switch cases for the size
  */
 const getPageDimensions = type => {
-  console.log("Reducer getPageDimensions type ->  ", type)
   switch (type) {
     case "A4":
       return {
@@ -37,12 +36,9 @@ const getPageDimensions = type => {
 }
 
 export default (state = defaultState, action) => {
-  console.log("PLEASE JUST BE CALLED")
   switch (action.type) {
     case "SET_DPI":
       //https://www.papersizes.org/a-sizes-in-pixels.htm
-      console.log("FFS")
-
       return {
         ...state,
         pageAttributes: {
@@ -55,7 +51,6 @@ export default (state = defaultState, action) => {
     case "SET_PAGE_TYPE":
       // const currDPI = this.state.pageAttributes.screenDPI
       const dimensions = getPageDimensions(action.payload)
-      console.log("mobon ", dimensions)
       return {
         ...state,
         pageAttributes: {

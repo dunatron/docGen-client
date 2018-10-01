@@ -6,11 +6,8 @@ export default (state = defaultState, action) => {
   switch (action.type) {
     case "ADD_LOADED_DOCUMENT":
       const newDocument = action.payload
-      console.log("The new document ", newDocument)
       let loadedDocuments = state.loadedDocuments
-      console.log("Original documents ", loadedDocuments)
       loadedDocuments.unshift(newDocument)
-      console.log("updated docuemnts ", loadedDocuments)
       return {
         ...state,
         loadedDocuments: loadedDocuments,

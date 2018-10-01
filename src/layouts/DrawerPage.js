@@ -178,15 +178,14 @@ class DrawerPage extends React.Component {
             </div>
             <Divider />
 
+            {/* {drawItems &&
+              drawItems.map((listItem, listIdx) => {
+                return listItem
+              })} */}
             {drawItems &&
               drawItems.map((listItem, listIdx) => {
-                console.log("DRAW ITEM ", typeof listItem)
-                console.log("Component? ", listItem)
-                return listItem
+                return <Fragment key={listIdx}>{listItem}</Fragment>
               })}
-            {/* <List>{mailFolderListItems}</List>
-        <Divider />
-        <List>{otherMailFolderListItems}</List> */}
           </Drawer>
           <main
             className={classNames(
@@ -201,9 +200,12 @@ class DrawerPage extends React.Component {
             <Fragment>
               {children && (
                 <Paper className={classes.root} square={true}>
-                  {/* {pathname && pathname !== "/" && <BackButton />} */}
-                  {children.map((component, idx) => {
+                  {/* {children.map((component, idx) => {
                     return component
+                  })} */}
+                  {/* {children.map(component => component)} */}
+                  {children.map((component, idx) => {
+                    return <Fragment key={idx}>{component}</Fragment>
                   })}
                 </Paper>
               )}

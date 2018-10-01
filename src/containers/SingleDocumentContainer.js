@@ -39,13 +39,8 @@ class SingleDocumentContainer extends Component {
         query={SINGLE_DOCUMENT_QUERY}
         variables={this._getQueryVariables()}>
         {({ loading, error, data, subscribeToMore }) => {
-          {
-            console.log("THE DATA ", data)
-          }
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
-
-          console.log("Data for a single Docuemnt => ", data)
 
           const { singleDocument } = data
           return (

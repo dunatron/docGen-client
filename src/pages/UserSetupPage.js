@@ -55,13 +55,10 @@ class UserSetupPage extends Component {
 
   onDragEnd = result => {
     if (result.type === "ORG") {
-      console.log("Add org to user through mutation ", result)
       try {
         const orgID = result.draggableId
         const userId = result.destination.droppableId
         this._addOrgToUser(orgID, userId)
-        console.log("The OrgId => ", orgID)
-        console.log("The UserId => ", userId)
       } catch (e) {
         // alert(`an error ${e}`)
       }
@@ -69,7 +66,6 @@ class UserSetupPage extends Component {
   }
 
   onDragStart = () => {
-    console.log("onDragStart start ")
   }
   render() {
     const userOrgSetup = (

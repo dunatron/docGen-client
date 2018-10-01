@@ -6,7 +6,6 @@ export const flattenDataDescriptions = (json, masterKey) => {
     }),
     {}
   )
-  console.log("The flattedned Keys With name - Descriptions ", flattenedObj)
   return flattenedObj
 }
 
@@ -18,6 +17,5 @@ export const flattenDataValues = (json, masterKey) => {
     }),
     {}
   )
-  console.log("The flattedned Values ", flattenedObj)
   return flattenedObj
 }

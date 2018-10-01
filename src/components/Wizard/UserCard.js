@@ -82,21 +82,6 @@ const UserCard = ({ user, classes, handleRoleChange, removeOrg }) => {
             </div>
           )}
         </Droppable>
-
-        {/* {organisations &&
-          organisations.map((org, orgIdx) => {
-            return (
-              <Chip
-                key={orgIdx}
-                icon={<FaceIcon />}
-                label={org.name}
-                onDelete={() => console.log("Remove organisation from user")}
-                className={classes.chip}
-                color="secondary"
-                variant="outlined"
-              />
-            )
-          })} */}
       </CardContent>
       <CardActions>
         <FormGroup>

@@ -33,7 +33,6 @@ const styles = {
 
 const DocumentPreview = ({ document, classes, theme, history, match }) => {
   const bull = <span className={classes.bullet}>•</span>
-  console.log("DO WE HAVE THEME? ", theme)
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -45,12 +44,12 @@ const DocumentPreview = ({ document, classes, theme, history, match }) => {
         </Typography>
         <Typography>{document.createdFor.name}</Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <div>
+          <span>
             Author Details:{" "}
-            <div>{document.createdBy ? document.createdBy.id : ""}</div>
-            <div>{document.createdBy ? document.createdBy.name : ""}</div>
-            <div>{document.createdBy ? document.createdBy.email : ""}</div>
-          </div>
+            <span>{document.createdBy ? document.createdBy.id : ""}</span>
+            <span>{document.createdBy ? document.createdBy.name : ""}</span>
+            <span>{document.createdBy ? document.createdBy.email : ""}</span>
+          </span>
         </Typography>
         <Typography component="p">
           Each document will have a brief intro explaining what exactly it is

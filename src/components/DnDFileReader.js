@@ -116,7 +116,7 @@ class DnDFileReader extends Component {
   renderUploadForm = (components, barStyle) => {
     const { classes, injectStyles } = this.props
     components.push(
-      <div style={{ ...injectStyles }}>
+      <div style={{ ...injectStyles }} key="Upload-Form">
         <div
           key={"uploadForm"}
           onClick={this.onZoneClick}

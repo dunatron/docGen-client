@@ -15,12 +15,8 @@ import {
 } from "../docyStaticTemplateData"
 // Static Flat Data
 import { agreementKnownAs } from "./DocY/agreementknowAsData"
-const axios = require("axios")
-
-console.log("This should be the data we need to flatten => ", agreementKnownAs)
 
 const flattenDataDescriptions = (data, masterKey) => {
-  console.log("Coool ", data)
   const test = Object.entries(data).reduce(
     (descriptions, [key, value]) => ({
       ...descriptions,
@@ -28,7 +24,6 @@ const flattenDataDescriptions = (data, masterKey) => {
     }),
     {}
   )
-  console.log("A test ", test)
   return "Hello World"
 }
 
@@ -36,8 +31,6 @@ const MyFlatDataDescriptions = flattenDataDescriptions(
   agreementKnownAs,
   "agreement"
 )
-
-console.log("our flat Data => ", MyFlatDataDescriptions)
 
 const styles = theme => ({
   root: {
@@ -53,7 +46,6 @@ const styles = theme => ({
 })
 
 const _processDocYFile = response => {
-  console.log("The res ", response)
   saveDocyFile(response.data, "testTheFile")
 }
 
@@ -82,7 +74,6 @@ class ProcessDocx extends Component {
       .split(".")
       .slice(0, -1)
       .join(".")
-    console.log("HERE IS NAME ", name)
     let formData = new FormData()
     formData.append("file", document)
     formData.append("templateData", JSON.stringify(templateData))
@@ -103,12 +94,7 @@ class ProcessDocx extends Component {
       .then(function(myBlob) {
         saveDocyFile(myBlob, fileName)
       })
-      .catch(function(error) {
-        console.log(
-          "There has been a problem with your fetch operation: ",
-          error.message
-        )
-      })
+      .catch(function(error) {})
   }
 
   changeStaticData = templateData => {

@@ -52,8 +52,6 @@ class AdminRoutes extends React.Component {
     const { user, classes, history, match } = this.props
     const { role } = user
 
-    console.log("the user data ", user)
-
     if (!role) {
       return (
         <div>
@@ -67,10 +65,6 @@ class AdminRoutes extends React.Component {
       <div className={classes.root}>
         {adminRoutes
           .filter(route => route.restricted.includes(role))
-          // .filter(route => {
-          //   console.log("Our route has? => ", route)
-          //   return true
-          // })
           .filter(route => route.panel)
           .map((route, routeIdx) => {
             return this._renderPanel(route)

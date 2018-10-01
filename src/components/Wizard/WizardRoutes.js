@@ -52,8 +52,6 @@ class WizardRoutes extends React.Component {
     const { user, classes, history, match } = this.props
     const { role } = user
 
-    console.log("the user data ", user)
-
     if (!role) {
       return (
         <div>

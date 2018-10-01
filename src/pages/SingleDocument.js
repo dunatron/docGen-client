@@ -11,8 +11,10 @@ class SingleDocument extends Component {
     return (
       <FullPage
         children={[
-          <div>Here is where our Magic begins</div>,
-          <SingleDocumentContainer />,
+          <div key="SingleDocumentSection-1">
+            Here is where our Magic begins
+          </div>,
+          <SingleDocumentContainer key="SingleDocumentSection-2" />,
         ]}
       />
     )

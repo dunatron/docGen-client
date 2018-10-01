@@ -40,8 +40,6 @@ class OrgList extends Component {
         {({ loading, error, data, subscribeToMore }) => {
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
-
-          console.log("all orgs => ", data)
           const { allOrganisations } = data
 
           return (
@@ -84,11 +82,7 @@ class OrgList extends Component {
                                       key={orgIdx}
                                       icon={<FaceIcon />}
                                       label={org.name}
-                                      onDelete={() =>
-                                        console.log(
-                                          "Remove organisation from user"
-                                        )
-                                      }
+                                      onDelete={() => alert("DELETE TODO")}
                                       className={classes.chip}
                                       color="secondary"
                                       variant="outlined"

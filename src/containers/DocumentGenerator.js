@@ -84,7 +84,6 @@ class DocumentGenerator extends Component {
   }
 
   onDragEnd = result => {
-    console.log("onDragEnd Finished ", result)
     const { document } = this.props
     const { type, source, reason, destination, draggableId } = result
     // Creating  new section
@@ -101,7 +100,6 @@ class DocumentGenerator extends Component {
   }
 
   onDragStart = () => {
-    console.log("onDragStart start ")
     // if (window.navigator.vibrate) {
     //   window.navigator.vibrate(100)
     // }

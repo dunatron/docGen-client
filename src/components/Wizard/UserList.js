@@ -13,8 +13,6 @@ import { CHANGE_USER_ROLE } from "../../mutations/changeUserRole"
 
 class UserList extends Component {
   _changeUserRole = async (e, user) => {
-    console.log("The user change role => ", e)
-    console.log("checked ? => ", e.target.checked)
     //1. if false change the role to GUEST
     //2. if true change the role to ADMIN
 
@@ -44,9 +42,6 @@ class UserList extends Component {
         {({ loading, error, data, subscribeToMore }) => {
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
-
-          console.log("users for the given org => ", data)
-
           const { allUsers } = data
 
           return (

@@ -15,14 +15,11 @@ const styles = theme => ({
  * API: https://material-ui.com/api/typography/
  */
 const TypographySheet = ({ classes, config, ...props }) => {
-  console.log("The config ", config)
-
   return (
     <div>
       <Paper square={true} className={classes.root} elevation={20}>
         {config &&
           config.map((conf, confIdx) => {
-            console.log("A conf => ", conf)
             return (
               <Typography
                 key={confIdx}

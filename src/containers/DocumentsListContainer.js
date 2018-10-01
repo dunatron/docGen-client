@@ -27,9 +27,6 @@ class DocumentsListContainer extends Component {
     return (
       <Query query={DOCUMENT_FEED_QUERY}>
         {({ loading, error, data, subscribeToMore }) => {
-          {
-            console.log("THE DATA ", data)
-          }
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
 

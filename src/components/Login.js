@@ -143,9 +143,7 @@ class Login extends Component {
   }
 
   _confirm = async data => {
-    console.log("Our data ")
     const { token, user } = this.state.login ? data.login : data.signup
-    console.log("New User Data ", user)
     this._saveUserData(token, user)
     this.props.history.push(`/`)
   }

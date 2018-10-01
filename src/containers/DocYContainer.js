@@ -26,9 +26,10 @@ import {
   flattenDataDescriptions,
   flattenDataValues,
 } from "../utils/flattenData"
+import { prettifyJson, uglifyJson } from "../utils/prettifyJson"
 
 const staticDataOptions = [
-  { name: "Agreement Know As", value: agreementKnownAs },
+  { name: "Agreement Known As", value: agreementKnownAs },
 ]
 
 const styles = theme => ({
@@ -60,6 +61,37 @@ class DocYContainer extends Component {
         "agreement"
       ),
       dataValues: flattenDataValues(staticDataOptions[0].value, "agreement"),
+      jsonData: prettifyJson({
+        "agreement.agreementKnownAs": "Heath's Great Lease",
+        "agreement.commencementDate": "21/05/2017",
+        "agreement.lesseeName": "Bob Brown",
+        "agreement.lessorNameAndAddress": "Heath Dunlop",
+        "agreement.streetAddress": "123, Fake Street",
+        "agreement.leaseDesciption":
+          "Thomas Greg Brown leases the Premises at Level 3, Trump Tower, 21 Jump Street, Auckland for $40,000 plus GST per annum",
+        "agreement.lessorSignatory": "Mr Alex McMillan2",
+        "agreement.lessorSignatoryRole": "Director",
+        "agreement.lessorSignatoryOrganisation":
+          "Lessor Signatory Organisation",
+        "agreement.lessorEmail": "j.b@me.com",
+        "agreement.lesseeEmail": "j.b@me.com",
+        "agreement.lessorServiceAddress": "1 Bath Street, Dunedin",
+        "agreement.lessorDescription": "Landlord Corp",
+        "agreement.originalLessor": "The Bury Trust",
+        "agreement.originalLessee": "T.H. Lewis Plc",
+        "agreement.lessorMobile": "077 126 75170",
+        "agreement.lessorPhone": "03 126 75170",
+        "agreement.lessorStreetAddress": "123 Lessor Street",
+        "agreement.lesseeName": "David Bromley",
+        "agreement.lesseePersonalAddress":
+          "200 Kilgour Street, Roslyn, Dunedin",
+        "agreement.guarantorPersonalAddress":
+          "200 Kilgour Street, Roslyn, Dunedin",
+        "agreement.lesseeServiceAddress": "1 Bath Street, Dunedin",
+        "agreement.lesseeDescription":
+          "David Smith as Trustee of Smith Trust LTD",
+        "agreement.outgoingInstallmentPeriod": "Monthly",
+      }),
     }
   }
 
@@ -71,10 +103,9 @@ class DocYContainer extends Component {
 
   renderDataDescriptions = dataDescriptions => {
     const { classes } = this.props
-    return Object.entries(dataDescriptions).map(([key, value]) => {
-      console.log(`${key} ${value}`) // "a 5", "b 7", "c 9"
+    return Object.entries(dataDescriptions).map(([key, value], objIdx) => {
       return (
-        <Fragment>
+        <Fragment key={objIdx}>
           <dt className={classes.dt}>{`{${key}}`}</dt>
           <dd className={classes.dd}>{value}</dd>
         </Fragment>
@@ -88,7 +119,6 @@ class DocYContainer extends Component {
       .split(".")
       .slice(0, -1)
       .join(".")
-    console.log("HERE IS NAME ", name)
     let formData = new FormData()
     formData.append("file", document)
     formData.append("templateData", JSON.stringify(templateData))
@@ -109,18 +139,28 @@ class DocYContainer extends Component {
       .then(function(myBlob) {
         saveDocyFile(myBlob, fileName)
       })
-      .catch(function(error) {
-        console.log(
-          "There has been a problem with your fetch operation: ",
-          error.message
-        )
-      })
+      .catch(function(error) {})
+  }
+
+  handleJsonChange = json => {
+    console.log("New JSON => ", json)
+    this.setState({
+      jsonData: json,
+    })
+  }
+
+  prettifyJson = () => {
+    // const jsonAsRaw = JSON.parse(this.state.jsonData)
+
+    const jsonAsRaw = uglifyJson(this.state.jsonData)
+    this.setState({
+      jsonData: prettifyJson(jsonAsRaw),
+    })
   }
 
   render() {
     const { theme, classes } = this.props
-    const { templateData, dataDescriptions, dataValues } = this.state
-    console.log("FIND A FILED WITH A VALUE ", dataValues)
+    const { templateData, dataDescriptions, dataValues, jsonData } = this.state
     const renderDataDescriptions = renderDataDescriptions
     return (
       <div>
@@ -134,12 +174,25 @@ class DocYContainer extends Component {
           ]}
           children={[
             // <ProcessDocx />,
-            <TypographySheet config={docYInfoConf} />,
+
+            <TypographySheet config={docYInfoConf} key="DocySection-1" />,
             <SelectOption
               options={staticDataOptions}
               value={templateData}
               handleChange={templateData => this.changeStaticData(templateData)}
+              key="DocySection-2"
             />,
+            <div>
+              <textarea
+                onBlur={() => this.prettifyJson()}
+                style={{ width: "70%" }}
+                rows="20"
+                cols="50"
+                value={jsonData}
+                onChange={e => this.handleJsonChange(e.target.value)}
+              />
+              {/* <div onClick={() => this.prettifyJson()}>Prettify Json</div> */}
+            </div>,
             <DnDFileReader
               injectStyles={{
                 position: "relative",
@@ -148,8 +201,9 @@ class DocYContainer extends Component {
                 minWidth: 400,
               }}
               processWordDoc={document =>
-                this.processDocWithDocy(document, dataValues)
+                this.processDocWithDocy(document, JSON.parse(jsonData))
               }
+              key="DocySection-3"
             />,
           ]}
         />

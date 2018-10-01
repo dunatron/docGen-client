@@ -523,7 +523,6 @@ class SuperTable extends React.Component {
                                 cellHeader.found,
                                 n
                               ).length
-                              console.log("The length ", length)
                               return (
                                 <TableCell
                                   key={idx}

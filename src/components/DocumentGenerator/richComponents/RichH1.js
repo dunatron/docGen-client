@@ -71,15 +71,13 @@ class RichH1 extends Component {
     const {
       section: { rawContent },
     } = this.props
-    const { documentValue } = rawContent ? rawContent : initialValue
+    const { document } = rawContent ? rawContent : initialValue
 
     this.state = {
       content: rawContent ? rawContent.value : "",
       attr: this._handleInitialAttributes(rawContent ? rawContent.attr : {}),
       focused: false,
-      documentValue: documentValue
-        ? Value.fromJSON(documentValue)
-        : initialValue,
+      document: document ? Value.fromJSON(document) : initialValue,
     }
   }
 
@@ -96,7 +94,6 @@ class RichH1 extends Component {
    * Set the wrapper ref
    */
   setWrapperRef(node) {
-    console.log("the node to set => ", node)
     this.wrapperRef = node
   }
 
@@ -111,11 +108,11 @@ class RichH1 extends Component {
     const {
       section: { id },
     } = this.props
-    const { content, attr, documentValue } = this.state
+    const { content, attr, document } = this.state
     if (focused) {
       if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
         // alert("You clicked outside of me!")
-        this._saveSection(id, content, attr, documentValue)
+        this._saveSection(id, content, attr, document)
         this.setState({
           focused: false,
         })
@@ -129,16 +126,13 @@ class RichH1 extends Component {
     })
   }
 
-  _saveSection = async (id, content, attr, documentValue) => {
-    console.log("content?  ", content)
+  _saveSection = async (id, content, attr, document) => {
     // const jsonContent = JSON.stringify(content)
     const jsonContent = {
       value: content,
       attr: attr,
-      documentValue: documentValue,
+      document: document,
     }
-    // console.log("jsonContent is => ", jsonContent)
-    // alert("Time to save the section")
     const section = {
       id: id,
       rawContent: jsonContent,
@@ -171,8 +165,7 @@ class RichH1 extends Component {
   }
 
   editorChange = ({ value }) => {
-    console.log("Editor new Value => ", value)
-    this.setState({ documentValue: value })
+    this.setState({ document: value })
   }
 
   render() {
@@ -181,9 +174,7 @@ class RichH1 extends Component {
       section: { type, rawContent, id },
       pageAttributes,
     } = this.props
-    const { content, attr, focused, documentValue } = this.state
-
-    console.log("Section Attributes ", attr)
+    const { content, attr, focused, document } = this.state
 
     return (
       <div
@@ -202,7 +193,7 @@ class RichH1 extends Component {
             <ColorSettings
               changeColor={color => this.handleAttributeChange("color", color)}
             />
-            <Editor value={documentValue} onChange={this.editorChange} />
+            <Editor value={document} onChange={this.editorChange} />
             {/* <Editor
               autoCorrect={Boolean}
               autoFocus={Boolean}
@@ -231,7 +222,7 @@ class RichH1 extends Component {
           // onBlur={() => this.handleBlur()}
           // onFocus={() => this.handleFocus()}
           id="margin-none"
-          defaultValue="NEW SECTION"
+          placeholder="NEW SECTION H1..."
           className={classes.textField}
           value={content}
           onChange={e => this.handleChange(e.target.value)}

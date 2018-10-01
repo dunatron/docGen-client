@@ -27,9 +27,6 @@ class OrgDataConfigsContainer extends Component {
     return (
       <Query query={ORG_DATA_CONFIGS} variables={this._getQueryVariables()}>
         {({ loading, error, data, subscribeToMore }) => {
-          {
-            console.log("THE DATA ", data)
-          }
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
 

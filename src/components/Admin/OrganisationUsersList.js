@@ -18,11 +18,8 @@ class OrganisationUsersList extends Component {
   }
 
   _changeUserRole = async (e, user) => {
-    console.log("The user change role => ", e)
-    console.log("checked ? => ", e.target.checked)
     //1. if false change the role to GUEST
     //2. if true change the role to ADMIN
-
     let newRole
     if (e.target.checked === true) {
       newRole = "ADMIN"
@@ -50,13 +47,8 @@ class OrganisationUsersList extends Component {
     return (
       <Query query={ALL_ORGANISATION_USERS}>
         {({ loading, error, data, subscribeToMore }) => {
-          {
-            console.log("THE DATA ", data)
-          }
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
-
-          console.log("users for the given org => ", data)
 
           const { organisation } = data
           const { users } = organisation

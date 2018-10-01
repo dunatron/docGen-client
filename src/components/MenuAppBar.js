@@ -45,8 +45,6 @@ class MenuAppBar extends React.Component {
   }
 
   handleMenu = event => {
-    console.log("HANDLE MENU? event ", event)
-    console.log("HANDLE MENU? event ", event.currentTarget)
     this.setState({ anchorEl: event.currentTarget })
   }
 
