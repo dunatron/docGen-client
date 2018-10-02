@@ -152,7 +152,7 @@ class DocYContainer extends Component {
       // catch an errors unrelated to the server
       .catch(error => {
         console.log(error)
-        alert(error)
+        // alert(error)
       })
   }
 
