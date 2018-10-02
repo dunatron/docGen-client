@@ -113,6 +113,17 @@ class DocYContainer extends Component {
     })
   }
 
+  handleErrors = response => {
+    if (!response.ok) {
+      response.json().then(error => {
+        alert(error.message)
+        alert(error.reason)
+      })
+      throw Error(response.statusText)
+    }
+    return response
+  }
+
   processDocWithDocy = (document, templateData) => {
     const { size, name, lastModified, type } = document
     const fileName = name
@@ -130,16 +141,19 @@ class DocYContainer extends Component {
     }
 
     fetch(endpoint, fetchOptions)
-      .then(function(response) {
-        if (response.ok) {
-          return response.blob()
-        }
-        throw new Error("Network response was not ok.")
-      })
-      .then(function(myBlob) {
+      // 1. handle any error responses
+      .then(res => this.handleErrors(res))
+      // 2. if no errors turn the response into a blob
+      .then(res => res.blob())
+      // 3. save to file onto the client
+      .then(myBlob => {
         saveDocyFile(myBlob, fileName)
       })
-      .catch(function(error) {})
+      // catch an errors unrelated to the server
+      .catch(error => {
+        console.log(error)
+        alert(error)
+      })
   }
 
   handleJsonChange = json => {
