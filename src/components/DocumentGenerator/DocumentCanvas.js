@@ -3,6 +3,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "@material-ui/core/styles"
 // Components
 import RenderSection from "./RenderSection"
+import DocumentSection from "./DocumentSection"
 
 const styles = theme => ({})
 
@@ -24,11 +25,13 @@ const FontPicker = props => {
             {...provided.droppableProps}>
             {sections.map((section, sectionIdx) => {
               return (
-                <RenderSection
-                  key={sectionIdx}
-                  section={section}
-                  pageAttributes={pageAttributes}
-                />
+                // <RenderSection
+                //   sectionId={sectionIdx}
+                //   key={sectionIdx}
+                //   section={section}
+                //   pageAttributes={pageAttributes}
+                // />
+                <DocumentSection key={sectionIdx} />
               )
             })}
             {provided.placeholder}
