@@ -31,7 +31,7 @@ const FontPicker = props => {
                 //   section={section}
                 //   pageAttributes={pageAttributes}
                 // />
-                <DocumentSection key={sectionIdx} />
+                <DocumentSection section={section} key={sectionIdx} />
               )
             })}
             {provided.placeholder}
