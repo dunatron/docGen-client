@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from "react"
+import { connect } from "react-redux"
+import { graphql, withApollo, compose } from "react-apollo"
 // section by type
 import RenderSectionByType from "./RenderSectionByType"
+// Mutations
+import { UPDATE_SECTION_MUTATION } from "../../mutations/updateSection"
 
 class DocumentSection extends React.Component {
   constructor(props) {
@@ -64,25 +68,33 @@ class DocumentSection extends React.Component {
     // with the `textInput` that we created in the constructor
     const { focused } = this.state
     const { section } = this.props
-    console.log("The section ", section)
     return (
       <div
         ref={this.sectionRef}
         onFocus={this.focusSection}
         style={focused ? { border: "2px dashed green" } : {}}>
-        <input placeholder="Some sort of placeholder" ref={this.textInput} />
-        <div s-attr={section.id}>
-          <h2>Clicking me shouldnt disable the</h2>
-        </div>
         <RenderSectionByType
           section={section}
-          update={section => {
-            console.log("Update state section ", section)
-          }}
+          update={section => this._updateSection(section)}
         />
       </div>
     )
   }
+
+  _updateSection = ({ id, rawContent }) => {
+    // UPDATE_SECTION_MUTATION
+    this.props.updateSection({
+      variables: {
+        sectionId: id,
+        rawContent: rawContent,
+      },
+    })
+  }
 }
 
-export default DocumentSection
+// export default DocumentSection
+
+export default compose(
+  graphql(UPDATE_SECTION_MUTATION, { name: "updateSection" }),
+  withApollo
+)(DocumentSection)

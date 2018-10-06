@@ -55,7 +55,6 @@ class RenderSection extends Component {
   }
 
   componentWillUnmount() {
-    // alert("Component is dismopunting")
     document.removeEventListener("mousedown", this.handleClickOutside)
   }
 
@@ -165,7 +164,6 @@ class RenderSection extends Component {
     )
   }
 }
-// export default RenderSection
 
 export default compose(
   graphql(UPDATE_SECTION_MUTATION, { name: "updateSection" }),

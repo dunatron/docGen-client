@@ -13,15 +13,22 @@ const styles = theme => ({
 })
 
 class RichParagraph extends Component {
+  update = document => {
+    const { classes, section } = this.props
+    const { id, type, rawContent } = section
+    const updatedSection = { id, type, rawContent: { document } }
+    this.props.update(updatedSection)
+  }
   render() {
     const { classes, section } = this.props
     const { id, type, rawContent } = section
 
     return (
       <Fragment>
-        <h1>Our Rich Paragraph Component</h1>
-        <input placeholder="A random nested placeholder" />
-        <Canvas />
+        <Canvas
+          document={rawContent ? rawContent.document : null}
+          updateDocument={document => this.update(document)}
+        />
       </Fragment>
     )
   }

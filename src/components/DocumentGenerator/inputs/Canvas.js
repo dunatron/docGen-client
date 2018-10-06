@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from "react"
 import { Editor } from "slate-react"
 import { Value } from "slate"
+import faker from "faker"
 
 // Marks
 import CodeMark from "../marks/CodeMark"
+import HeaderMark from "../marks/HeaderMark"
 // https://codeburst.io/lets-build-a-customizable-rich-text-editor-with-slate-and-react-beefd5d441f2
 // https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
 const styles = theme => ({
@@ -14,35 +16,68 @@ const styles = theme => ({
   },
 })
 
-const initialValue = Value.fromJSON({
-  document: {
+/**
+ * Create a huge JSON document.
+ *
+ * @type {Object}
+ */
+
+const HEADINGS = 1
+const PARAGRAPHS = 1 // Paragraphs per heading
+const nodes = []
+const json = {
+  document: { nodes },
+}
+
+for (let h = 0; h < HEADINGS; h++) {
+  nodes.push({
+    object: "block",
+    type: "heading",
+    // nodes: [{ object: "text", leaves: [{ text: faker.lorem.sentence() }] }],
     nodes: [
       {
-        object: "block",
-        type: "paragraph",
-        nodes: [
-          {
-            object: "text",
-            leaves: [
-              {
-                text: "A line of text in a paragraph.",
-              },
-            ],
-          },
+        object: "text",
+        leaves: [
+          { text: "Heading(edit): Simplistic, feature packed editor 🔥" },
         ],
       },
     ],
-  },
-})
+  })
+
+  for (let p = 0; p < PARAGRAPHS; p++) {
+    nodes.push({
+      object: "block",
+      type: "paragraph",
+      // nodes: [{ object: "text", leaves: [{ text: faker.lorem.paragraph() }] }],
+      nodes: [
+        {
+          object: "text",
+          leaves: [{ text: "A new paragraph for editing 😎" }],
+        },
+      ],
+    })
+  }
+}
+
+function renderPlaceholder(props) {
+  const { node, editor } = props
+  return <span>{editor.props.placeholder}</span>
+}
 
 class Canvas extends Component {
   constructor(props) {
     super(props)
     const { document } = this.props
 
+    console.log("THE SERVER DOCUMENT => ", document)
+    console.log("The static JSON => ", json)
+
     this.state = {
-      // document: document ? Value.fromJSON(document) : initialValue,
-      document: initialValue,
+      focused: false,
+      // document: Value.fromJSON(json, { normalize: false }),
+      document: document
+        ? Value.fromJSON(document)
+        : Value.fromJSON(json, { normalize: false }),
     }
   }
   editorChange = ({ value }) => {
@@ -77,14 +112,38 @@ class Canvas extends Component {
     switch (props.node.type) {
       case "code":
         return <CodeMark {...props} />
+      case "heading":
+        return <HeaderMark {...props} />
     }
   }
+
+  updateDocument = document => {
+    this.props.updateDocument(document)
+  }
+
+  onFocus = () => {
+    this.setState({
+      focused: true,
+    })
+  }
+
+  onBlur = () => {
+    this.setState({
+      focused: false,
+    })
+    this.updateDocument(this.state.document)
+  }
+
   render() {
-    const { document } = this.state
+    const { document, focused } = this.state
     return (
       <Fragment>
+        {focused ? "editor is focused" : null}
         <Editor
-          data-section-attr={this.props.sIdx}
+          onFocus={() => this.onFocus()}
+          // onBlur={() => this.updateDocument(document)}
+          onBlur={() => this.onBlur()}
+          renderPlaceholder={renderPlaceholder}
           value={document}
           onChange={this.editorChange}
           onKeyDown={this.onKeyDown}
