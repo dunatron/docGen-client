@@ -132,6 +132,9 @@ class DocumentGenerator extends Component {
     const { pageAttributes } = docGen
     const pageDimensions = this.renderPage(screenDPI)
 
+    /**
+     * We are using zoom atm, this would double down on the width and height...
+     */
     const calculatedPageHeight =
       pageAttributes.pageHeight * (pageAttributes.percentage / 100)
 
@@ -158,9 +161,13 @@ class DocumentGenerator extends Component {
             documentId={document.id}
             sections={document.sections}
             pageAttributes={pageAttributes}
+            // pageDimensions={{
+            //   height: calculatedPageHeight,
+            //   width: calculatedPageWidth,
+            // }}
             pageDimensions={{
-              height: calculatedPageHeight,
-              width: calculatedPageWidth,
+              height: pageAttributes.pageHeight,
+              width: pageAttributes.pageWidth,
             }}
           />
         </div>
