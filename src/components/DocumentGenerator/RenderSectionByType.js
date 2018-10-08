@@ -1,19 +1,35 @@
 import React, { Component, Fragment } from "react"
 // Rich Components
 import RichH1 from "./richComponents/RichH1"
-import RichP from "./richComponents/RichP"
 import RichParagraph from "./richComponents/RichParagraph"
+import RichSection from "./richComponents/RichSection"
 
 const RenderSectionByType = props => {
-  const { section, update } = props
+  const { section, update, pageAttributes } = props
   switch (section.type) {
     case "h1":
       return (
-        <RichParagraph section={section} update={section => update(section)} />
+        <RichH1
+          section={section}
+          pageAttributes={pageAttributes}
+          update={section => update(section)}
+        />
       )
     case "p":
       return (
-        <RichParagraph section={section} update={section => update(section)} />
+        <RichParagraph
+          section={section}
+          pageAttributes={pageAttributes}
+          update={section => update(section)}
+        />
+      )
+    case "richsection":
+      return (
+        <RichSection
+          section={section}
+          pageAttributes={pageAttributes}
+          update={section => update(section)}
+        />
       )
     default:
       return null

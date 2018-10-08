@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
+import faker from "faker"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
 
@@ -13,7 +14,7 @@ const styles = theme => ({
   },
 })
 
-class RichParagraph extends Component {
+class RichSection extends Component {
   update = document => {
     const { classes, section } = this.props
     const { id, type, rawContent } = section
@@ -35,24 +36,42 @@ class RichParagraph extends Component {
   }
 
   _generateInitial = () => {
-    const nodes = [
-      {
-        object: "block",
-        type: "paragraph",
-        // nodes: [{ object: "text", leaves: [{ text: faker.lorem.paragraph() }] }],
-        nodes: [
-          {
-            object: "text",
-            leaves: [{ text: "A new paragraph for editing 😎" }],
-          },
-        ],
-      },
-    ]
+    const HEADINGS = 2
+    const PARAGRAPHS = 5 // Paragraphs per heading
+    const nodes = []
     const json = {
       document: { nodes },
     }
-    return json
+
+    for (let h = 0; h < HEADINGS; h++) {
+      nodes.push({
+        object: "block",
+        type: "heading",
+        // nodes: [{ object: "text", leaves: [{ text: faker.lorem.sentence() }] }],
+        nodes: [
+          {
+            object: "text",
+            leaves: [{ text: faker.lorem.sentence() }],
+          },
+        ],
+      })
+
+      for (let p = 0; p < PARAGRAPHS; p++) {
+        nodes.push({
+          object: "block",
+          type: "paragraph",
+          // nodes: [{ object: "text", leaves: [{ text: faker.lorem.paragraph() }] }],
+          nodes: [
+            {
+              object: "text",
+              leaves: [{ text: faker.lorem.paragraph() }],
+            },
+          ],
+        })
+      }
+      return json
+    }
   }
 }
 
-export default withStyles(styles)(RichParagraph)
+export default withStyles(styles)(RichSection)

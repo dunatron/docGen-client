@@ -38,6 +38,7 @@
     "redux-promise-middleware": "^5.1.1",
     "redux-thunk": "^2.3.0",
     "slate": "^0.41.2",
+    "slate-html-serializer": "^0.7.7",
     "slate-react": "^0.18.10",
     "string_decoder": "^1.1.1",
     "subscriptions-transport-ws": "^0.9.14"

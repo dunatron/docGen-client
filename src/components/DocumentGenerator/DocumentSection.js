@@ -3,9 +3,13 @@ import { connect } from "react-redux"
 import { graphql, withApollo, compose } from "react-apollo"
 // section by type
 import RenderSectionByType from "./RenderSectionByType"
+// Queries. Thi is to just update the document Query
+import { SINGLE_DOCUMENT_QUERY } from "../../queries/singleDocument"
 // Mutations
 import { UPDATE_SECTION_MUTATION } from "../../mutations/updateSection"
-
+import { DELETE_SECTION_MUTATION } from "../../mutations/deleteSection"
+// Icons
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
 class DocumentSection extends React.Component {
   constructor(props) {
     super(props)
@@ -19,6 +23,7 @@ class DocumentSection extends React.Component {
     } = this.props
 
     this.state = {
+      removing: false,
       focused: false,
       id,
       type,
@@ -63,17 +68,42 @@ class DocumentSection extends React.Component {
     })
   }
 
+  renderFocusedComponents = () => {
+    return (
+      <Fragment>
+        <div
+          style={{ position: "absolute", top: -30, right: 0 }}
+          onClick={() => this._deleteSection(this.state.id)}>
+          <DeleteForeverIcon />
+        </div>
+      </Fragment>
+    )
+  }
+
   render() {
     // tell React that we want to associate the <input> ref
     // with the `textInput` that we created in the constructor
-    const { focused } = this.state
-    const { section } = this.props
+    const { focused, removing } = this.state
+    const { section, pageAttributes } = this.props
+
+    if (removing) {
+      return (
+        <div>
+          <p>Removing {section.id}</p>
+        </div>
+      )
+    }
+
     return (
       <div
         ref={this.sectionRef}
         onFocus={this.focusSection}
-        style={focused ? { border: "2px dashed green" } : {}}>
+        style={
+          focused ? { border: "2px dashed green", position: "relative" } : {}
+        }>
+        {focused ? this.renderFocusedComponents() : null}
         <RenderSectionByType
+          pageAttributes={pageAttributes}
           section={section}
           update={section => this._updateSection(section)}
         />
@@ -81,7 +111,7 @@ class DocumentSection extends React.Component {
     )
   }
 
-  _updateSection = ({ id, rawContent }) => {
+  _updateSection = async ({ id, rawContent }) => {
     // UPDATE_SECTION_MUTATION
     this.props.updateSection({
       variables: {
@@ -90,11 +120,51 @@ class DocumentSection extends React.Component {
       },
     })
   }
+
+  _deleteSection = async sectionId => {
+    this.setState({ removing: true })
+    try {
+      const { documentId } = this.props
+      const res = await this.props.deleteSection({
+        variables: {
+          sectionId: sectionId,
+        },
+        update: (store, { data: { postSection } }) => {
+          const data = store.readQuery({
+            query: SINGLE_DOCUMENT_QUERY,
+            variables: { id: documentId },
+          })
+          const itemToDelete = data.singleDocument.sections.findIndex(
+            s => s.id === sectionId
+          )
+
+          data.singleDocument.sections.slice(itemToDelete, 1)
+
+          store.writeQuery({
+            query: SINGLE_DOCUMENT_QUERY,
+            data,
+            variables: { id: documentId },
+          })
+        },
+        refetchQueries: [
+          {
+            query: SINGLE_DOCUMENT_QUERY,
+            variables: { id: documentId },
+          },
+        ],
+      })
+      console.log("removed section res => ", res)
+    } catch (e) {
+    } finally {
+      this.setState({ removing: false })
+    }
+  }
 }
 
 // export default DocumentSection
 
 export default compose(
   graphql(UPDATE_SECTION_MUTATION, { name: "updateSection" }),
+  graphql(DELETE_SECTION_MUTATION, { name: "deleteSection" }),
   withApollo
 )(DocumentSection)

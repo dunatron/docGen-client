@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
-// Canvas
-import Canvas from "../inputs/Canvas"
+// RichEditor
+import RichEditor from "../inputs/RichEditor"
+
 // https://codeburst.io/lets-build-a-customizable-rich-text-editor-with-slate-and-react-beefd5d441f2
 // https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
 const styles = theme => ({
@@ -12,17 +13,47 @@ const styles = theme => ({
   },
 })
 
-class RichH1 extends Component {
+class RichParagraph extends Component {
+  update = document => {
+    const { classes, section } = this.props
+    const { id, type, rawContent } = section
+    const updatedSection = { id, type, rawContent: { document } }
+    this.props.update(updatedSection)
+  }
   render() {
-    const { classes } = this.props
+    const { classes, section, pageAttributes } = this.props
+    const { id, type, rawContent } = section
 
     return (
       <Fragment>
-        <h1>an h1 component</h1>
-        <Canvas sIdx={this.props.sIdx} document={this.props.document} />
+        <RichEditor
+          pageAttributes={pageAttributes}
+          document={rawContent ? rawContent.document : this._generateInitial()}
+          updateDocument={document => this.update(document)}
+        />
       </Fragment>
     )
   }
+
+  _generateInitial = () => {
+    const nodes = [
+      {
+        object: "block",
+        type: "heading",
+        // nodes: [{ object: "text", leaves: [{ text: faker.lorem.paragraph() }] }],
+        nodes: [
+          {
+            object: "text",
+            leaves: [{ text: "A new heading" }],
+          },
+        ],
+      },
+    ]
+    const json = {
+      document: { nodes },
+    }
+    return json
+  }
 }
 
-export default withStyles(styles)(RichH1)
+export default withStyles(styles)(RichParagraph)

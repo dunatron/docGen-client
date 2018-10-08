@@ -27,9 +27,3 @@ class FontSettings extends Component {
   }
 }
 export default withStyles(styles)(FontSettings)
-// export default RenderSection
-
-// export default compose(
-//   graphql(UPDATE_SECTION_MUTATION, { name: "updateSection" }),
-//   withApollo
-// )(RenderSection)

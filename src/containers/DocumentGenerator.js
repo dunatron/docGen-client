@@ -141,9 +141,7 @@ class DocumentGenerator extends Component {
     const h1FontSiz = 36 * (pageAttributes.percentage / 100)
     const pFontStyle = 13 * (pageAttributes.percentage / 100)
 
-    const { template, data, Component } = this.props
-
-    if (!template) return false
+    const { data, Component } = this.props
 
     return (
       <DragDropContext
@@ -157,6 +155,7 @@ class DocumentGenerator extends Component {
             onChange={v => this.props.updatePagePercentage(v)}
           />
           <DocumentCanvas
+            documentId={document.id}
             sections={document.sections}
             pageAttributes={pageAttributes}
             pageDimensions={{
