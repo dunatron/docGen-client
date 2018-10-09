@@ -17,11 +17,13 @@ const FontPicker = props => {
           <div
             ref={provided.innerRef}
             style={{
+              padding: "15px",
               zoom: pageAttributes.percentage / 100,
               border: "1px solid purple",
               height: `${pageDimensions.height}px`,
               width: `${pageDimensions.width}px`,
-              backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
+              // backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
+              backgroundColor: snapshot.isDraggingOver ? "teal" : "white",
             }}
             {...provided.droppableProps}>
             {sections.map((section, sectionIdx) => {
