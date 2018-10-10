@@ -225,7 +225,7 @@ class RichEditor extends Component {
   render() {
     const { document, focused } = this.state
     const { history } = document
-    const { SuggestionPortal } = this.suggestionsPlugin
+    // const { SuggestionPortal } = this.suggestionsPlugin
     return (
       <Fragment>
         {focused ? "editor is focused" : null}
@@ -252,7 +252,7 @@ class RichEditor extends Component {
           renderNode={this.renderNode}
           renderMark={props => <RenderMark {...props} />}
         />
-        <SuggestionPortal value={document} />
+        {/* <SuggestionPortal value={document} /> */}
       </Fragment>
     )
   }

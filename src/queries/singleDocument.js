@@ -14,8 +14,9 @@ export const SINGLE_DOCUMENT_QUERY = gql`
         id
         name
       }
-      sections {
+      sections(orderBy: position_ASC) {
         id
+        position
         type
         rawContent
       }

@@ -17,6 +17,7 @@ import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
 
 // Mutations
 import { POST_SECTION_MUTATION } from "../mutations/postSection"
+import { UPDATE_SECTION_POSITION } from "../mutations/updateSectionPosition"
 
 const styles = {
   root: {
@@ -40,6 +41,27 @@ const getDraggableClasses = isDragging =>
   classNames(styles.draggable, {
     [styles.isDragging]: isDragging,
   })
+
+// const reorder = (list, startIndex, endIndex) => {
+//   console.log("Before re-order ", list)
+//   const result = Array.from(list)
+//   const [removed] = result.splice(startIndex, 1)
+//   result.splice(endIndex, 0, removed)
+//   console.log("reorder result ", result)
+
+//   console.log("DOCUMENT GENERATOR PROPS => ", this.props)
+
+//   // const data = this.props.client.readQuery({
+//   //   query: SINGLE_DOCUMENT_QUERY,
+//   //   variables: { id: this.props.document.id },
+//   // })
+
+//   // data.singleDocument.sections = result
+
+//   // console.log("The new List YOOOOOOOO => ", data)
+
+//   return result
+// }
 
 class DocumentGenerator extends Component {
   state = {}
@@ -84,6 +106,7 @@ class DocumentGenerator extends Component {
   }
 
   onDragEnd = result => {
+    console.log("Our drag result... ", result)
     const { document } = this.props
     const { type, source, reason, destination, draggableId } = result
     // Creating  new section
@@ -95,7 +118,13 @@ class DocumentGenerator extends Component {
       type === "DocumentCanvas" &&
       source.droppableId === "documentDroppable"
     ) {
-      alert("Re Order the sections?")
+      const sections = this._reorder(
+        this.props.document.sections,
+        result.source.index,
+        result.destination.index
+      )
+      this._reorderSections(sections)
+      console.log("Our sections const reordered => ", sections)
     }
   }
 
@@ -103,6 +132,15 @@ class DocumentGenerator extends Component {
     // if (window.navigator.vibrate) {
     //   window.navigator.vibrate(100)
     // }
+  }
+
+  _reorder = (list, startIndex, endIndex) => {
+    console.log("Before re-order ", list)
+    const result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+
+    return result
   }
 
   _createSection = async (documentId, sectionType) => {
@@ -124,6 +162,45 @@ class DocumentGenerator extends Component {
         })
       },
     })
+  }
+
+  _reorderSections = async sections => {
+    console.log("Our sections to reorder! ", sections)
+
+    const data = this.props.client.readQuery({
+      query: SINGLE_DOCUMENT_QUERY,
+      variables: { id: this.props.document.id },
+    })
+
+    data.singleDocument.sections = sections
+
+    this.props.client.writeQuery({
+      query: SINGLE_DOCUMENT_QUERY,
+      data,
+      variables: { id: this.props.document.id },
+    })
+
+    // id: "cjn17yjtkzm2x0b483140vyod"
+    // position: 6
+    // This is making a single request for each section
+    // al we are doing is sending up the id and the position(int) so we are better to make 1 request
+    sections.map((section, sectionIdx) => {
+      // Update the position as sectionIdx
+      const updatedSectionPos = { id: section.id, position: sectionIdx }
+      this._updateSectionPosition(updatedSectionPos)
+      // Batch update for positions?
+    })
+  }
+
+  _updateSectionPosition = async ({ id, position }) => {
+    // UPDATE_SECTION_MUTATION
+    const res = await this.props.updateSectionPosition({
+      variables: {
+        sectionId: id,
+        position: position,
+      },
+    })
+    console.log("Yay we have updated!@! => ", res)
   }
 
   renderDocumentGenerator = document => {
@@ -196,6 +273,8 @@ const reduxWrapper = connect(
 
 export default compose(
   graphql(POST_SECTION_MUTATION, { name: "postSection" }),
+  graphql(UPDATE_SECTION_POSITION, { name: "updateSectionPosition" }),
+
   withStyles(styles),
   withApollo,
   reduxWrapper
