@@ -22,6 +22,61 @@ import HoverMenu from "../HoverMenu"
 // https://docs.slatejs.org/walkthroughs/saving-and-loading-html-content
 
 console.log("The suggestyions PLUGIN => ==== => ", SuggestionsPlugin)
+function getCurrentWord(text, index, initialIndex) {
+  if (index === initialIndex) {
+    return {
+      start: getCurrentWord(text, index - 1, initialIndex),
+      end: getCurrentWord(text, index + 1, initialIndex),
+    }
+  }
+  if (text[index] === " " || text[index] === "@" || text[index] === undefined) {
+    return index
+  }
+  if (index < initialIndex) {
+    return getCurrentWord(text, index - 1, initialIndex)
+  }
+  if (index > initialIndex) {
+    return getCurrentWord(text, index + 1, initialIndex)
+  }
+}
+
+const suggestions = [
+  {
+    key: "@heath",
+    value: "The Dunatron",
+    suggestion: "@heath", // Can be either string or react component
+  },
+  {
+    key: "@agreement.name",
+    value: "The Great Lease",
+    suggestion: "@agreement.name", // Can be either string or react component
+  },
+  {
+    key: "@rumbla",
+    value: "dane",
+    suggestion: "@rumbla", // Can be either string or react component
+  },
+  {
+    key: "@JonSnow",
+    value: "Jon Snow",
+    suggestion: "@JonSnow", // Can be either string or react component
+  },
+  {
+    key: "@DaenerysTargaryen",
+    value: "Daenerys Targaryen",
+    suggestion: "@DaenerysTargaryen",
+  },
+  {
+    key: "@CerseiLannister",
+    value: "Cersei Lannister",
+    suggestion: "@CerseiLannister",
+  },
+  {
+    key: "@TyrionLannister",
+    value: "Tyrion Lannister",
+    suggestion: "@TyrionLannister",
+  },
+]
 
 // Create a new serializer instance with our `rules` from above.
 const html = new Html({ rules })
@@ -38,6 +93,37 @@ class RichEditor extends Component {
   constructor(props) {
     super(props)
     const { document, pageAttributes } = this.props
+
+    this.suggestionsPlugin = new SuggestionsPlugin({
+      capture: /(^|\W)@([^\s]+)?/,
+      suggestions,
+      onEnter: (suggestion, change) => {
+        const { anchorText, selection } = change.value
+        const { offset } = selection.anchor
+
+        const text = anchorText.text
+
+        let index = { start: offset - 1, end: offset }
+
+        if (text[offset - 1] !== "@") {
+          index = getCurrentWord(text, offset - 1, offset - 1)
+        }
+
+        const newText = `${text.substring(0, index.start)}${suggestion.value} `
+
+        change
+          .deleteBackward(offset)
+          // .toggleMark("data") // need some way of attaching what it's key is
+          // .addMark("data") // need some way of attaching what it's key is
+          .insertText(newText)
+          .focus()
+          .moveToEndOfText()
+
+        return false
+      },
+    })
+
+    this.plugins = [this.suggestionsPlugin].concat(plugins)
 
     // Initialise document from it's json
 
@@ -139,6 +225,7 @@ class RichEditor extends Component {
   render() {
     const { document, focused } = this.state
     const { history } = document
+    const { SuggestionPortal } = this.suggestionsPlugin
     return (
       <Fragment>
         {focused ? "editor is focused" : null}
@@ -158,12 +245,14 @@ class RichEditor extends Component {
         <Editor
           onFocus={() => this.onFocus()}
           onBlur={() => this.onBlur()}
-          plugins={plugins}
+          // plugins={plugins}
+          plugins={this.plugins}
           value={document}
           onChange={this.editorChange}
           renderNode={this.renderNode}
           renderMark={props => <RenderMark {...props} />}
         />
+        <SuggestionPortal value={document} />
       </Fragment>
     )
   }

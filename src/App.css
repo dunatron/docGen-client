@@ -23,6 +23,35 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.suggestion-portal {
+  display: none;
+  position: absolute;
+  z-index: 10000;
+  margin-top: 30px;
+  width: 200px;
+}
+
+.suggestion-portal ul {
+  list-style-type: none;
+  margin-top: 0;
+  position: relative;
+  padding-left: 0;
+  margin-left: -8px;
+  background-color: #fff;
+}
+
+.suggestion-portal li {
+  padding: 5px 10px;
+}
+
+.suggestion-portal li.selected {
+  background-color: #eee;
 }
