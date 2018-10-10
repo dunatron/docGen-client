@@ -26,114 +26,6 @@ import HoverMenu from "../HoverMenu"
 // Important: This idea below will allow us to add classes and attributes to our objects as html
 // https://docs.slatejs.org/walkthroughs/saving-and-loading-html-content
 
-import IconButton from "@material-ui/core/IconButton"
-import DeleteIcon from "@material-ui/icons/Delete"
-
-/**
- * Give the menu some styles.
- *
- * @type {Component}
- */
-
-// const StyledMenu = styled(Menu)`
-//   padding: 8px 7px 6px;
-//   position: absolute;
-//   z-index: 1;
-//   top: -10000px;
-//   left: -10000px;
-//   margin-top: -6px;
-//   opacity: 0;
-//   background-color: #222;
-//   border-radius: 4px;
-//   transition: opacity 0.75s;
-// `
-
-// const StyledMenu = styled("div")`
-//   padding: 8px 7px 6px;
-//   position: absolute;
-//   z-index: 1;
-//   top: -10000px;
-//   left: -10000px;
-//   margin-top: -6px;
-//   opacity: 0;
-//   background-color: #222;
-//   border-radius: 4px;
-//   transition: opacity 0.75s;
-// `
-
-// class HoverMenu extends React.Component {
-//   /**
-//    * Render.
-//    *
-//    * @return {Element}
-//    */
-
-//   render() {
-//     const { className, classes, innerRef } = this.props
-//     const root = window.document.getElementById("root")
-
-//     return ReactDOM.createPortal(
-//       <StyledMenu className={className} innerRef={innerRef}>
-//         {this.renderMarkButton("bold", "format_bold")}
-//         {this.renderMarkButton("italic", "format_italic")}
-//         {this.renderMarkButton("underlined", "format_underlined")}
-//         {this.renderMarkButton("code", "code")}
-//       </StyledMenu>,
-//       root
-//     )
-
-//     // return ReactDOM.createPortal(
-//     //   <div className={classes.menu} innerRef={innerRef}>
-//     //     {this.renderMarkButton("bold", "format_bold")}
-//     //     {this.renderMarkButton("italic", "format_italic")}
-//     //     {this.renderMarkButton("underlined", "format_underlined")}
-//     //     {this.renderMarkButton("code", "code")}
-//     //   </div>,
-//     //   root
-//     // )
-//   }
-
-//   /**
-//    * Render a mark-toggling toolbar button.
-//    *
-//    * @param {String} type
-//    * @param {String} icon
-//    * @return {Element}
-//    */
-
-//   renderMarkButton(type, icon) {
-//     const { value, classes } = this.props
-//     const isActive = value.activeMarks.some(mark => mark.type == type)
-//     return (
-//       <IconButton
-//         reversed
-//         active={isActive}
-//         onMouseDown={event => this.onClickMark(event, type)}
-//         aria-label="Delete">
-//         <DeleteIcon />
-//       </IconButton>
-//     )
-//   }
-
-//   /**
-//    * When a mark button is clicked, toggle the current mark.
-//    *
-//    * @param {Event} event
-//    * @param {String} type
-//    */
-
-//   onClickMark(event, type) {
-//     const { value, onChange } = this.props
-//     event.preventDefault()
-//     const change = value.change().toggleMark(type)
-//     onChange(change)
-//   }
-// }
-
-// HoverMenu.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// }
-
 // Create a new serializer instance with our `rules` from above.
 const html = new Html({ rules })
 
@@ -213,11 +105,6 @@ class RichEditor extends Component {
 
     const { document } = this.state
     const { fragment, selection } = document
-
-    console.log("Updating Menu ... fragment => ", fragment)
-    console.log("Updating Menu ... selection => ", selection)
-
-    console.log("The Menu => ", menu)
 
     if (selection.isBlurred || selection.isCollapsed || fragment.text === "") {
       menu.removeAttribute("style")
