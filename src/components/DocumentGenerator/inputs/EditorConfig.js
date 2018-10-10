@@ -12,6 +12,7 @@ const MARK_TAGS = {
   em: "italic",
   strong: "bold",
   u: "underline",
+  data: "data",
 }
 export const rules = [
   {
@@ -72,6 +73,10 @@ export const rules = [
   },
 ]
 
+function insertData(change) {
+  change.toggleMark("data")
+}
+
 function MarkHotkey(options) {
   const { type, key } = options
   console.log("Mark A Hot Key ", options)
@@ -83,7 +88,13 @@ function MarkHotkey(options) {
       // Prevent the default characters from being inserted.
       event.preventDefault()
       // Toggle the mark `type`.
+      if (type === "data") {
+        change.call(insertData)
+        // change.collapseToEnd()
+        return true
+      }
       change.toggleMark(type)
+
       return true
     },
   }
@@ -94,10 +105,15 @@ const boldPlugin = MarkHotkey({
   type: "bold",
   key: "b",
 })
+const dataPlugin = MarkHotkey({
+  type: "data",
+  key: "d",
+})
 // Create an array of plugins.
 export const plugins = [
   // MarkHotkey({ key: "b", type: "bold" }),
   boldPlugin,
+  dataPlugin,
   MarkHotkey({ key: "`", type: "code" }),
   MarkHotkey({ key: "i", type: "italic" }),
   // MarkHotkey({ key: "~", type: "strikethrough" }),

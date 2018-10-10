@@ -1,4 +1,5 @@
 import React from "react"
+import DataMark from "./DataMark"
 
 const RenderMark = props => {
   switch (props.mark.type) {
@@ -13,6 +14,8 @@ const RenderMark = props => {
       return <del>{props.children}</del>
     case "underline":
       return <u>{props.children}</u>
+    case "data":
+      return <DataMark {...props} />
   }
 }
 

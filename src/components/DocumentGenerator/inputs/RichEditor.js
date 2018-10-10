@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react"
 import { Editor } from "slate-react"
 import { Value } from "slate"
-import faker from "faker"
+
 // Serializer
 import Html from "slate-html-serializer"
 // Editor Config
@@ -11,12 +11,6 @@ import { rules, plugins } from "./EditorConfig"
 import RenderMark from "../render_marks/RenderMark"
 import CodeMark from "../render_nodes/CodeMark"
 import HeaderMark from "../render_nodes/HeaderMark"
-import BoldMark from "../render_marks/BoldMark"
-import ItalicMark from "../render_marks/ItalicMark"
-import { props } from "docx"
-import ReactDOM from "react-dom"
-import PropTypes from "prop-types"
-import styled, { css } from "react-emotion"
 import { withStyles } from "@material-ui/core/styles"
 // components
 import EditorBar from "./EditorBar"
@@ -64,13 +58,6 @@ class RichEditor extends Component {
     if (value.document != this.state.document) {
       this.setState({ document: value })
     }
-  }
-
-  onKeyDown = (event, change) => {
-    if (event.key != "b" || !event.ctrlKey) return
-    event.preventDefault()
-    change.toggleMark("bold")
-    return true
   }
 
   renderNode = props => {
