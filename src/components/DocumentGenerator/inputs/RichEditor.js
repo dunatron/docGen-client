@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react"
 import { Editor } from "slate-react"
 import { Value } from "slate"
+import SuggestionsPlugin from "../../../suggestions/index"
 
 // Serializer
 import Html from "slate-html-serializer"
@@ -19,6 +20,8 @@ import HoverMenu from "../HoverMenu"
 // https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
 // Important: This idea below will allow us to add classes and attributes to our objects as html
 // https://docs.slatejs.org/walkthroughs/saving-and-loading-html-content
+
+console.log("The suggestyions PLUGIN => ==== => ", SuggestionsPlugin)
 
 // Create a new serializer instance with our `rules` from above.
 const html = new Html({ rules })
