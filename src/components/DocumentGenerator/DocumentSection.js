@@ -62,7 +62,6 @@ class DocumentSection extends React.Component {
 
   focusSection() {
     // this.textInput.current.focus()
-    console.log("Current sectionRef => ", this.sectionRef.current)
     this.setState({
       focused: true,
     })
@@ -104,6 +103,7 @@ class DocumentSection extends React.Component {
         {focused ? this.renderFocusedComponents() : null}
         <RenderSectionByType
           pageAttributes={pageAttributes}
+          focused={focused}
           section={section}
           update={section => this._updateSection(section)}
         />
@@ -134,27 +134,25 @@ class DocumentSection extends React.Component {
             query: SINGLE_DOCUMENT_QUERY,
             variables: { id: documentId },
           })
-          const itemToDelete = data.singleDocument.sections.findIndex(
+          const itemIdxToDelete = data.singleDocument.sections.findIndex(
             s => s.id === sectionId
           )
-
-          data.singleDocument.sections.slice(itemToDelete, 1)
-
+          data.singleDocument.sections.splice(itemIdxToDelete, 1)
           store.writeQuery({
             query: SINGLE_DOCUMENT_QUERY,
             data,
             variables: { id: documentId },
           })
         },
-        refetchQueries: [
-          {
-            query: SINGLE_DOCUMENT_QUERY,
-            variables: { id: documentId },
-          },
-        ],
+        // refetchQueries: [
+        //   {
+        //     query: SINGLE_DOCUMENT_QUERY,
+        //     variables: { id: documentId },
+        //   },
+        // ],
       })
-      console.log("removed section res => ", res)
     } catch (e) {
+      alert(e)
     } finally {
       this.setState({ removing: false })
     }

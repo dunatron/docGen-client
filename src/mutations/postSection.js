@@ -5,6 +5,7 @@ export const POST_SECTION_MUTATION = gql`
     postSection(type: $type, belongsTo: $docId) {
       id
       type
+      position
       rawContent
       createdAt
       belongsTo {

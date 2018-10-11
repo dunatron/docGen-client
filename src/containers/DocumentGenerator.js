@@ -111,7 +111,26 @@ class DocumentGenerator extends Component {
     const { type, source, reason, destination, draggableId } = result
     // Creating  new section
     if (type === "DocumentCanvas" && source.droppableId === "fontDroppable") {
-      this._createSection(document.id, draggableId)
+      // this._createSection(document.id, draggableId)
+      // This will need to create a new section with the relevant position.
+      // We should also then reOrder sections function
+      const sections = this.props.document.sections
+      console.log("Sections ", sections)
+      const newSection = this._createSection(document.id, draggableId)
+      newSection.then(res => {
+        console.log("OUR RES => ", res)
+        sections.splice(result.destination.index, 0, res.data.postSection)
+        this._reorderSections(sections)
+      })
+      // sections.splice(result.destination.index, 0, newSection.data.postSection)
+      console.group("===NEW SECTION===")
+      console.log("New Section created ", newSection)
+      console.log("Current sections => ", this.props.document.sections)
+      console.log("sourceIndex ", result.source.index)
+      console.log("destinationIndex ", result.destination.index)
+      console.log("The new sections to go back into the query ", sections)
+      console.groupEnd()
+      // this._reorderSections(sections)
     }
     // Reorder the canvas
     if (
@@ -144,24 +163,20 @@ class DocumentGenerator extends Component {
   }
 
   _createSection = async (documentId, sectionType) => {
-    this.props.postSection({
+    // const section = await this.props.postSection({
+    //   variables: {
+    //     type: sectionType,
+    //     docId: documentId,
+    //   },
+    // })
+    // return section
+    const section = this.props.postSection({
       variables: {
         type: sectionType,
         docId: documentId,
       },
-      update: (store, { data: { postSection } }) => {
-        const data = store.readQuery({
-          query: SINGLE_DOCUMENT_QUERY,
-          variables: { id: documentId },
-        })
-        data.singleDocument.sections.unshift(postSection)
-        store.writeQuery({
-          query: SINGLE_DOCUMENT_QUERY,
-          data,
-          variables: { id: documentId },
-        })
-      },
     })
+    return section
   }
 
   _reorderSections = async sections => {

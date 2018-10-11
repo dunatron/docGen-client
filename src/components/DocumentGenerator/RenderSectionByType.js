@@ -6,7 +6,7 @@ import RichSection from "./richComponents/RichSection"
 import RichColumns from "./richComponents/RichColumns"
 
 const RenderSectionByType = props => {
-  const { section, update, pageAttributes } = props
+  const { section, update, pageAttributes, focused } = props
   switch (section.type) {
     case "h1":
       return (
@@ -36,6 +36,7 @@ const RenderSectionByType = props => {
       return (
         <RichColumns
           section={section}
+          focused={focused}
           pageAttributes={pageAttributes}
           update={section => update(section)}
         />

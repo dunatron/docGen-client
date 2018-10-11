@@ -52,30 +52,35 @@ const suggestions = [
     suggestion: "@agreement.name", // Can be either string or react component
   },
   {
-    key: "@rumbla",
-    value: "dane",
-    suggestion: "@rumbla", // Can be either string or react component
+    key: "@agreement.date",
+    value: "24/03/1991",
+    suggestion: "@agreement.date", // Can be either string or react component
   },
-  {
-    key: "@JonSnow",
-    value: "Jon Snow",
-    suggestion: "@JonSnow", // Can be either string or react component
-  },
-  {
-    key: "@DaenerysTargaryen",
-    value: "Daenerys Targaryen",
-    suggestion: "@DaenerysTargaryen",
-  },
-  {
-    key: "@CerseiLannister",
-    value: "Cersei Lannister",
-    suggestion: "@CerseiLannister",
-  },
-  {
-    key: "@TyrionLannister",
-    value: "Tyrion Lannister",
-    suggestion: "@TyrionLannister",
-  },
+  // {
+  //   key: "@rumbla",
+  //   value: "dane",
+  //   suggestion: "@rumbla", // Can be either string or react component
+  // },
+  // {
+  //   key: "@JonSnow",
+  //   value: "Jon Snow",
+  //   suggestion: "@JonSnow", // Can be either string or react component
+  // },
+  // {
+  //   key: "@DaenerysTargaryen",
+  //   value: "Daenerys Targaryen",
+  //   suggestion: "@DaenerysTargaryen",
+  // },
+  // {
+  //   key: "@CerseiLannister",
+  //   value: "Cersei Lannister",
+  //   suggestion: "@CerseiLannister",
+  // },
+  // {
+  //   key: "@TyrionLannister",
+  //   value: "Tyrion Lannister",
+  //   suggestion: "@TyrionLannister",
+  // },
 ]
 
 // Create a new serializer instance with our `rules` from above.
@@ -225,7 +230,7 @@ class RichEditor extends Component {
   render() {
     const { document, focused } = this.state
     const { history } = document
-    // const { SuggestionPortal } = this.suggestionsPlugin
+    const { SuggestionPortal } = this.suggestionsPlugin
     return (
       <Fragment>
         {focused ? "editor is focused" : null}
@@ -252,7 +257,7 @@ class RichEditor extends Component {
           renderNode={this.renderNode}
           renderMark={props => <RenderMark {...props} />}
         />
-        {/* <SuggestionPortal value={document} /> */}
+        {document ? <SuggestionPortal value={document} /> : null}
       </Fragment>
     )
   }
