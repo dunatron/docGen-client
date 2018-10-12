@@ -2,11 +2,15 @@ import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
+// ContextMenu
+import ContextMenu from "../ContextMenu"
 // Mui Components
 import IconButton from "@material-ui/core/IconButton"
 // Icons
 import DeleteIcon from "@material-ui/icons/Delete"
 import AddIcon from "@material-ui/icons/Add"
+import position from "../../../suggestions/caret-position"
+import { isUndefined } from "../../../utils/checkType"
 
 // https://codeburst.io/lets-build-a-customizable-rich-text-editor-with-slate-and-react-beefd5d441f2
 // https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
@@ -32,7 +36,7 @@ const styles = theme => ({
       opacity: "1",
       width: "fit-content",
       border: "2px solid black",
-      zIndex: 99999,
+      zIndex: 1000,
     },
     "&:hover:before": {
       opacity: "1",
@@ -50,6 +54,11 @@ const styles = theme => ({
       width: "100%",
     },
   },
+  contextMenu: {
+    position: "fixed",
+    zIndex: 10000,
+    backgroundColor: "#FFF",
+  },
   columnsWrapper: {
     display: "flex",
     // flexWrap: "wrap", // This causes issues with just 2...
@@ -65,6 +74,7 @@ class RichColumns extends Component {
     super(props)
     const { classes, section } = this.props
     const { id, type, rawContent } = section
+    this.root = React.createRef()
 
     // If rawContent is null we have not initialssed our columns yet!
     let columns = []
@@ -77,6 +87,7 @@ class RichColumns extends Component {
     // Initialise document from it's json
 
     this.state = {
+      visibleContext: false,
       focused: false,
       id,
       type,
@@ -139,18 +150,124 @@ class RichColumns extends Component {
     )
   }
 
+  handleColumnContext = (event, colIdx) => {
+    event.preventDefault()
+    this.setState({
+      visibleContext: true,
+    })
+    const clickX = event.clientX
+    const clickY = event.clientY
+    const screenW = window.innerWidth
+    const screenH = window.innerHeight
+    const rootW = this.root.offsetWidth
+    const rootH = this.root.offsetHeight
+
+    const right = screenW - clickX > rootW
+    const left = !right
+    const top = screenH - clickY > rootH
+    const bottom = !top
+
+    console.log("this.root => ", this.root)
+
+    try {
+      if (this.root.current !== null) {
+        console.log("YAY WE HAVE A ROOT OBJ REF THINGY ", this.root.style)
+        if (right) {
+          this.root.style.left = `${clickX + 5}px`
+        }
+
+        if (left) {
+          this.root.style.left = `${clickX - rootW - 5}px`
+        }
+        isUndefined
+
+        if (top) {
+          this.root.style.top = `${clickY + 5}px`
+        }
+
+        if (bottom) {
+          this.root.style.top = `${clickY - rootH - 5}px`
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+    // if (right) {
+    //   this.root.style.left = `${clickX + 5}px`
+    // }
+
+    // if (left) {
+    //   this.root.style.left = `${clickX - rootW - 5}px`
+    // }
+
+    // if (top) {
+    //   this.root.style.top = `${clickY + 5}px`
+    // }
+
+    // if (bottom) {
+    //   this.root.style.top = `${clickY - rootH - 5}px`
+    // }
+  }
+
+  handleColumnClick = (e, colIdx) => {
+    console.log("COLUM CLICK E +> ", e)
+    // if (e.type === "click") {
+    //   console.log("Left click")
+    // } else if (e.type === "contextmenu") {
+    //   console.log("Right click")
+    //   this.handleColumnContext()
+    // }
+    if (e.nativeEvent.which === 1) {
+      console.log("NATIVE left click")
+    } else if (e.nativeEvent.which === 3) {
+      console.log("NATIVE right click")
+      console.log("colIdx ", colIdx)
+      console.log("e.pageY ", e.pageY)
+      console.log("e.pageX ", e.pageX)
+      this.handleColumnContext(e, colIdx)
+    }
+  }
+
   render() {
-    const { columns } = this.state
+    const { columns, visibleContext } = this.state
     const { focused, classes } = this.props
     const columnsLength = columns.length
 
     return (
       <div className={classes.columnsWrapper}>
+        {/* Render context Menu on Right click anywhere on the columns component */}
+
+        {/* {visibleContext ? (
+          <ContextMenu
+            ref={ref => {
+              this.root = ref
+            }}>
+            [<div>Some chils</div>,<div>Another</div>]
+          </ContextMenu>
+        ) : null} */}
+        {visibleContext ? (
+          <div
+            ref={ref => {
+              this.root = ref
+            }}
+            className={classes.contextMenu}>
+            <div className="contextMenu--option">Add Column To the right</div>
+            <div className="contextMenu--option">Add Column to the left</div>
+            <div className="contextMenu--option">Delete COlumns</div>
+            <div className="contextMenu--option contextMenu--option__disabled">
+              HELP
+            </div>
+          </div>
+        ) : null}
+        {/*  map over and render Columns */}
         {columns &&
           columns.map((col, colIdx) => {
             console.log("A column ", col)
             return (
               <div
+                onClick={e => this.handleColumnClick(e, colIdx)}
+                onContextMenu={e => this.handleColumnClick(e, colIdx)}
                 className={classes.column}
                 style={{
                   flexBasis: `${100 / columnsLength}%`,

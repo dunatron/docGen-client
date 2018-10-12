@@ -14,7 +14,7 @@ import CodeIcon from "@material-ui/icons/Code"
 const StyledMenu = styled("div")`
   padding: 8px 7px 6px;
   position: absolute;
-  z-index: 1;
+  z-index: 9000;
   top: -10000px;
   left: -10000px;
   margin-top: -6px;

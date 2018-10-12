@@ -98,6 +98,7 @@ class RichEditor extends Component {
   constructor(props) {
     super(props)
     const { document, pageAttributes } = this.props
+    
 
     this.suggestionsPlugin = new SuggestionsPlugin({
       capture: /(^|\W)@([^\s]+)?/,
@@ -233,7 +234,6 @@ class RichEditor extends Component {
     const { SuggestionPortal } = this.suggestionsPlugin
     return (
       <Fragment>
-        {focused ? "editor is focused" : null}
         <HoverMenu
           innerRef={menu => (this.menu = menu)}
           value={document}

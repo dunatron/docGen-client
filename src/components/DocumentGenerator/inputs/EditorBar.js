@@ -1,28 +1,43 @@
 import React, { Component, Fragment } from "react"
+// Material UI Icons
+import { withStyles } from "@material-ui/core/styles"
+import UndoIcon from "@material-ui/icons/Undo"
+import RedoIcon from "@material-ui/icons/Redo"
+
+const styles = theme => ({
+  bar: {
+    position: "absolute",
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    color: theme.palette.primary.main,
+    bottom: -30,
+    left: 0,
+    zIndex: 99999,
+  },
+  amount: {
+    marginRight: theme.spacing.unit,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+})
+
 class EditorBar extends Component {
   render() {
-    const { history, redo, undo } = this.props
+    const { classes, history, redo, undo } = this.props
     return (
-      <div
-        style={{
-          position: "absolute",
-          backgroundColor: "black",
-          color: "white",
-          border: "2px solid red",
-          top: -60,
-          left: 0,
-        }}>
-        <div onMouseDown={undo}>
-          <div>undo</div>
-        </div>
-        <div onMouseDown={redo}>
-          <div>redo</div>
-        </div>
-        <span>Undos: {history.undos.size}</span>
-        <span>Redos: {history.redos.size}</span>
+      <div className={classes.bar}>
+        <UndoIcon color="primary" onMouseDown={undo} />
+        <span className={classes.amount}>{history.undos.size}</span>
+        <RedoIcon color="primary" onMouseDown={undo} />
+        <span className={classes.amount}>{history.redos.size}</span>
       </div>
     )
   }
 }
 
-export default EditorBar
+// export default EditorBar
+export default withStyles(styles)(EditorBar)

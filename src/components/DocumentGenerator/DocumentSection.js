@@ -79,6 +79,14 @@ class DocumentSection extends React.Component {
     )
   }
 
+  getSectionStyle = focused => ({
+    // margin: focused ? "40px 0px" : 0,
+    margin: focused ? "32px 0 30px 0" : 0,
+    padding: focused ? "40px 0px" : 0,
+    border: focused ? "1px dashed #b2fab4" : "none",
+    position: "relative",
+  })
+
   render() {
     // tell React that we want to associate the <input> ref
     // with the `textInput` that we created in the constructor
@@ -97,9 +105,7 @@ class DocumentSection extends React.Component {
       <div
         ref={this.sectionRef}
         onFocus={this.focusSection}
-        style={
-          focused ? { border: "2px dashed green", position: "relative" } : {}
-        }>
+        style={this.getSectionStyle(focused)}>
         {focused ? this.renderFocusedComponents() : null}
         <RenderSectionByType
           pageAttributes={pageAttributes}
