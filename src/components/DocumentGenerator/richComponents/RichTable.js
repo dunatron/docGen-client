@@ -5,8 +5,7 @@ import { Table, TableRow, TableCell } from "@material-ui/core"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
 // Utils
-import { isEmpty, isNil, path, pathEq, filter } from "ramda"
-import DOCUMENT_QUERY from "../../../queries/Document.graphql"
+import { isEmpty, isNil } from "ramda"
 
 const styles = theme => ({})
 
@@ -18,62 +17,17 @@ class RichTable extends Component {
     this.props.update(updatedSection)
   }
 
-  // Update section for document. use Fragments for a section
-  // Then use Ramda to update a Section Fragment cell
+  /**
+   * Update section for document. use Fragments for a section
+   * Then use Ramda to update a Section Fragment cell
+   * Remember to convert sections to GrapgQl Fragments
+   * https://www.apollographql.com/docs/react/advanced/fragments.html
+   */
   _updateCell = (document, rIdx, cIdx) => {
-    console.group("_updateCell")
-    console.log("rIdx => ", rIdx)
-    console.log("cIdx => ", cIdx)
-    console.log("document => ", document)
-    console.groupEnd()
+    const { section } = this.props
 
-    console.log("Our props ", this.props)
-    // this.props.client.
-    // readQuery({
-    //   query: SINGLE_DOCUMENT_QUERY,
-    //   variables: { id: documentId },
-    // })
-    const {
-      client,
-      section,
-      // section: { id, type, rawContent, position },
-    } = this.props
-
-    // const doc = client.store.readQuery({
-    //   query: DOCUMENT_QUERY,
-    //   variables: { id: "cjn0wjnfywasy0b48vax4sufx" },
-    // })
-
-    // let doc = client.readQuery({
-    //   query: DOCUMENT_QUERY,
-    //   variables: { id: "cjn2c5g901lla0a90yty5vbvt" },
-    // })
-
-    // console.log("Cached Doc ", doc)
-
-    // console.log("Reading what we have in our store ", doc)
-    // // pathEq
-    // const editorToUpdate = path(
-    //   [position, "rawContent", "table", "rows", rIdx, cIdx],
-    //   doc.singleDocument.sections
-    // )
-    // // const editedCell = document.Value.document
-    // console.log("editorToUpdate => ", editorToUpdate)
-    // console.log("document to replace with => ", document)
-    // // console.log("editedCell => ", editedCell)
-
-    // // Umm no need to read the query tbh. we have access to the section and that is all we are updating...
-    // const sectionSlice = doc.singleDocument.sections[position]
-
-    // doc.singleDocument.sections[position].rawContent.table.rows[rIdx][cIdx] =
-    //   document.document
-    // sectionSlice.rawContent.table.rows[rIdx][cIdx] = document.document
-
-    console.log("Section Before => ", section)
     const updatedTableSection = section.rawContent.table
-    updatedTableSection.rows[rIdx][cIdx] = { document }
-    // updatedTableSection.rows[rIdx][cIdx] = document
-    console.log("Section After => ", updatedTableSection)
+    updatedTableSection.rows[rIdx][cIdx] = document
 
     const json = {
       table: {
@@ -82,56 +36,11 @@ class RichTable extends Component {
     }
 
     return this.update(json)
-
-    // doc.singleDocument.sections[position] = document
-
-    //this.update(updatedTableSection)
-
-    // Remember to convert sections to GrapgQl Fragments
-    //https://www.apollographql.com/docs/react/advanced/fragments.html
-  }
-
-  renderTable = table => {
-    const { classes, pageAttributes } = this.props
-    console.log("Our Table to render => ", table)
-    return (
-      <Table>
-        {table.rows.map((row, rIdx) => {
-          return (
-            <TableRow>
-              {row.map((cell, cIdx) => {
-                return (
-                  <TableCell>
-                    <RichEditor
-                      pageAttributes={pageAttributes}
-                      // document={
-                      //   cell.document
-                      //     ? cell.document
-                      //     : this._generateCell(rIdx, cIdx)
-                      // }
-                      document={cell.document}
-                      // document={this._generateCell(rIdx, cIdx)}
-                      updateDocument={document =>
-                        this._updateCell(document, rIdx, cIdx)
-                      }
-                    />
-                  </TableCell>
-                )
-              })}
-            </TableRow>
-          )
-        })}
-      </Table>
-    )
   }
 
   render() {
     const { classes, section, pageAttributes } = this.props
-    const { id, type, rawContent } = section
-
-    // Note: use the below to reset the db shitness
-    const initialTable = this._initTable(3, 3)
-    this.update(initialTable)
+    const { rawContent } = section
 
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
@@ -143,22 +52,21 @@ class RichTable extends Component {
 
     return (
       <Fragment>
-        {/* {this.renderTable(table)} */}
         <Table>
           {table.rows.map((row, rIdx) => {
+            console.log("row => ", row)
             return (
               <TableRow>
                 {row.map((cell, cIdx) => {
-                  console.log("Table cell => ", cell)
+                  console.log("cell => ", cell)
                   return (
                     <TableCell>
                       <RichEditor
                         pageAttributes={pageAttributes}
                         document={
-                          cell.document
-                            ? cell.document
-                            : this._generateCell(rIdx, cIdx)
+                          cell.document ? cell : this._generateCell(rIdx, cIdx)
                         }
+                        // document={cell}
                         // document={cell.document}
                         // document={this._generateCell(rIdx, cIdx)}
                         updateDocument={document =>
@@ -219,8 +127,6 @@ class RichTable extends Component {
     return json
   }
 }
-
-// export default withStyles(styles)(RichTable)
 
 export default compose(
   withApollo,
