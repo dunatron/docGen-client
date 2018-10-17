@@ -59,6 +59,7 @@ const FontPicker = props => {
                       <DocumentSection
                         pageAttributes={pageAttributes}
                         documentId={documentId}
+                        sectionIdx={sectionIdx}
                         section={section}
                         key={sectionIdx}
                       />

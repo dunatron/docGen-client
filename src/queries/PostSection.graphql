@@ -1,0 +1,17 @@
+#import "./DocumentSections.graphql"
+
+# https://github.com/apollographql/GitHunt-React/blob/master/src/routes/CommentsPage.js
+mutation updateSection($rawContent: Json, $sectionId: ID!) {
+  updateSection(rawContent: $rawContent, sectionId: $sectionId) {
+    ...DocumentSections
+    belongsTo {
+      name
+      id
+    }
+    createdBy {
+      email
+      name
+      id
+    }
+  }
+}

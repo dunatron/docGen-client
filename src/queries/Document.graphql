@@ -1,0 +1,32 @@
+#import "./DocumentSections.graphql"
+
+query Document($id: ID!) {
+  singleDocument(id: $id) {
+    name
+    id
+    createdAt
+    createdBy {
+      id
+      name
+    }
+    createdFor {
+      id
+      name
+    }
+    # sections {
+    #   id
+    #   position
+    #   type
+    #   rawContent
+    # }
+    sections(orderBy: position_ASC) {
+      ...DocumentSections
+    }
+    # sections(orderBy: position_ASC) {
+    #   id
+    #   position
+    #   type
+    #   rawContent
+    # }
+  }
+}

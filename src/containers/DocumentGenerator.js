@@ -13,8 +13,8 @@ import ShortCodePicker from "../components/DocumentGenerator/ShortCodePicker"
 import PagePercentage from "../components/DocumentGenerator/PagePercentage"
 
 // Queries
-import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
-
+// import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
+import DOCUMENT_QUERY from "../queries/Document.graphql"
 // Mutations
 import { POST_SECTION_MUTATION } from "../mutations/postSection"
 import { UPDATE_SECTION_POSITION } from "../mutations/updateSectionPosition"
@@ -41,27 +41,6 @@ const getDraggableClasses = isDragging =>
   classNames(styles.draggable, {
     [styles.isDragging]: isDragging,
   })
-
-// const reorder = (list, startIndex, endIndex) => {
-//   console.log("Before re-order ", list)
-//   const result = Array.from(list)
-//   const [removed] = result.splice(startIndex, 1)
-//   result.splice(endIndex, 0, removed)
-//   console.log("reorder result ", result)
-
-//   console.log("DOCUMENT GENERATOR PROPS => ", this.props)
-
-//   // const data = this.props.client.readQuery({
-//   //   query: SINGLE_DOCUMENT_QUERY,
-//   //   variables: { id: this.props.document.id },
-//   // })
-
-//   // data.singleDocument.sections = result
-
-//   // console.log("The new List YOOOOOOOO => ", data)
-
-//   return result
-// }
 
 class DocumentGenerator extends Component {
   state = {}
@@ -183,14 +162,14 @@ class DocumentGenerator extends Component {
     console.log("Our sections to reorder! ", sections)
 
     const data = this.props.client.readQuery({
-      query: SINGLE_DOCUMENT_QUERY,
+      query: DOCUMENT_QUERY,
       variables: { id: this.props.document.id },
     })
 
     data.singleDocument.sections = sections
 
     this.props.client.writeQuery({
-      query: SINGLE_DOCUMENT_QUERY,
+      query: DOCUMENT_QUERY,
       data,
       variables: { id: this.props.document.id },
     })

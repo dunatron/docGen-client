@@ -4,7 +4,8 @@ import { graphql, withApollo, compose } from "react-apollo"
 // section by type
 import RenderSectionByType from "./RenderSectionByType"
 // Queries. Thi is to just update the document Query
-import { SINGLE_DOCUMENT_QUERY } from "../../queries/singleDocument"
+import DOCUMENT_QUERY from "../../queries/Document.graphql"
+// import { SINGLE_DOCUMENT_QUERY } from "../../queries/singleDocument"
 // Mutations
 import { UPDATE_SECTION_MUTATION } from "../../mutations/updateSection"
 import { DELETE_SECTION_MUTATION } from "../../mutations/deleteSection"
@@ -117,6 +118,9 @@ class DocumentSection extends React.Component {
     )
   }
 
+  /**
+   * Ok we want top do Fragments on GraphQL. This way we just have to update the section!
+   */
   _updateSection = async ({ id, rawContent }) => {
     // UPDATE_SECTION_MUTATION
     this.props.updateSection({
@@ -137,7 +141,7 @@ class DocumentSection extends React.Component {
         },
         update: (store, { data: { postSection } }) => {
           const data = store.readQuery({
-            query: SINGLE_DOCUMENT_QUERY,
+            query: DOCUMENT_QUERY,
             variables: { id: documentId },
           })
           const itemIdxToDelete = data.singleDocument.sections.findIndex(
@@ -145,7 +149,7 @@ class DocumentSection extends React.Component {
           )
           data.singleDocument.sections.splice(itemIdxToDelete, 1)
           store.writeQuery({
-            query: SINGLE_DOCUMENT_QUERY,
+            query: DOCUMENT_QUERY,
             data,
             variables: { id: documentId },
           })

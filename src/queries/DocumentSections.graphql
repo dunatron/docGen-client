@@ -1,0 +1,6 @@
+fragment DocumentSections on Section {
+  id
+  position
+  type
+  rawContent
+}

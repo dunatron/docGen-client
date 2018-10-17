@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from "react"
 import { withRouter } from "react-router"
 import { compose, withApollo } from "react-apollo"
-import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
+// import { SINGLE_DOCUMENT_QUERY } from "../queries/singleDocument"
 import { Query } from "react-apollo"
 import DocumentGenerator from "./DocumentGenerator"
+// Queries
+import DOCUMENT_QUERY from "../queries/Document.graphql"
 
 class SingleDocumentContainer extends Component {
   _getQueryVariables = () => {
@@ -16,9 +18,7 @@ class SingleDocumentContainer extends Component {
 
   render() {
     return (
-      <Query
-        query={SINGLE_DOCUMENT_QUERY}
-        variables={this._getQueryVariables()}>
+      <Query query={DOCUMENT_QUERY} variables={this._getQueryVariables()}>
         {({ loading, error, data, subscribeToMore }) => {
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>

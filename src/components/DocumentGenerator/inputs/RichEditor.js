@@ -98,7 +98,6 @@ class RichEditor extends Component {
   constructor(props) {
     super(props)
     const { document, pageAttributes } = this.props
-    
 
     this.suggestionsPlugin = new SuggestionsPlugin({
       capture: /(^|\W)@([^\s]+)?/,
@@ -166,6 +165,7 @@ class RichEditor extends Component {
   }
 
   updateDocument = document => {
+    console.log("Updating editor document => ", document)
     this.props.updateDocument(document)
   }
 
