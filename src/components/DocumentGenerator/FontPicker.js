@@ -3,23 +3,35 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "@material-ui/core/styles"
 import Button from "@material-ui/core/Button"
 
-const styles = theme => ({})
+const styles = theme => ({
+  richWrapper: {
+    padding: theme.spacing.unit,
+    // paddingLeft: theme.spacing.unit,
+    // paddingRight: theme.spacing.unit,
+    display: "flex",
+  },
+  richComponentBtn: {
+    padding: theme.spacing.unit,
+  },
+})
 
 const FontPicker = props => {
-  const { classes } = props
+  const { classes, theme } = props
   return (
     <Fragment>
       <Droppable droppableId="fontDroppable" type="DocumentCanvas">
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
+            className={classes.richWrapper}
             style={{
-              backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
+              backgroundColor: snapshot.isDraggingOver ? "b2fab4" : "3FFF",
             }}
             {...provided.droppableProps}>
             <Draggable draggableId="h1" index={0}>
               {(provided, snapshot) => (
                 <div
+                  className={classes.richComponentBtn}
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}>
@@ -37,6 +49,7 @@ const FontPicker = props => {
             <Draggable draggableId="p" index={1}>
               {(provided, snapshot) => (
                 <div
+                  className={classes.richComponentBtn}
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}>
@@ -54,6 +67,7 @@ const FontPicker = props => {
             <Draggable draggableId="columns" index={2}>
               {(provided, snapshot) => (
                 <div
+                  className={classes.richComponentBtn}
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}>
@@ -71,6 +85,7 @@ const FontPicker = props => {
             <Draggable draggableId="table" index={3}>
               {(provided, snapshot) => (
                 <div
+                  className={classes.richComponentBtn}
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}>
@@ -93,4 +108,4 @@ const FontPicker = props => {
   )
 }
 
-export default withStyles(styles)(FontPicker)
+export default withStyles(styles, { withTheme: true })(FontPicker)

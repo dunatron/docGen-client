@@ -10,12 +10,7 @@ class SingleDocument extends Component {
   render() {
     return (
       <FullPage
-        children={[
-          <div key="SingleDocumentSection-1">
-            Here is where our Magic begins
-          </div>,
-          <SingleDocumentContainer key="SingleDocumentSection-2" />,
-        ]}
+        children={[, <SingleDocumentContainer key="SingleDocumentSection-2" />]}
       />
     )
   }
