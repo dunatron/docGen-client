@@ -13,6 +13,11 @@ const styles = theme => ({})
 // Reuse this
 // Resize div => https://github.com/STRML/react-resizable
 
+// OR
+// an actual util function
+// https://medium.com/the-z/making-a-resizable-div-in-js-is-not-easy-as-you-think-bda19a1bc53d
+// Good read and maybe implement some sort of component.
+// But for now the STRML/react-resizable will fit our case. especially the handles for on hover only. i.e print. RAD MVP
 class RichTable extends Component {
   update = table => {
     const { classes, section } = this.props
