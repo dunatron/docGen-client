@@ -67,6 +67,7 @@ class RichTable extends Component {
         <ResizableBox
           width={200}
           height={200}
+          draggableOpts={{ grid: [25, 25] }}
           minConstraints={[100, 100]}
           maxConstraints={[300, 300]}>
           <span>Contents</span>
