@@ -18,6 +18,7 @@ const styles = theme => ({})
 // https://medium.com/the-z/making-a-resizable-div-in-js-is-not-easy-as-you-think-bda19a1bc53d
 // Good read and maybe implement some sort of component.
 // But for now the STRML/react-resizable will fit our case. especially the handles for on hover only. i.e print. RAD MVP
+// User that third party resize component to be some sort of super. Ie resizabl;eTable. resizblae row, and cols
 class RichTable extends Component {
   update = table => {
     const { classes, section } = this.props
