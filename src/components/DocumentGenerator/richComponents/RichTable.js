@@ -9,6 +9,10 @@ import { isEmpty, isNil } from "ramda"
 
 const styles = theme => ({})
 
+// Resizable Table outer!
+// Reuse this
+// Resize div => https://github.com/STRML/react-resizable
+
 class RichTable extends Component {
   update = table => {
     const { classes, section } = this.props
