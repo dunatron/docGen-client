@@ -6,6 +6,8 @@ import { Table, TableRow, TableCell } from "@material-ui/core"
 import RichEditor from "../inputs/RichEditor"
 // Utils
 import { isEmpty, isNil } from "ramda"
+// Resize
+import { Resizable, ResizableBox } from "react-resizable"
 
 const styles = theme => ({})
 
@@ -62,6 +64,13 @@ class RichTable extends Component {
 
     return (
       <Fragment>
+        <ResizableBox
+          width={200}
+          height={200}
+          minConstraints={[100, 100]}
+          maxConstraints={[300, 300]}>
+          <span>Contents</span>
+        </ResizableBox>
         <Table>
           {table.rows.map((row, rIdx) => {
             console.log("row => ", row)
