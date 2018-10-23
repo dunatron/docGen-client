@@ -15,7 +15,6 @@ function insertData(change) {
 class DataMark extends Component {
   constructor(props) {
     super(props)
-    console.log("Data MArk Props ", this.props)
     this.state = {
       originalText: this.props.text,
     }

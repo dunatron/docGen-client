@@ -85,7 +85,6 @@ class DocumentGenerator extends Component {
   }
 
   onDragEnd = result => {
-    console.log("Our drag result... ", result)
     const { document } = this.props
     const { type, source, reason, destination, draggableId } = result
     // Creating  new section
@@ -94,21 +93,21 @@ class DocumentGenerator extends Component {
       // This will need to create a new section with the relevant position.
       // We should also then reOrder sections function
       const sections = this.props.document.sections
-      console.log("Sections ", sections)
+      // console.log("Sections ", sections)
       const newSection = this._createSection(document.id, draggableId)
       newSection.then(res => {
-        console.log("OUR RES => ", res)
+        // console.log("OUR RES => ", res)
         sections.splice(result.destination.index, 0, res.data.postSection)
         this._reorderSections(sections)
       })
       // sections.splice(result.destination.index, 0, newSection.data.postSection)
-      console.group("===NEW SECTION===")
-      console.log("New Section created ", newSection)
-      console.log("Current sections => ", this.props.document.sections)
-      console.log("sourceIndex ", result.source.index)
-      console.log("destinationIndex ", result.destination.index)
-      console.log("The new sections to go back into the query ", sections)
-      console.groupEnd()
+      // console.group("===NEW SECTION===")
+      // console.log("New Section created ", newSection)
+      // console.log("Current sections => ", this.props.document.sections)
+      // console.log("sourceIndex ", result.source.index)
+      // console.log("destinationIndex ", result.destination.index)
+      // console.log("The new sections to go back into the query ", sections)
+      // console.groupEnd()
       // this._reorderSections(sections)
     }
     // Reorder the canvas
@@ -122,7 +121,6 @@ class DocumentGenerator extends Component {
         result.destination.index
       )
       this._reorderSections(sections)
-      console.log("Our sections const reordered => ", sections)
     }
   }
 
@@ -133,7 +131,6 @@ class DocumentGenerator extends Component {
   }
 
   _reorder = (list, startIndex, endIndex) => {
-    console.log("Before re-order ", list)
     const result = Array.from(list)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
@@ -159,8 +156,6 @@ class DocumentGenerator extends Component {
   }
 
   _reorderSections = async sections => {
-    console.log("Our sections to reorder! ", sections)
-
     const data = this.props.client.readQuery({
       query: DOCUMENT_QUERY,
       variables: { id: this.props.document.id },
@@ -194,7 +189,6 @@ class DocumentGenerator extends Component {
         position: position,
       },
     })
-    console.log("Yay we have updated!@! => ", res)
   }
 
   renderDocumentGenerator = document => {

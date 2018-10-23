@@ -2,18 +2,18 @@ import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import { graphql, withApollo, compose } from "react-apollo"
 import { Table, TableRow, TableCell } from "@material-ui/core"
+// Resize
+import Resizable from "re-resizable"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
 // Utils
 import { isEmpty, isNil } from "ramda"
-// Resize
-import { Resizable, ResizableBox } from "react-resizable"
 
 const styles = theme => ({})
 
 // Resizable Table outer!
 // Reuse this
-// Resize div => https://github.com/STRML/react-resizable
+// Resize div => https://github.com/bokuweb/re-resizable
 
 // OR
 // an actual util function
@@ -57,49 +57,67 @@ class RichTable extends Component {
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
       this.update(initialTable)
-      console.log("Initial Table => ", initialTable)
       return <div>Setting up Your new Rich Table. Please wait...</div>
     }
     const { table } = rawContent
 
     return (
       <Fragment>
-        <ResizableBox
-          width={200}
-          height={200}
-          draggableOpts={{ grid: [25, 25] }}
-          minConstraints={[100, 100]}
-          maxConstraints={[300, 300]}>
-          <span>Contents</span>
-        </ResizableBox>
-        <Table>
-          {table.rows.map((row, rIdx) => {
-            console.log("row => ", row)
-            return (
-              <TableRow>
-                {row.map((cell, cIdx) => {
-                  console.log("cell => ", cell)
-                  return (
-                    <TableCell>
-                      <RichEditor
-                        pageAttributes={pageAttributes}
-                        document={
-                          cell.document ? cell : this._generateCell(rIdx, cIdx)
-                        }
-                        // document={cell}
-                        // document={cell.document}
-                        // document={this._generateCell(rIdx, cIdx)}
-                        updateDocument={document =>
-                          this._updateCell(document, rIdx, cIdx)
-                        }
-                      />
-                    </TableCell>
-                  )
-                })}
-              </TableRow>
-            )
-          })}
-        </Table>
+        {/* <Resizable
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "solid 1px #ddd",
+            background: "#f0f0f0",
+          }}
+          defaultSize={{
+            width: 200,
+            height: 200,
+          }}>
+          001
+        </Resizable> */}
+        <Resizable
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "solid 1px #ddd",
+            background: "#f0f0f0",
+          }}
+          defaultSize={{
+            width: 600,
+            height: 300,
+          }}>
+          <Table>
+            {table.rows.map((row, rIdx) => {
+              return (
+                <TableRow>
+                  {row.map((cell, cIdx) => {
+                    return (
+                      <TableCell>
+                        <RichEditor
+                          pageAttributes={pageAttributes}
+                          document={
+                            cell.document
+                              ? cell
+                              : this._generateCell(rIdx, cIdx)
+                          }
+                          // document={cell}
+                          // document={cell.document}
+                          // document={this._generateCell(rIdx, cIdx)}
+                          updateDocument={document =>
+                            this._updateCell(document, rIdx, cIdx)
+                          }
+                        />
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              )
+            })}
+          </Table>
+        </Resizable>
       </Fragment>
     )
   }

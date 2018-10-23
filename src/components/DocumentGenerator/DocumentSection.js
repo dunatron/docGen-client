@@ -11,6 +11,7 @@ import { UPDATE_SECTION_MUTATION } from "../../mutations/updateSection"
 import { DELETE_SECTION_MUTATION } from "../../mutations/deleteSection"
 // Icons
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
+import DragHandleIcon from "@material-ui/icons/DragHandleSharp"
 class DocumentSection extends React.Component {
   constructor(props) {
     super(props)
@@ -68,9 +69,12 @@ class DocumentSection extends React.Component {
     })
   }
 
-  renderFocusedComponents = () => {
+  renderFocusedComponents = dragHandle => {
     return (
       <Fragment>
+        <div {...dragHandle}>
+          <DragHandleIcon color="secondary" />
+        </div>
         <div
           style={{ position: "absolute", top: -30, right: 0 }}
           onClick={() => this._deleteSection(this.state.id)}>
@@ -82,8 +86,10 @@ class DocumentSection extends React.Component {
 
   getSectionStyle = focused => ({
     // margin: focused ? "40px 0px" : 0,
-    margin: focused ? "32px 0 30px 0" : 0,
-    padding: focused ? "40px 0px" : 0,
+    // margin: focused ? "32px 0 30px 0" : 0,
+    // padding: focused ? "40px 0px" : 0,
+    margin: 0,
+    padding: 0,
     border: focused ? "1px dashed #b2fab4" : "none",
     position: "relative",
   })
@@ -92,7 +98,7 @@ class DocumentSection extends React.Component {
     // tell React that we want to associate the <input> ref
     // with the `textInput` that we created in the constructor
     const { focused, removing } = this.state
-    const { section, pageAttributes } = this.props
+    const { section, pageAttributes, dragHandle } = this.props
 
     if (removing) {
       return (
@@ -107,7 +113,7 @@ class DocumentSection extends React.Component {
         ref={this.sectionRef}
         onFocus={this.focusSection}
         style={this.getSectionStyle(focused)}>
-        {focused ? this.renderFocusedComponents() : null}
+        {focused ? this.renderFocusedComponents(dragHandle) : null}
         <RenderSectionByType
           pageAttributes={pageAttributes}
           focused={focused}

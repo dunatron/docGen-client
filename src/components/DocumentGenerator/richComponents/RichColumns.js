@@ -167,11 +167,8 @@ class RichColumns extends Component {
     const top = screenH - clickY > rootH
     const bottom = !top
 
-    console.log("this.root => ", this.root)
-
     try {
       if (this.root.current !== null) {
-        console.log("YAY WE HAVE A ROOT OBJ REF THINGY ", this.root.style)
         if (right) {
           this.root.style.left = `${clickX + 5}px`
         }
@@ -211,20 +208,9 @@ class RichColumns extends Component {
   }
 
   handleColumnClick = (e, colIdx) => {
-    console.log("COLUM CLICK E +> ", e)
-    // if (e.type === "click") {
-    //   console.log("Left click")
-    // } else if (e.type === "contextmenu") {
-    //   console.log("Right click")
-    //   this.handleColumnContext()
-    // }
     if (e.nativeEvent.which === 1) {
-      console.log("NATIVE left click")
+      // do nothing, it should always hit below anyway?
     } else if (e.nativeEvent.which === 3) {
-      console.log("NATIVE right click")
-      console.log("colIdx ", colIdx)
-      console.log("e.pageY ", e.pageY)
-      console.log("e.pageX ", e.pageX)
       this.handleColumnContext(e, colIdx)
     }
   }
@@ -263,7 +249,6 @@ class RichColumns extends Component {
         {/*  map over and render Columns */}
         {columns &&
           columns.map((col, colIdx) => {
-            console.log("A column ", col)
             return (
               <div
                 onClick={e => this.handleColumnClick(e, colIdx)}

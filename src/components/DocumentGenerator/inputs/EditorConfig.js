@@ -79,10 +79,8 @@ function insertData(change) {
 
 function MarkHotkey(options) {
   const { type, key } = options
-  console.log("Mark A Hot Key ", options)
   return {
     onKeyDown(event, change) {
-      console.log("Hmmmm Plugins being hit?", type)
       // Check that the key pressed matches our `key` option.
       if (!event.ctrlKey || event.key != key) return
       // Prevent the default characters from being inserted.

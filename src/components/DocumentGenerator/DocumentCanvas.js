@@ -3,6 +3,8 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "@material-ui/core/styles"
 // Components
 import DocumentSection from "./DocumentSection"
+// Material UI
+import DragHandleIcon from "@material-ui/icons/DragHandleSharp"
 
 const styles = theme => ({})
 
@@ -21,14 +23,20 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   userSelect: "none",
   // background: isDragging ? "lightgreen" : "#FFF",
   background: isDragging ? "#b2fab4" : "#FFF",
+  padding: isDragging ? "#b2fab4" : "#FFF",
   // styles we need to apply on draggables
   ...draggableStyle,
+  // below is kinda hack to style the dragging el. perhaps look at provided placeholder too
+  // NOTE: DOn't do any of the below! use the defaults it works in an unKlunky way
+  // height: isDragging ? "150px" : "auto", // My custom shit
+  // height: isDragging ? "80px" : "auto", // My custom shit
+  // overflow: isDragging ? "hidden" : "inherit",
 })
 
 const FontPicker = props => {
   const { classes } = props
   const { pageAttributes, pageDimensions, documentId, sections } = props
-  console.log("Page aattributes => ", pageAttributes)
+
   return (
     <Fragment>
       <Droppable droppableId="documentDroppable" type="DocumentCanvas">
@@ -51,12 +59,18 @@ const FontPicker = props => {
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
-                      {...provided.dragHandleProps}
+                      // {...provided.dragHandleProps}
                       style={getItemStyle(
                         snapshot.isDragging,
                         provided.draggableProps.style
                       )}>
+                      <div
+                        style={{ display: "none" }}
+                        {...provided.dragHandleProps}>
+                        <DragHandleIcon color="secondary" />
+                      </div>
                       <DocumentSection
+                        dragHandle={{ ...provided.dragHandleProps }}
                         pageAttributes={pageAttributes}
                         documentId={documentId}
                         sectionIdx={sectionIdx}

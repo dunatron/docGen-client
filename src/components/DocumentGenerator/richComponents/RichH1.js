@@ -18,7 +18,6 @@ class RichParagraph extends Component {
     const { classes, section } = this.props
     const { id, type, rawContent } = section
     const updatedSection = { id, type, rawContent: { document } }
-    console.log("h1 Updated val ", updatedSection)
     this.props.update(updatedSection)
   }
   render() {

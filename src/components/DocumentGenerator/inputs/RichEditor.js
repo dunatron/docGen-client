@@ -21,7 +21,6 @@ import HoverMenu from "../HoverMenu"
 // Important: This idea below will allow us to add classes and attributes to our objects as html
 // https://docs.slatejs.org/walkthroughs/saving-and-loading-html-content
 
-console.log("The suggestyions PLUGIN => ==== => ", SuggestionsPlugin)
 function getCurrentWord(text, index, initialIndex) {
   if (index === initialIndex) {
     return {
@@ -155,7 +154,6 @@ class RichEditor extends Component {
   }
 
   renderNode = props => {
-    console.log("Render a node? ", props)
     switch (props.node.type) {
       case "code":
         return <CodeMark {...props} />
@@ -165,7 +163,6 @@ class RichEditor extends Component {
   }
 
   updateDocument = document => {
-    console.log("Updating editor document => ", document)
     this.props.updateDocument(document)
   }
 
