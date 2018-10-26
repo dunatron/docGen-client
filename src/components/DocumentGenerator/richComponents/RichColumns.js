@@ -12,6 +12,8 @@ import AddIcon from "@material-ui/icons/Add"
 import position from "../../../suggestions/caret-position"
 import { isUndefined } from "../../../utils/checkType"
 
+import ContextOptions from "../ContextOptions"
+
 // https://codeburst.io/lets-build-a-customizable-rich-text-editor-with-slate-and-react-beefd5d441f2
 // https://github.com/ianstormtaylor/slate/blob/master/examples/hovering-menu/index.js
 const styles = theme => ({
@@ -88,6 +90,10 @@ class RichColumns extends Component {
 
     this.state = {
       visibleContext: false,
+      contextDimensions: {
+        x: null,
+        y: null,
+      },
       interestedColIndex: null,
       focused: false,
       id,
@@ -174,6 +180,12 @@ class RichColumns extends Component {
       visibleContext: true,
       interestedColIndex: colIdx,
     })
+    this.setState({
+      contextDimensions: {
+        x: event.clientX,
+        y: event.clientY,
+      },
+    })
     const clickX = event.clientX
     const clickY = event.clientY
     const screenW = window.innerWidth
@@ -251,7 +263,7 @@ class RichColumns extends Component {
             [<div>Some chils</div>,<div>Another</div>]
           </ContextMenu>
         ) : null} */}
-        {visibleContext ? (
+        {/* {visibleContext ? (
           <div
             ref={ref => {
               this.root = ref
@@ -272,6 +284,26 @@ class RichColumns extends Component {
               HELP
             </div>
           </div>
+        ) : null} */}
+        {visibleContext ? (
+          <ContextOptions
+            close={() =>
+              this.setState({
+                visibleContext: false,
+              })
+            }
+            contextDimensions={this.state.contextDimensions}>
+            <div
+              className="contextMenu--option"
+              onClick={() => {
+                alert("Checl console for ref")
+                console.log("The user ref => ", this.root)
+                this._addColumnToSide("right")
+              }}>
+              Add Column To the right
+            </div>
+            <div className="contextMenu--option">Add Column to the left</div>{" "}
+          </ContextOptions>
         ) : null}
         {/*  map over and render Columns */}
         {columns &&

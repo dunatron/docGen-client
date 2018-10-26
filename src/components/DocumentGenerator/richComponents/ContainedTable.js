@@ -8,6 +8,7 @@ import Resizable from "re-resizable"
 import RichEditor from "../inputs/RichEditor"
 // Utils
 import { isEmpty, isNil } from "ramda"
+import ContextOptions from "../ContextOptions"
 
 const styles = theme => ({
   initText: {
@@ -71,6 +72,11 @@ class ContainedTable extends Component {
       const { table } = rawContent
       console.log("Peek at the table => ", table)
       this.state = {
+        visibleContext: false,
+        contextDimensions: {
+          x: null,
+          y: null,
+        },
         tableSize: {
           width: table.tableSize.width,
           height: table.tableSize.height,
@@ -146,8 +152,32 @@ class ContainedTable extends Component {
     return this.update(json)
   }
 
+  handleTableClick = (e, colIdx) => {
+    if (e.nativeEvent.which === 1) {
+      // do nothing, it should always hit below anyway?
+    } else if (e.nativeEvent.which === 3) {
+      this.handleColumnContext(e, colIdx)
+      // alert("Right Click On the table")
+    }
+  }
+
+  handleColumnContext = (event, colIdx) => {
+    event.preventDefault()
+    this.setState({
+      visibleContext: true,
+      interestedColIndex: colIdx,
+    })
+    this.setState({
+      contextDimensions: {
+        x: event.clientX,
+        y: event.clientY,
+      },
+    })
+  }
+
   render() {
     const { classes, section, pageAttributes } = this.props
+    const { visibleContext } = this.state
     const { rawContent } = section
 
     if (isNil(rawContent)) {
@@ -163,6 +193,24 @@ class ContainedTable extends Component {
 
     return (
       <Fragment>
+        {visibleContext ? (
+          <ContextOptions
+            close={() =>
+              this.setState({
+                visibleContext: false,
+              })
+            }
+            contextDimensions={this.state.contextDimensions}>
+            <div className="contextMenu--option">Remove Table</div>
+            <div className="contextMenu--option">Pregnant Pockets</div>
+            <div className="contextMenu--option">Abort Your wallet</div>
+            <div className="contextMenu--option">
+              underpaid overwhelming weight
+            </div>
+            <div className="contextMenu--option">walk the finish line</div>
+            <div className="contextMenu--option">cross the finish line</div>
+          </ContextOptions>
+        ) : null}
         <Resizable
           className={classes.containedTable}
           onResizeStop={(e, direction, ref, d) => {
@@ -172,7 +220,7 @@ class ContainedTable extends Component {
             )
           }}
           size={this.state.tableSize}>
-          <Table>
+          <Table onContextMenu={e => this.handleTableClick(e, 1)}>
             {table.rows.map((row, rIdx) => {
               console.log("Table Rows ", row)
               return (
