@@ -88,6 +88,7 @@ class RichColumns extends Component {
 
     this.state = {
       visibleContext: false,
+      interestedColIndex: null,
       focused: false,
       id,
       type,
@@ -128,6 +129,22 @@ class RichColumns extends Component {
     })
   }
 
+  _addColumnToSide = side => {
+    switch (side) {
+      case "right": {
+        const columns = this.state.columns
+        const newColumn = this._generateInitial()
+        const newColumns = columns.concat(newColumn)
+        this.setState({
+          columns: newColumns,
+        })
+      }
+      default: {
+        return
+      }
+    }
+  }
+
   renderToolBar = colIdx => {
     const { classes } = this.props
     return (
@@ -151,9 +168,11 @@ class RichColumns extends Component {
   }
 
   handleColumnContext = (event, colIdx) => {
+    console.log("The coumn Index clicked is... ", colIdx)
     event.preventDefault()
     this.setState({
       visibleContext: true,
+      interestedColIndex: colIdx,
     })
     const clickX = event.clientX
     const clickY = event.clientY
@@ -238,7 +257,15 @@ class RichColumns extends Component {
               this.root = ref
             }}
             className={classes.contextMenu}>
-            <div className="contextMenu--option">Add Column To the right</div>
+            <div
+              className="contextMenu--option"
+              onClick={() => {
+                alert("Checl console for ref")
+                console.log("The user ref => ", this.root)
+                this._addColumnToSide("right")
+              }}>
+              Add Column To the right
+            </div>
             <div className="contextMenu--option">Add Column to the left</div>
             <div className="contextMenu--option">Delete COlumns</div>
             <div className="contextMenu--option contextMenu--option__disabled">

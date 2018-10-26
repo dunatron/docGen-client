@@ -18,6 +18,26 @@ const styles = theme => ({
     display: "block",
     textAlign: "center",
   },
+  containedTable: {
+    overflow: "hidden",
+    border: "3px solid purple",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    // border: "solid 1px #ddd",
+    background: "#f0f0f0",
+  },
+  containedRow: {
+    // marginTop: "10px",
+    display: "flex",
+    alignItems: "center",
+    margin: "10px",
+    overflow: "hidden",
+    border: "3px solid pink",
+  },
+  cell: {
+    flex: "1 1 0",
+  },
 })
 
 const defaultTableSize = {
@@ -35,7 +55,7 @@ const defaultTableSize = {
 // Good read and maybe implement some sort of component.
 // But for now the STRML/react-resizable will fit our case. especially the handles for on hover only. i.e print. RAD MVP
 // User that third party resize component to be some sort of super. Ie resizabl;eTable. resizblae row, and cols
-class RichTable extends Component {
+class ContainedTable extends Component {
   constructor(props) {
     super(props)
     const { classes, section, pageAttributes } = this.props
@@ -54,8 +74,6 @@ class RichTable extends Component {
         tableSize: {
           width: table.tableSize.width,
           height: table.tableSize.height,
-          // width: 550,
-          // height: 300,
         },
       }
     }
@@ -77,7 +95,7 @@ class RichTable extends Component {
     const { section } = this.props
 
     const updatedTableSection = section.rawContent.table
-    updatedTableSection.rows[rIdx][cIdx] = document
+    updatedTableSection.rows[rIdx].cells[cIdx] = document
 
     const json = {
       table: {
@@ -87,6 +105,8 @@ class RichTable extends Component {
 
     return this.update(json)
   }
+
+  tableIsSmallerThanRows = () => {}
 
   _resizeRow = (height, rIdx) => {
     const { section } = this.props
@@ -143,33 +163,59 @@ class RichTable extends Component {
 
     return (
       <Fragment>
-        <Table>
-          {table.rows.map((row, rIdx) => {
-            console.log("Table Rows ", row)
-            return (
-              <TableRow>
-                {row.cells.map((cell, cIdx) => {
-                  return (
-                    <TableCell>
-                      <RichEditor
-                        pageAttributes={pageAttributes}
-                        document={
-                          cell.document ? cell : this._generateCell(rIdx, cIdx)
-                        }
-                        // document={cell}
-                        // document={cell.document}
-                        // document={this._generateCell(rIdx, cIdx)}
-                        updateDocument={document =>
-                          this._updateCell(document, rIdx, cIdx)
-                        }
-                      />
-                    </TableCell>
-                  )
-                })}
-              </TableRow>
+        <Resizable
+          className={classes.containedTable}
+          onResizeStop={(e, direction, ref, d) => {
+            this._resizeTable(
+              this.state.tableSize.width + d.width,
+              this.state.tableSize.height + d.height
             )
-          })}
-        </Table>
+          }}
+          size={this.state.tableSize}>
+          <Table>
+            {table.rows.map((row, rIdx) => {
+              console.log("Table Rows ", row)
+              return (
+                <Resizable
+                  className={classes.containedRow}
+                  // defaultSize={{ width: "100%", height: row.rowHeight }}
+                  defaultSize={{
+                    width: "calc(100% - 20px)",
+                    height: row.rowHeight,
+                  }}
+                  // defaultSize={{ width: "unset", height: row.rowHeight }}
+                  onResizeStop={(e, direction, ref, d) => {
+                    // this._resizeRow(row.rowHeight + d.height, rIdx)
+                    this._resizeRow(
+                      row.rowHeight ? row.rowHeight + d.height : 80,
+                      rIdx
+                    )
+                  }}>
+                  {row.cells.map((cell, cIdx) => {
+                    return (
+                      <TableCell className={classes.cell}>
+                        <RichEditor
+                          pageAttributes={pageAttributes}
+                          document={
+                            cell.document
+                              ? cell
+                              : this._generateCell(rIdx, cIdx)
+                          }
+                          // document={cell}
+                          // document={cell.document}
+                          // document={this._generateCell(rIdx, cIdx)}
+                          updateDocument={document =>
+                            this._updateCell(document, rIdx, cIdx)
+                          }
+                        />
+                      </TableCell>
+                    )
+                  })}
+                </Resizable>
+              )
+            })}
+          </Table>
+        </Resizable>
       </Fragment>
     )
   }
@@ -193,7 +239,6 @@ class RichTable extends Component {
         let newCell = this._generateCell(r, c)
         cells.push(newCell)
       }
-      // rows.push(cells)
       rows.push({ cells: cells, rowHeight: 80 })
     }
     return rows
@@ -223,4 +268,4 @@ class RichTable extends Component {
 export default compose(
   withApollo,
   withStyles(styles)
-)(RichTable)
+)(ContainedTable)

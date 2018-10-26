@@ -100,6 +100,24 @@ const FontPicker = props => {
                 </div>
               )}
             </Draggable>
+            <Draggable draggableId="contained-table" index={3}>
+              {(provided, snapshot) => (
+                <div
+                  className={classes.richComponentBtn}
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}>
+                  <Button
+                    className={classes.button}
+                    variant="raised"
+                    color="primary"
+                    type="submit"
+                    onClick={e => alert("add drag n Drop")}>
+                    Contained Table
+                  </Button>
+                </div>
+              )}
+            </Draggable>
             {provided.placeholder}
           </div>
         )}

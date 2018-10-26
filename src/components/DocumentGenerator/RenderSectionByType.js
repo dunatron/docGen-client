@@ -5,6 +5,7 @@ import RichParagraph from "./richComponents/RichParagraph"
 import RichSection from "./richComponents/RichSection"
 import RichColumns from "./richComponents/RichColumns"
 import RichTable from "./richComponents/RichTable"
+import ContainedTable from "./richComponents/ContainedTable"
 
 const RenderSectionByType = props => {
   const { section, update, pageAttributes, focused } = props
@@ -45,6 +46,15 @@ const RenderSectionByType = props => {
     case "table":
       return (
         <RichTable
+          section={section}
+          focused={focused}
+          pageAttributes={pageAttributes}
+          update={section => update(section)}
+        />
+      )
+    case "contained-table":
+      return (
+        <ContainedTable
           section={section}
           focused={focused}
           pageAttributes={pageAttributes}
