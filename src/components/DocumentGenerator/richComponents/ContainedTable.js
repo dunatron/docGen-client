@@ -201,7 +201,7 @@ class ContainedTable extends Component {
               })
             }
             contextDimensions={this.state.contextDimensions}>
-            <div className="contextMenu--option">Remove Table</div>
+            <div onClick={()} className="contextMenu--option">Remove Table</div>
             <div className="contextMenu--option">Pregnant Pockets</div>
             <div className="contextMenu--option">Abort Your wallet</div>
             <div className="contextMenu--option">
