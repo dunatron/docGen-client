@@ -49,6 +49,7 @@ const RenderSectionByType = props => {
           section={section}
           focused={focused}
           pageAttributes={pageAttributes}
+          {...props}
           update={section => update(section)}
         />
       )
@@ -58,6 +59,8 @@ const RenderSectionByType = props => {
           section={section}
           focused={focused}
           pageAttributes={pageAttributes}
+          // The props contains our delete actions
+          {...props}
           update={section => update(section)}
         />
       )

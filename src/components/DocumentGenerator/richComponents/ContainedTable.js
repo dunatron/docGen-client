@@ -152,6 +152,10 @@ class ContainedTable extends Component {
     return this.update(json)
   }
 
+  _removeTable = () => {
+    this.props.delete()
+  }
+
   handleTableClick = (e, colIdx) => {
     if (e.nativeEvent.which === 1) {
       // do nothing, it should always hit below anyway?
@@ -201,7 +205,11 @@ class ContainedTable extends Component {
               })
             }
             contextDimensions={this.state.contextDimensions}>
-            <div onClick={()} className="contextMenu--option">Remove Table</div>
+            <div
+              onClick={() => this._removeTable()}
+              className="contextMenu--option">
+              Remove Table
+            </div>
             <div className="contextMenu--option">Pregnant Pockets</div>
             <div className="contextMenu--option">Abort Your wallet</div>
             <div className="contextMenu--option">

@@ -6,6 +6,10 @@ import { Table, TableRow, TableCell } from "@material-ui/core"
 import Resizable from "re-resizable"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
+import ContextOptions from "../ContextOptions"
+import ContextMenuGenerator from "../ContextMenuGenerator"
+// import ColorSettings from "../ColorSettings"
+import ColorPicker from "../../ColorPicker/index"
 // Utils
 import { isEmpty, isNil } from "ramda"
 
@@ -41,16 +45,28 @@ class RichTable extends Component {
     const { classes, section, pageAttributes } = this.props
     const { rawContent } = section
 
+    const initState = {
+      visibleContext: false,
+      contextDimensions: {
+        x: null,
+        y: null,
+      },
+      interestedRowIndex: null,
+      interestedCellIndex: null,
+    }
+
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
       this.update(initialTable)
       this.state = {
+        ...initState,
         tableSize: defaultTableSize,
       }
     } else {
       const { table } = rawContent
       console.log("Peek at the table => ", table)
       this.state = {
+        ...initState,
         tableSize: {
           width: table.tableSize.width,
           height: table.tableSize.height,
@@ -126,9 +142,118 @@ class RichTable extends Component {
     return this.update(json)
   }
 
+  handleCellClick = (e, rIdx, cIdx) => {
+    if (e.nativeEvent.which === 1) {
+      // do nothing, it should always hit below anyway?
+    } else if (e.nativeEvent.which === 3) {
+      this.handleCellContext(e, rIdx, cIdx)
+    }
+  }
+
+  getCellAttributes = (rIdx, cIdx) => {
+    const { section } = this.props
+
+    const cellAttributes = section.rawContent.table
+    cellAttributes.rows[rIdx].cells[cIdx].attributes
+    return cellAttributes
+  }
+
+  handleCellContext = (e, rIdx, cIdx) => {
+    e.preventDefault()
+    this.setState({
+      visibleContext: true,
+      interestedRowIndex: rIdx,
+      interestedCellIndex: cIdx,
+      currCellAttributes: this.getCellAttributes(rIdx, cIdx),
+
+      contextDimensions: {
+        x: e.clientX,
+        y: e.clientY,
+      },
+    })
+    console.log("THE STATE => ", this.state)
+  }
+
+  colorCell = color => {
+    const { interestedRowIndex, interestedCellIndex } = this.state
+    // alert("Color the cell " + interestedCellIndex + " with " + color)
+    const { section } = this.props
+
+    const updatedTableSection = section.rawContent.table
+    updatedTableSection.rows[interestedRowIndex].cells[
+      interestedCellIndex
+    ].attributes = { color: color }
+
+    // change the state of it each time sure.
+    // just dont do a network request.
+    // a better way is to go into the picker itself and determine when it is no longer being changed!
+    // we now have a onChangeComplete
+    // However when we leave the cell it updates again just simply due to leaving the cell
+    // return
+
+    const json = {
+      table: {
+        ...updatedTableSection,
+      },
+    }
+
+    return this.update(json)
+  }
+
+  renderRowContext = () => {
+    const rowContextConf = {
+      items: [
+        {
+          title: "Delete Table",
+          action: () => this.props.delete(),
+        },
+        {
+          title: "item 1",
+          action: () => alert("HIiiiii"),
+          items: [
+            {
+              title: "Sibling Item 1",
+              action: () => alert("sibling action 1"),
+            },
+          ],
+        },
+        {
+          title: "item 2",
+          component: (
+            <ColorPicker
+              label={"Cell color"}
+              setColor={color => this.colorCell(color)}
+              // onChange={color => this.colorCell(color)}
+            />
+          ),
+        },
+      ],
+    }
+
+    return <ContextMenuGenerator conf={rowContextConf} />
+
+    return (
+      <Fragment>
+        <div>
+          cell color:{" "}
+          {/* <ColorSettings
+                currColor={this.state.currCellAttributes.color}
+                changeColor={c => this.colorCell(c)}
+              /> */}
+          <ColorPicker
+            label={"Cell color"}
+            setColor={color => this.colorCell(color)}
+            // onChange={color => this.colorCell(color)}
+          />
+        </div>
+      </Fragment>
+    )
+  }
+
   render() {
     const { classes, section, pageAttributes } = this.props
     const { rawContent } = section
+    const { visibleContext } = this.state
 
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
@@ -143,6 +268,39 @@ class RichTable extends Component {
 
     return (
       <Fragment>
+        {visibleContext ? (
+          <ContextOptions
+            close={() =>
+              this.setState({
+                visibleContext: false,
+              })
+            }
+            contextDimensions={this.state.contextDimensions}>
+            {this.renderRowContext()}
+            <div
+              onClick={() => this.props.delete()}
+              className="contextMenu--option">
+              Remove Table
+            </div>
+            <div
+              onClick={() => this.colorCell()}
+              className="contextMenu--option">
+              Color Cell{" "}
+            </div>
+            <div>
+              cell color:{" "}
+              {/* <ColorSettings
+                currColor={this.state.currCellAttributes.color}
+                changeColor={c => this.colorCell(c)}
+              /> */}
+              <ColorPicker
+                label={"Cell color"}
+                setColor={color => this.colorCell(color)}
+                // onChange={color => this.colorCell(color)}
+              />
+            </div>
+          </ContextOptions>
+        ) : null}
         <Table>
           {table.rows.map((row, rIdx) => {
             console.log("Table Rows ", row)
@@ -150,7 +308,9 @@ class RichTable extends Component {
               <TableRow>
                 {row.cells.map((cell, cIdx) => {
                   return (
-                    <TableCell>
+                    <TableCell
+                      style={{ ...cell.attributes }}
+                      onContextMenu={e => this.handleCellClick(e, rIdx, cIdx)}>
                       <RichEditor
                         pageAttributes={pageAttributes}
                         document={
@@ -215,6 +375,7 @@ class RichTable extends Component {
     ]
     const json = {
       document: { nodes },
+      attributes: { color: "blue" },
     }
     return json
   }

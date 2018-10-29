@@ -7,8 +7,13 @@ class ColorSettings extends Component {
       <Fragment>
         <ColorPicker
           name="color"
-          defaultValue="#000"
+          
+          // defaultValue="#000"
+          // currColor
+          value={this.props.currColor}
+          // defaultValue={this.props.currColor ? this.props.currColor : "#000"}
           onChange={color => this.props.changeColor(color)}
+          // onChange={color => console.log("The color Change... ", color)}
         />
       </Fragment>
     )
