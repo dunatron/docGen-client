@@ -18,6 +18,9 @@ import customTheme from "./theme"
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider"
 import { createMuiTheme } from "@material-ui/core/styles"
 
+// Take a look at this and see if it is better than reatcf dev tools at quickly identifingy bottle necks
+// https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html
+
 // Redux
 import { saveState } from "./state/localStorage"
 import throttle from "lodash/throttle"
