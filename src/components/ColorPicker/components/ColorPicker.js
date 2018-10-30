@@ -30,8 +30,10 @@ const ColorPicker = ({
   value,
   setValue,
   setColor,
+  icon,
 }) => (
   <div>
+    {icon && icon}
     <TextField
       name={name}
       id={id}

@@ -10,12 +10,17 @@ import ContextOptions from "../ContextOptions"
 import ContextMenuGenerator from "../ContextMenuGenerator"
 // import ColorSettings from "../ColorSettings"
 import ColorPicker from "../../ColorPicker/index"
+// Inputs
+import NumberInput from "../../inputs/NumberInput"
+import NumberDelayInput from "../../inputs/NumberDelayInput"
 // Utils
 import { isEmpty, isNil } from "ramda"
+import { extractNumber } from "../../../utils/extractNumber"
+import { extractFirstNum } from "../../../utils/extractValues"
 
 // Test to see if portal is the correct solution
 // Ther idea here is that we pull it out of te dom meaning having it placed absolutly will be easier
-import ContextMenu from "../ContextMenu"
+import ContextMenu from "../ContextMenu/index"
 // ICONS for context menu
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import BorderAllIcon from "@material-ui/icons/BorderAll"
@@ -159,6 +164,10 @@ class RichTable extends Component {
     }
   }
 
+  getTableAttributes = () => {
+    return this.props.section.rawContent.table.attributes
+  }
+
   getRowAttributes = rIdx => {
     return this.props.section.rawContent.table.rows[rIdx].attributes
   }
@@ -173,6 +182,7 @@ class RichTable extends Component {
       visibleContext: true,
       interestedRowIndex: rIdx,
       interestedCellIndex: cIdx,
+      currTableAttributes: this.getTableAttributes(),
       currRowAttributes: this.getRowAttributes(rIdx, cIdx),
       currCellAttributes: this.getCellAttributes(rIdx, cIdx),
 
@@ -182,6 +192,23 @@ class RichTable extends Component {
       },
     })
     console.log("THE STATE => ", this.state)
+  }
+
+  setTableAttribute = (attr, val) => {
+    const { section } = this.props
+
+    const table = section.rawContent.table
+    table.attributes = {
+      ...table.attributes,
+      [attr]: val,
+    }
+    const json = {
+      table: {
+        ...table,
+      },
+    }
+
+    return this.update(json)
   }
 
   setRowAttribute = (attr, val) => {
@@ -233,6 +260,41 @@ class RichTable extends Component {
         {
           title: "Add Row",
           action: () => this._addRow(),
+        },
+        {
+          title: "Table Attributes",
+          action: () => alert("ToDo: turn into subsection"),
+          items: [
+            {
+              title: "Set Margin Top",
+
+              component: (
+                <NumberDelayInput
+                  id="set-table-margin-top"
+                  label="table margin top"
+                  waitLength={1500}
+                  defaultValue={extractFirstNum(
+                    this.state.currTableAttributes["margin-top"]
+                  )}
+                  handleChange={v =>
+                    this.setTableAttribute("margin-top", `${v}px`)
+                  }
+                />
+              ),
+              // component: (
+              //   <NumberInput
+              //     id="set-table-margin-top"
+              //     label="table margin top"
+              //     defaultValue={extractFirstNum(
+              //       this.state.currTableAttributes["margin-top"]
+              //     )}
+              //     handleChange={v =>
+              //       this.setTableAttribute("margin-top", `${v}px`)
+              //     }
+              //   />
+              // ),
+            },
+          ],
         },
         {
           title: "Row Attributes",
@@ -290,6 +352,108 @@ class RichTable extends Component {
               ),
             },
             {
+              title: "Set Cell Padding",
+              component: (
+                <NumberDelayInput
+                  waitLength={1500}
+                  id="set-cell-padding"
+                  label="cell padding"
+                  defaultValue={extractFirstNum(
+                    this.state.currCellAttributes["padding"]
+                  )}
+                  handleChange={v => this.setCellAttribute("padding", `${v}px`)}
+                />
+              ),
+            },
+            {
+              title: "Set Cell Margin",
+              component: (
+                <NumberDelayInput
+                  waitLength={1500}
+                  id="set-cell-margin"
+                  label="cell margin"
+                  defaultValue={extractFirstNum(
+                    this.state.currCellAttributes["margin"]
+                  )}
+                  handleChange={v => this.setCellAttribute("margin", `${v}px`)}
+                />
+              ),
+            },
+            // Cell Border children
+            {
+              title: "cell border attributes",
+              items: [
+                {
+                  title: "Border Top",
+                  action: () => alert("set cell border top"),
+                  component: (
+                    <NumberInput
+                      id="set-cell-border-top"
+                      label="cell border top"
+                      defaultValue={extractFirstNum(
+                        this.state.currCellAttributes["border-top"]
+                      )}
+                      handleChange={v =>
+                        this.setCellAttribute("border-top", `${v}px solid`)
+                      }
+                    />
+                  ),
+                  //NumberInput
+                },
+                {
+                  title: "Border Right",
+                  action: () => alert("set cell border top"),
+                  component: (
+                    <NumberInput
+                      id="set-cell-border-right"
+                      label="cell border right"
+                      defaultValue={extractFirstNum(
+                        this.state.currCellAttributes["border-right"]
+                      )}
+                      handleChange={v =>
+                        this.setCellAttribute("border-right", `${v}px solid`)
+                      }
+                    />
+                  ),
+                  //NumberInput
+                },
+                {
+                  title: "Border Bottom",
+                  action: () => alert("set cell border bottom"),
+                  component: (
+                    <NumberInput
+                      id="set-cell-border-bottom"
+                      label="cell border bottom"
+                      defaultValue={extractFirstNum(
+                        this.state.currCellAttributes["border-bottom"]
+                      )}
+                      handleChange={v =>
+                        this.setCellAttribute("border-bottom", `${v}px solid`)
+                      }
+                    />
+                  ),
+                  //NumberInput
+                },
+                {
+                  title: "Border Left",
+                  action: () => alert("set cell border left"),
+                  component: (
+                    <NumberInput
+                      id="set-cell-border-left"
+                      label="cell border left"
+                      defaultValue={extractFirstNum(
+                        this.state.currCellAttributes["border-left"]
+                      )}
+                      handleChange={v =>
+                        this.setCellAttribute("border-left", `${v}px solid`)
+                      }
+                    />
+                  ),
+                  //NumberInput
+                },
+              ],
+            },
+            {
               title: "Cell border thickness 2px solid",
               icon: <BorderAllIcon />,
               action: () => this.setCellAttribute("border", "2px solid"),
@@ -297,20 +461,18 @@ class RichTable extends Component {
             {
               title: "Color Cell Border",
               component: (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <BorderColorIcon style={{ padding: "0 16px" }} />
-                  <ColorPicker
-                    defaultValue={
-                      this.state.currCellAttributes
-                        ? this.state.currCellAttributes["border-color"]
-                        : "#000"
-                    }
-                    label={"Set cell border color"}
-                    setColor={color =>
-                      this.setCellAttribute("border-color", color)
-                    }
-                  />
-                </div>
+                <ColorPicker
+                  icon={<BorderColorIcon style={{ padding: "0 16px" }} />}
+                  defaultValue={
+                    this.state.currCellAttributes
+                      ? this.state.currCellAttributes["border-color"]
+                      : "#000"
+                  }
+                  label={"cell border color"}
+                  setColor={color =>
+                    this.setCellAttribute("border-color", color)
+                  }
+                />
               ),
             },
 
@@ -322,7 +484,8 @@ class RichTable extends Component {
         },
       ],
     }
-    return <ContextMenuGenerator conf={rowContextConf} />
+    // return <ContextMenuGenerator conf={rowContextConf} />
+    return <ContextMenu conf={rowContextConf} />
   }
 
   render() {
@@ -358,7 +521,7 @@ class RichTable extends Component {
             {this.renderTableContext()}
           </ContextOptions>
         ) : null}
-        <Table>
+        <Table style={{ ...table.attributes }}>
           {table.rows.map((row, rIdx) => {
             console.log("Table Rows ", row)
             return (
@@ -393,6 +556,7 @@ class RichTable extends Component {
       table: {
         rows: this._initRows(numOfRows, numOfCols),
         num_of_cols: numOfCols,
+        attributes: {},
         tableSize: defaultTableSize,
       },
     }
