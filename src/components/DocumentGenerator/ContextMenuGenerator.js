@@ -32,6 +32,7 @@ class ContextMenuGenerator extends React.Component {
                 <MenuItem
                   className={classes.menuItem}
                   onClick={() => item.action()}>
+                  {item.icon && item.icon}
                   {item.title}
                 </MenuItem>
               )}

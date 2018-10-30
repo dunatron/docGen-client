@@ -13,6 +13,15 @@ import ColorPicker from "../../ColorPicker/index"
 // Utils
 import { isEmpty, isNil } from "ramda"
 
+// Test to see if portal is the correct solution
+// Ther idea here is that we pull it out of te dom meaning having it placed absolutly will be easier
+import ContextMenu from "../ContextMenu"
+// ICONS for context menu
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import BorderAllIcon from "@material-ui/icons/BorderAll"
+import BorderColorIcon from "@material-ui/icons/BorderColor"
+import FormatColorTxtIcon from "@material-ui/icons/FormatColorText"
+
 const styles = theme => ({
   initText: {
     ...theme.typography.subheading, // subheading
@@ -235,22 +244,26 @@ class RichTable extends Component {
             },
             {
               title: "Row border thickness 2px solid",
+              icon: <BorderAllIcon />,
               action: () => this.setRowAttribute("border", "2px solid"),
             },
             {
-              title: "Set Row Border",
+              title: "Set Row Border Color",
               component: (
-                <ColorPicker
-                  defaultValue={
-                    this.state.currRowAttributes
-                      ? this.state.currRowAttributes["border-color"]
-                      : "#000"
-                  }
-                  label={"setRowBorder"}
-                  setColor={color =>
-                    this.setRowAttribute("border-color", color)
-                  }
-                />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <BorderColorIcon style={{ padding: "0 16px" }} />
+                  <ColorPicker
+                    defaultValue={
+                      this.state.currRowAttributes
+                        ? this.state.currRowAttributes["border-color"]
+                        : "#000"
+                    }
+                    label={"setRowBorder"}
+                    setColor={color =>
+                      this.setRowAttribute("border-color", color)
+                    }
+                  />
+                </div>
               ),
             },
           ],
@@ -262,27 +275,45 @@ class RichTable extends Component {
             {
               title: "Set Cell Color",
               component: (
-                <ColorPicker
-                  label={"Set cell color"}
-                  setColor={color => this.setCellAttribute("color", color)}
-                />
-              ),
-            },
-            {
-              title: "Color Cell Border",
-              component: (
-                <ColorPicker
-                  label={"Set cell border color"}
-                  setColor={color =>
-                    this.setCellAttribute("border-color", color)
-                  }
-                />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <FormatColorTxtIcon style={{ padding: "0 16px" }} />
+                  <ColorPicker
+                    defaultValue={
+                      this.state.currCellAttributes
+                        ? this.state.currCellAttributes["color"]
+                        : "#000"
+                    }
+                    label={"Set cell color"}
+                    setColor={color => this.setCellAttribute("color", color)}
+                  />
+                </div>
               ),
             },
             {
               title: "Cell border thickness 2px solid",
+              icon: <BorderAllIcon />,
               action: () => this.setCellAttribute("border", "2px solid"),
             },
+            {
+              title: "Color Cell Border",
+              component: (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <BorderColorIcon style={{ padding: "0 16px" }} />
+                  <ColorPicker
+                    defaultValue={
+                      this.state.currCellAttributes
+                        ? this.state.currCellAttributes["border-color"]
+                        : "#000"
+                    }
+                    label={"Set cell border color"}
+                    setColor={color =>
+                      this.setCellAttribute("border-color", color)
+                    }
+                  />
+                </div>
+              ),
+            },
+
             {
               title: "Remove Cell Border",
               action: () => this.setCellAttribute("border", "none"),
@@ -404,27 +435,49 @@ class RichTable extends Component {
   }
 
   _addRow = () => {
-    const { interestedRowIndex } = this.state
+    // alert(this.state.interestedRowIndex)
+    // alert("Check console for table json")
     const { section } = this.props
+    const newRow = this._initRows(1, section.rawContent.table.num_of_cols)
+    const updatedRows = section.rawContent.table.rows.concat(newRow)
+    console.log("_addRow fro section table section => ", section)
+    console.log("New Row To add => ", newRow)
 
-    console.log("Take a peek at the section ", section)
-    const table = section.rawContent.table
-    const newRow = this._initRows(1, table.num_of_cols)
-    console.log("tbale before update table => ", table)
-    console.log("newRow => ", newRow)
-    // table.rows.concat(newRow)
+    const json = {
+      table: {
+        ...section.rawContent.table,
+        rows: updatedRows,
+        // num_of_cols: section.rawContent.table.num_of_cols + 1, // correct for colums
+        num_of_cols: section.rawContent.table.num_of_cols,
+        tableSize: defaultTableSize,
+      },
+    }
 
-    table.num_of_cols = table.num_of_cols + 1
-    table.rows.push(newRow)
-    console.log("The updated table => ", table)
-    // const json = {
-    //   table: {
-    //     ...table,
-    //   },
-    // }
-
-    // return this.update(json)
+    this.update(json)
   }
+
+  // _addRow = () => {
+  //   const { interestedRowIndex } = this.state
+  //   const { section } = this.props
+
+  //   console.log("Take a peek at the section ", section)
+  //   const table = section.rawContent.table
+  //   const newRow = this._initRows(1, table.num_of_cols)
+  //   console.log("tbale before update table => ", table)
+  //   console.log("newRow => ", newRow)
+  //   // table.rows.concat(newRow)
+
+  //   table.num_of_cols = table.num_of_cols + 1
+  //   table.rows.push(newRow)
+  //   console.log("The updated table => ", table)
+  //   // const json = {
+  //   //   table: {
+  //   //     ...table,
+  //   //   },
+  //   // }
+
+  //   // return this.update(json)
+  // }
 }
 
 export default compose(

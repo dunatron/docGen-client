@@ -1,12 +1,19 @@
 import React, { Component, Fragment } from "react"
 import { withStyles } from "@material-ui/core/styles"
+import ReactDOM from "react-dom"
+const modalRoot = document.getElementById("context-menu-root")
 
 const styles = theme => ({
   root: {
     background: "#FFF",
-    border: "2px solid green",
     zIndex: 99999999,
+    padding: theme.spacing.unit * 2,
+    borderRadius: 16,
+    "-webkit-box-shadow": "inset 0px 0px 40px 2px rgba(0,72,81,1)",
+    "-moz-box-shadow": "inset 0px 0px 40px 2px rgba(0,72,81,1)",
+    "box-shadow": "inset 0px 0px 40px 2px rgba(0,72,81,1)",
   },
+
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
@@ -18,6 +25,7 @@ class ContextOptions extends Component {
   constructor(props) {
     super(props)
     this.textInput = React.createRef()
+    this.el = document.createElement("div")
     const { children, contextDimensions } = this.props
 
     this.contextMenuRef = null
@@ -46,15 +54,13 @@ class ContextOptions extends Component {
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside)
+    modalRoot.appendChild(this.el)
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.handleClickOutside)
+    modalRoot.removeChild(this.el)
   }
-
-  // handleClickOutside(event) {
-  //   alert(" I am a dog in the wind")
-  // }
 
   getDynamicContextStyle = ({ x, y }) => {
     const screenW = window.innerWidth
@@ -66,65 +72,24 @@ class ContextOptions extends Component {
     console.log("y => ", y)
     console.groupEnd()
     // return { position: "fixed", top: y, left: x }
-    return { position: "absolute", top: 0, left: 0 }
+    // return { position: "absolute", top: 0, left: 0 }
+    return { position: "absolute", top: x, left: x }
     // return { position: "absolute", top: y, left: x }
   }
 
   render() {
-    const { classes, children, contextDimensions } = this.props
+    const { innerRef, classes, children, contextDimensions } = this.props
     const contextStyle = this.getDynamicContextStyle(contextDimensions)
-    return (
+    return ReactDOM.createPortal(
       <div
-        // ref={this.contextMenuRef}
+        style={contextStyle}
         ref={this.setContextMenuRef}
-        className={classes.root}
-        style={contextStyle}>
-        <h1>Contetx Options</h1>
+        className={classes.root}>
         {children}
-      </div>
+      </div>,
+      this.el
     )
   }
 }
 
-// export default ContextOptions
-
 export default withStyles(styles)(ContextOptions)
-
-// class ContextOptions extends React.Component {
-//   constructor(props) {
-//     super(props)
-
-//     this.textInput = null
-
-//     this.setContextMenuRef = element => {
-//       this.textInput = element
-//     }
-
-// this.focusTextInput = () => {
-//   // Focus the text input using the raw DOM API
-//   if (this.textInput) this.textInput.focus()
-// }
-//   }
-
-//   componentDidMount() {
-//     // autofocus the input on mount
-//     this.focusTextInput()
-//   }
-
-//   render() {
-//     // Use the `ref` callback to store a reference to the text input DOM
-//     // element in an instance field (for example, this.textInput).
-//     return (
-//       <div>
-//         <input type="text" ref={this.setContextMenuRef} />
-//         <input
-//           type="button"
-//           value="Focus the text input"
-//           onClick={this.focusTextInput}
-//         />
-//       </div>
-//     )
-//   }
-// }
-
-// export default ContextOptions
