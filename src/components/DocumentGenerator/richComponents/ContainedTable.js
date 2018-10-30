@@ -73,6 +73,7 @@ class ContainedTable extends Component {
       console.log("Peek at the table => ", table)
       this.state = {
         visibleContext: false,
+        interestedRowIndex: null,
         contextDimensions: {
           x: null,
           y: null,
@@ -156,12 +157,12 @@ class ContainedTable extends Component {
     if (e.nativeEvent.which === 1) {
       // do nothing, it should always hit below anyway?
     } else if (e.nativeEvent.which === 3) {
-      this.handleColumnContext(e, colIdx)
+      this.handleTableContext(e, colIdx)
       // alert("Right Click On the table")
     }
   }
 
-  handleColumnContext = (event, colIdx) => {
+  handleTableContext = (event, colIdx) => {
     event.preventDefault()
     this.setState({
       visibleContext: true,
@@ -175,9 +176,60 @@ class ContainedTable extends Component {
     })
   }
 
+  handleRowClick = (e, rIdx) => {
+    if (e.nativeEvent.which === 1) {
+      // do nothing, it should always hit below anyway?
+    } else if (e.nativeEvent.which === 3) {
+      this.handleRowContext(e, rIdx)
+      // alert("Right Click On the table")
+    }
+  }
+
+  handleRowContext = (event, rIdx) => {
+    event.preventDefault()
+    this.setState({
+      visibleContext: true,
+      interestedRowIndex: rIdx,
+    })
+    this.setState({
+      contextDimensions: {
+        x: event.clientX,
+        y: event.clientY,
+      },
+    })
+  }
+
+  _addRow = () => {
+    // alert(this.state.interestedRowIndex)
+    // alert("Check console for table json")
+    const { section } = this.props
+    const newRow = this._initRows(1, section.rawContent.table.num_of_cols)
+    const updatedRows = section.rawContent.table.rows.concat(newRow)
+    console.log("_addRow fro section table section => ", section)
+    console.log("New Row To add => ", newRow)
+
+    const json = {
+      table: {
+        ...section.rawContent.table,
+        rows: updatedRows,
+        num_of_cols: section.rawContent.table.num_of_cols + 1,
+        tableSize: defaultTableSize,
+      },
+    }
+
+    this.update(json)
+  }
+
+  closeContextMenu = () => {
+    this.setState({
+      visibleContext: false,
+      interestedRowIndex: null,
+    })
+  }
+
   render() {
     const { classes, section, pageAttributes } = this.props
-    const { visibleContext } = this.state
+    const { visibleContext, interestedRowIndex } = this.state
     const { rawContent } = section
 
     if (isNil(rawContent)) {
@@ -195,13 +247,18 @@ class ContainedTable extends Component {
       <Fragment>
         {visibleContext ? (
           <ContextOptions
-            close={() =>
-              this.setState({
-                visibleContext: false,
-              })
-            }
+            close={() => this.closeContextMenu()}
             contextDimensions={this.state.contextDimensions}>
             <div className="contextMenu--option">Remove Table</div>
+            <div onClick={() => this._addRow()} className="contextMenu--option">
+              Add Row
+            </div>
+            {interestedRowIndex !== null && (
+              <div className="contextMenu--option">
+                remove Row ({interestedRowIndex + 1})
+              </div>
+            )}
+
             <div className="contextMenu--option">Pregnant Pockets</div>
             <div className="contextMenu--option">Abort Your wallet</div>
             <div className="contextMenu--option">
@@ -226,6 +283,7 @@ class ContainedTable extends Component {
               return (
                 <Resizable
                   className={classes.containedRow}
+                  onContextMenu={e => this.handleRowClick(e, rIdx)}
                   // defaultSize={{ width: "100%", height: row.rowHeight }}
                   defaultSize={{
                     width: "calc(100% - 20px)",
