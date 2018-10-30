@@ -4,7 +4,14 @@ import MenuItem from "@material-ui/core/MenuItem"
 import { withStyles } from "@material-ui/core/styles"
 
 const styles = theme => ({
-  menuItem: {},
+  contextMenu: {},
+  menuItem: {
+    fontSize: "0.75rem",
+    fontWeight: 400,
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    lineHeight: "1.375em",
+    color: "rgba(0, 0, 0, 0.54)",
+  },
 })
 
 class ContextMenuGenerator extends React.Component {
@@ -15,17 +22,25 @@ class ContextMenuGenerator extends React.Component {
   renderChildrenForever = items => {
     const { classes } = this.props
     return (
-      <div>
+      <div className={classes.contextMenu}>
         {items.map((item, itemIdx) => {
           return (
             <div key={itemIdx}>
               {item.component ? (
                 item.component
               ) : (
-                <MenuItem onClick={() => item.action()}>{item.title}</MenuItem>
+                <MenuItem
+                  className={classes.menuItem}
+                  onClick={() => item.action()}>
+                  {item.title}
+                </MenuItem>
               )}
 
-              {item.items && this.renderChildrenForever(item.items)}
+              {item.items && (
+                <div style={{ paddingLeft: "15px" }}>
+                  {this.renderChildrenForever(item.items)}
+                </div>
+              )}
             </div>
           )
         })}
@@ -38,24 +53,9 @@ class ContextMenuGenerator extends React.Component {
     console.log("The context menu generator config => ", conf)
     return (
       <Fragment>
-        <div>I am context menu</div>
         {conf.items && this.renderChildrenForever(conf.items)}
       </Fragment>
     )
-    // return (
-    //   <Fragment>
-    //     <div>I am the context menu generator</div>
-    //     {conf.items.map((item, itemIdx) => {
-    //       return (
-    //         <div key={itemIdx} onClick={() => item.action()}>
-    //           {/* ToDo: change structiure. It calls its parent div on child click too */}
-    //           {item.title}
-    //           {item.items && this.renderChildrenForever(item.items)}
-    //         </div>
-    //       )
-    //     })}
-    //   </Fragment>
-    // )
   }
 }
 

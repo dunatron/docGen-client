@@ -65,7 +65,8 @@ class ContextOptions extends Component {
     console.log("x => ", x)
     console.log("y => ", y)
     console.groupEnd()
-    return { position: "fixed", top: y, left: x }
+    // return { position: "fixed", top: y, left: x }
+    return { position: "absolute", top: 0, left: 0 }
     // return { position: "absolute", top: y, left: x }
   }
 
