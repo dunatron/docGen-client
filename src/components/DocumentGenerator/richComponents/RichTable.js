@@ -6,6 +6,10 @@ import { Table, TableRow, TableCell } from "@material-ui/core"
 import Resizable from "re-resizable"
 // RichEditor
 import RichEditor from "../inputs/RichEditor"
+import ContextOptions from "../ContextOptions"
+import ContextMenuGenerator from "../ContextMenuGenerator"
+// import ColorSettings from "../ColorSettings"
+import ColorPicker from "../../ColorPicker/index"
 // Utils
 import { isEmpty, isNil } from "ramda"
 
@@ -41,16 +45,28 @@ class RichTable extends Component {
     const { classes, section, pageAttributes } = this.props
     const { rawContent } = section
 
+    const initState = {
+      visibleContext: false,
+      contextDimensions: {
+        x: null,
+        y: null,
+      },
+      interestedRowIndex: null,
+      interestedCellIndex: null,
+    }
+
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
       this.update(initialTable)
       this.state = {
+        ...initState,
         tableSize: defaultTableSize,
       }
     } else {
       const { table } = rawContent
       console.log("Peek at the table => ", table)
       this.state = {
+        ...initState,
         tableSize: {
           width: table.tableSize.width,
           height: table.tableSize.height,
@@ -126,9 +142,166 @@ class RichTable extends Component {
     return this.update(json)
   }
 
+  handleCellClick = (e, rIdx, cIdx) => {
+    if (e.nativeEvent.which === 1) {
+      // do nothing, it should always hit below anyway?
+    } else if (e.nativeEvent.which === 3) {
+      this.handleCellContext(e, rIdx, cIdx)
+    }
+  }
+
+  getRowAttributes = rIdx => {
+    return this.props.section.rawContent.table.rows[rIdx].attributes
+  }
+
+  getCellAttributes = (rIdx, cIdx) => {
+    return this.props.section.rawContent.table.rows[rIdx].cells[cIdx].attributes
+  }
+
+  handleCellContext = (e, rIdx, cIdx) => {
+    e.preventDefault()
+    this.setState({
+      visibleContext: true,
+      interestedRowIndex: rIdx,
+      interestedCellIndex: cIdx,
+      currRowAttributes: this.getRowAttributes(rIdx, cIdx),
+      currCellAttributes: this.getCellAttributes(rIdx, cIdx),
+
+      contextDimensions: {
+        x: e.clientX,
+        y: e.clientY,
+      },
+    })
+    console.log("THE STATE => ", this.state)
+  }
+
+  setRowAttribute = (attr, val) => {
+    const { interestedRowIndex } = this.state
+    const { section } = this.props
+
+    const table = section.rawContent.table
+    table.rows[interestedRowIndex].attributes = {
+      ...table.rows[interestedRowIndex].attributes,
+      [attr]: val,
+    }
+    const json = {
+      table: {
+        ...table,
+      },
+    }
+
+    return this.update(json)
+  }
+
+  setCellAttribute = (attr, val) => {
+    const { interestedRowIndex, interestedCellIndex } = this.state
+    const { section } = this.props
+
+    const updatedTableSection = section.rawContent.table
+    updatedTableSection.rows[interestedRowIndex].cells[
+      interestedCellIndex
+    ].attributes = {
+      ...updatedTableSection.rows[interestedRowIndex].cells[interestedCellIndex]
+        .attributes,
+      [attr]: val,
+    }
+    const json = {
+      table: {
+        ...updatedTableSection,
+      },
+    }
+
+    return this.update(json)
+  }
+
+  renderTableContext = () => {
+    const rowContextConf = {
+      items: [
+        {
+          title: "Delete Table",
+          action: () => this.props.delete(),
+        },
+        {
+          title: "Add Row",
+          action: () => this._addRow(),
+        },
+        {
+          title: "Row Attributes",
+          action: () => alert("HIiiiii"),
+          items: [
+            {
+              title: "Sibling Item 1",
+              action: () => alert("sibling action 1"),
+            },
+            {
+              title: "Row border thickness 2px solid",
+              action: () => this.setRowAttribute("border", "2px solid"),
+            },
+            {
+              title: "Set Row Border",
+              component: (
+                <ColorPicker
+                  defaultValue={
+                    this.state.currRowAttributes
+                      ? this.state.currRowAttributes["border-color"]
+                      : "#000"
+                  }
+                  label={"setRowBorder"}
+                  setColor={color =>
+                    this.setRowAttribute("border-color", color)
+                  }
+                />
+              ),
+            },
+          ],
+        },
+        {
+          title: "Cell Attributes",
+          action: () => alert("ToDo: submenu click pattern"),
+          items: [
+            {
+              title: "Set Cell Color",
+              component: (
+                <ColorPicker
+                  label={"Set cell color"}
+                  setColor={color => this.setCellAttribute("color", color)}
+                />
+              ),
+            },
+            {
+              title: "Color Cell Border",
+              component: (
+                <ColorPicker
+                  label={"Set cell border color"}
+                  setColor={color =>
+                    this.setCellAttribute("border-color", color)
+                  }
+                />
+              ),
+            },
+            {
+              title: "Cell border thickness 2px solid",
+              action: () => this.setCellAttribute("border", "2px solid"),
+            },
+            {
+              title: "Remove Cell Border",
+              action: () => this.setCellAttribute("border", "none"),
+            },
+          ],
+        },
+      ],
+    }
+    return <ContextMenuGenerator conf={rowContextConf} />
+  }
+
   render() {
     const { classes, section, pageAttributes } = this.props
+    console.log(
+      "Have a look at the structure which is being passed through! it needs fixed => ",
+      section
+    )
     const { rawContent } = section
+    const { visibleContext } = this.state
 
     if (isNil(rawContent)) {
       const initialTable = this._initTable(3, 3)
@@ -143,22 +316,32 @@ class RichTable extends Component {
 
     return (
       <Fragment>
+        {visibleContext ? (
+          <ContextOptions
+            close={() =>
+              this.setState({
+                visibleContext: false,
+              })
+            }
+            contextDimensions={this.state.contextDimensions}>
+            {this.renderTableContext()}
+          </ContextOptions>
+        ) : null}
         <Table>
           {table.rows.map((row, rIdx) => {
             console.log("Table Rows ", row)
             return (
-              <TableRow>
+              <TableRow style={{ ...row.attributes }}>
                 {row.cells.map((cell, cIdx) => {
                   return (
-                    <TableCell>
+                    <TableCell
+                      style={{ ...cell.attributes }}
+                      onContextMenu={e => this.handleCellClick(e, rIdx, cIdx)}>
                       <RichEditor
                         pageAttributes={pageAttributes}
                         document={
                           cell.document ? cell : this._generateCell(rIdx, cIdx)
                         }
-                        // document={cell}
-                        // document={cell.document}
-                        // document={this._generateCell(rIdx, cIdx)}
                         updateDocument={document =>
                           this._updateCell(document, rIdx, cIdx)
                         }
@@ -215,8 +398,32 @@ class RichTable extends Component {
     ]
     const json = {
       document: { nodes },
+      attributes: { color: "blue" },
     }
     return json
+  }
+
+  _addRow = () => {
+    const { interestedRowIndex } = this.state
+    const { section } = this.props
+
+    console.log("Take a peek at the section ", section)
+    const table = section.rawContent.table
+    const newRow = this._initRows(1, table.num_of_cols)
+    console.log("tbale before update table => ", table)
+    console.log("newRow => ", newRow)
+    // table.rows.concat(newRow)
+
+    table.num_of_cols = table.num_of_cols + 1
+    table.rows.push(newRow)
+    console.log("The updated table => ", table)
+    // const json = {
+    //   table: {
+    //     ...table,
+    //   },
+    // }
+
+    // return this.update(json)
   }
 }
 

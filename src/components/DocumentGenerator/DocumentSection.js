@@ -118,6 +118,9 @@ class DocumentSection extends React.Component {
           pageAttributes={pageAttributes}
           focused={focused}
           section={section}
+          delete={() => {
+            this._deleteSection(section.id)
+          }}
           update={section => this._updateSection(section)}
         />
       </div>

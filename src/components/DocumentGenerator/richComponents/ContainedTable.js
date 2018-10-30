@@ -153,6 +153,10 @@ class ContainedTable extends Component {
     return this.update(json)
   }
 
+  _removeTable = () => {
+    this.props.delete()
+  }
+
   handleTableClick = (e, colIdx) => {
     if (e.nativeEvent.which === 1) {
       // do nothing, it should always hit below anyway?
