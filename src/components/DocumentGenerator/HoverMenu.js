@@ -100,7 +100,7 @@ class HoverMenu extends React.Component {
 }
 
 HoverMenu.propTypes = {
-  classes: PropTypes.object.isRequired,
+  // classes: PropTypes.object.isRequired,
 }
 
 export default HoverMenu

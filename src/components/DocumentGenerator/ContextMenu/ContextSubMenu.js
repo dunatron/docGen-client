@@ -21,7 +21,7 @@ const styles = theme => ({
     // width: "100%",
     maxWidth: 360,
     minWidth: 160,
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     marginLeft: "16px",
     padding: 0,
   },
@@ -54,35 +54,15 @@ class ContextSubMenu extends Component {
 
   render() {
     const { classes, item } = this.props
-
-    // return (
-    //   <div className={classes.root}>
-    //     {item.items &&
-    //       item.items.map((i, iIdx) => {
-    //         return <ContextItem item={i} />
-    //       })}
-    //   </div>
-    // )
-
     return (
       <div className={classes.root}>
-        <List
-          component="Context-Menu"
-          // subheader={
-          //   <ListSubheader component="div">{item.title}</ListSubheader>
-          // }
-        >
+        <List component="Context-Menu">
           <ListItem
             className={classes.listItem}
             button
             onClick={this.handleClick}>
             {this.state.open ? <ExpandLess /> : <ExpandMore />}
             <span>{item.title}</span>
-            {/* <ListItemText
-              className={classes.listItemText}
-              inset
-              primary={item.title}
-            /> */}
           </ListItem>
           <Collapse in={this.state.open} timeout="auto" unmountOnExit>
             <List
@@ -91,7 +71,7 @@ class ContextSubMenu extends Component {
               className={classes.nested}>
               {item.items &&
                 item.items.map((i, iIdx) => {
-                  return <ContextItem item={i} />
+                  return <ContextItem key={iIdx} item={i} />
                 })}
             </List>
           </Collapse>

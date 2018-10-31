@@ -14,6 +14,7 @@ import ColorPicker from "../../ColorPicker/index"
 import NumberInput from "../../inputs/NumberInput"
 import NumberDelayInput from "../../inputs/NumberDelayInput"
 // Utils
+import uuidV4 from "uuidv4"
 import { isEmpty, isNil } from "ramda"
 import { extractNumber } from "../../../utils/extractNumber"
 import { extractFirstNum } from "../../../utils/extractValues"
@@ -26,6 +27,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon"
 import BorderAllIcon from "@material-ui/icons/BorderAll"
 import BorderColorIcon from "@material-ui/icons/BorderColor"
 import FormatColorTxtIcon from "@material-ui/icons/FormatColorText"
+import { RoomTwoTone } from "@material-ui/icons"
 
 const styles = theme => ({
   initText: {
@@ -176,9 +178,9 @@ class RichTable extends Component {
     return this.props.section.rawContent.table.rows[rIdx].cells[cIdx].attributes
   }
 
-  handleCellContext = (e, rIdx, cIdx) => {
+  handleCellContext = async (e, rIdx, cIdx) => {
     e.preventDefault()
-    this.setState({
+    await this.setState({
       visibleContext: true,
       interestedRowIndex: rIdx,
       interestedCellIndex: cIdx,
@@ -251,6 +253,7 @@ class RichTable extends Component {
   }
 
   renderTableContext = () => {
+    const { interestedRowIndex, interestedCellIndex } = this.state
     const rowContextConf = {
       items: [
         {
@@ -260,6 +263,10 @@ class RichTable extends Component {
         {
           title: "Add Row",
           action: () => this._addRow(),
+        },
+        {
+          title: "Delete Row",
+          action: () => this._deleteRow(),
         },
         {
           title: "Table Attributes",
@@ -485,7 +492,59 @@ class RichTable extends Component {
       ],
     }
     // return <ContextMenuGenerator conf={rowContextConf} />
-    return <ContextMenu conf={rowContextConf} />
+    return (
+      <ContextMenu
+        name={`row${interestedRowIndex}, cell${interestedCellIndex}`}
+        conf={rowContextConf}
+      />
+    )
+  }
+
+  renderCells = (rIdx, cells) => {
+    const { pageAttributes } = this.props
+    return cells.map((cell, cIdx) => {
+      return (
+        <TableCell
+          key={cell.id}
+          style={{ ...cell.attributes }}
+          onContextMenu={e => this.handleCellClick(e, rIdx, cIdx)}>
+          <RichEditor
+            pageAttributes={pageAttributes}
+            document={cell.document ? cell : this._generateCell(rIdx, cIdx)}
+            updateDocument={document => this._updateCell(document, rIdx, cIdx)}
+          />
+        </TableCell>
+      )
+    })
+  }
+
+  renderRows = rows => {
+    console.log("The rows To render => ", rows)
+    return rows.map((row, rIdx) => {
+      console.log("Table Rows ", row)
+      return (
+        <TableRow key={row.id} style={{ ...row.attributes }}>
+          {this.renderCells(rIdx, row.cells)}
+          {/* {row.cells.map((cell, cIdx) => {
+            return (
+              <TableCell
+                style={{ ...cell.attributes }}
+                onContextMenu={e => this.handleCellClick(e, rIdx, cIdx)}>
+                <RichEditor
+                  pageAttributes={pageAttributes}
+                  document={
+                    cell.document ? cell : this._generateCell(rIdx, cIdx)
+                  }
+                  updateDocument={document =>
+                    this._updateCell(document, rIdx, cIdx)
+                  }
+                />
+              </TableCell>
+            )
+          })} */}
+        </TableRow>
+      )
+    })
   }
 
   render() {
@@ -507,6 +566,10 @@ class RichTable extends Component {
       )
     }
     const { table } = rawContent
+    const { rows } = table
+
+    console.log("The table Being Rendered => ", table)
+    console.log("The table rows => ", rows)
 
     return (
       <Fragment>
@@ -522,7 +585,9 @@ class RichTable extends Component {
           </ContextOptions>
         ) : null}
         <Table style={{ ...table.attributes }}>
-          {table.rows.map((row, rIdx) => {
+          <tbody>{this.renderRows(table.rows)}</tbody>
+
+          {/* {table.rows.map((row, rIdx) => {
             console.log("Table Rows ", row)
             return (
               <TableRow style={{ ...row.attributes }}>
@@ -545,7 +610,31 @@ class RichTable extends Component {
                 })}
               </TableRow>
             )
-          })}
+          })} */}
+          {/* {table.rows.map((row, rIdx) => {
+            console.log("Table Rows ", row)
+            return (
+              <TableRow style={{ ...row.attributes }}>
+                {row.cells.map((cell, cIdx) => {
+                  return (
+                    <TableCell
+                      style={{ ...cell.attributes }}
+                      onContextMenu={e => this.handleCellClick(e, rIdx, cIdx)}>
+                      <RichEditor
+                        pageAttributes={pageAttributes}
+                        document={
+                          cell.document ? cell : this._generateCell(rIdx, cIdx)
+                        }
+                        updateDocument={document =>
+                          this._updateCell(document, rIdx, cIdx)
+                        }
+                      />
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            )
+          })} */}
         </Table>
       </Fragment>
     )
@@ -572,7 +661,15 @@ class RichTable extends Component {
         cells.push(newCell)
       }
       // rows.push(cells)
-      rows.push({ cells: cells, rowHeight: 80 })
+      rows.push({
+        id: uuidV4(),
+        // attributes: { backgroundColor: "rgba(0,72,81, 0.4)" },
+        attributes: {
+          backgroundColor: r % 2 ? "rgba(0,72,81, 0.4)" : "rgba(0,72,81, 0.2)",
+        },
+        cells: cells,
+        rowHeight: 80,
+      })
     }
     return rows
   }
@@ -592,6 +689,7 @@ class RichTable extends Component {
       },
     ]
     const json = {
+      id: uuidV4(),
       document: { nodes },
       attributes: { color: "blue" },
     }
@@ -613,7 +711,31 @@ class RichTable extends Component {
         rows: updatedRows,
         // num_of_cols: section.rawContent.table.num_of_cols + 1, // correct for colums
         num_of_cols: section.rawContent.table.num_of_cols,
-        tableSize: defaultTableSize,
+      },
+    }
+
+    this.update(json)
+  }
+
+  _deleteRow = () => {
+    const { interestedRowIndex } = this.state
+    let { section } = this.props
+    // alert("Delete row sss" + interestedRowIndex)
+    // section.rawContent.table.rows.splice(interestedRowIndex, 1) // splice out interested Row
+    // const updatedRows = section.rawContent.table.rows.splice(
+    //   interestedRowIndex,
+    //   1
+    // )
+    const updatedRows = section.rawContent.table.rows.filter(
+      (r, rIdx) => rIdx !== interestedRowIndex
+    )
+
+    console.log("The filtered Rows! ", updatedRows)
+
+    const json = {
+      table: {
+        ...section.rawContent.table,
+        rows: updatedRows,
       },
     }
 

@@ -65,15 +65,25 @@ class ContextOptions extends Component {
   getDynamicContextStyle = ({ x, y }) => {
     const screenW = window.innerWidth
     const screenH = window.innerHeight
+    const screenPosX = window.screenX
+    const screenPosY = window.screenY
+    const windowPageXOffset = window.pageXOffset
+    const windowPageYOffset = window.pageYOffset
     console.group("getDynamicContextStyle")
+    console.log("The window => ", window)
     console.log("screenW => ", screenW)
     console.log("screenH => ", screenH)
     console.log("x => ", x)
     console.log("y => ", y)
     console.groupEnd()
     // return { position: "fixed", top: y, left: x }
-    // return { position: "absolute", top: 0, left: 0 }
-    return { position: "absolute", top: x, left: x }
+    // return { position: "absolute", top: screenPosX, left: 0 }
+    return {
+      position: "absolute",
+      top: windowPageYOffset + 40,
+      left: windowPageXOffset + 40,
+    }
+    // return { position: "absolute", top: x, left: x }
     // return { position: "absolute", top: y, left: x }
   }
 

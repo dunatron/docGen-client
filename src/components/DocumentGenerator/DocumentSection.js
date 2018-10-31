@@ -6,6 +6,7 @@ import RenderSectionByType from "./RenderSectionByType"
 // Queries. Thi is to just update the document Query
 import DOCUMENT_QUERY from "../../queries/Document.graphql"
 // import { SINGLE_DOCUMENT_QUERY } from "../../queries/singleDocument"
+// import DOCUMENT_QUERY from "../queries/Document.graphql"
 // Mutations
 import { UPDATE_SECTION_MUTATION } from "../../mutations/updateSection"
 import { DELETE_SECTION_MUTATION } from "../../mutations/deleteSection"
@@ -137,6 +138,10 @@ class DocumentSection extends React.Component {
         sectionId: id,
         rawContent: rawContent,
       },
+      // Try updating the new section...
+      // update: (store, { data }) => {
+      //   console.log("This is our data after the update => ", data)
+      // },
     })
   }
 

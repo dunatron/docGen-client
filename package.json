@@ -48,7 +48,8 @@
     "slate-html-serializer": "^0.7.7",
     "slate-react": "^0.18.10",
     "string_decoder": "^1.1.1",
-    "subscriptions-transport-ws": "^0.9.14"
+    "subscriptions-transport-ws": "^0.9.14",
+    "uuidv4": "^2.0.0"
   },
   "scripts": {
     "start": "rm -rf ./node_modules/.cache/babel-loader && react-app-rewired start",
